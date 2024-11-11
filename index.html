@@ -43,13 +43,13 @@
     </tbody>
 </table>
 <script src="index.js"></script>
-<script  type="module">
+<script  type="module" defer>
     import { bubbleSorts, choiceSorts, insertSorts } from './index.js';
 
-    window.onload = async () => {
-        await bubbleSorts([1000, 5000, 10000, 15000, 20000])
-        await choiceSorts([1000, 5000, 10000, 15000, 20000])
-        await insertSorts([1000, 5000, 10000, 15000, 20000])
+    window.onload = () => {
+         bubbleSorts([1000, 5000, 10000, 15000, 20000])
+         choiceSorts([1000, 5000, 10000, 15000, 20000])
+         insertSorts([1000, 5000, 10000, 15000, 20000])
     }
 </script>
 </body>
