@@ -1,85 +1,103 @@
-// console.log(bubbleSort([3, 5, 4, 2, 1]));
-// console.log(choiceSort([3, 5, 4, 2, 1]));
-// console.log(insertSort([3, 5, 4, 2, 1]));
-// console.log('Отсортированный перевёрнутый массив')
-// console.log(createSortedReverseArray(createSortedArray(100)))
-// let sortedArray = createSortedArray(1000)
-// let sortedReverseArray = createSortedReverseArray(1000)
-// let notSortedArray = createArray(1000)
-// console.log(bubbleSort(createArray(1000)))
-// console.log(bubbleSort(createArray(10000)))
-// console.log(bubbleSort(createArray(100000)))
-// console.log(insertSort(createArray(1000)))
-// console.log(insertSort(createArray(10000)))
-// console.log(insertSort(createArray(100000)))
-// console.log(choiceSort(createArray(1000)))
-// console.log(choiceSort(createArray(10000)))
-// console.log(choiceSort(createArray(100000)))
-// console.log(bubbleSort(createSortedArray(1000)))
-// console.log(bubbleSort(createSortedArray(10000)))
-// console.log(bubbleSort(createSortedArray(100000)))
-// console.log(insertSort(createSortedArray(1000)))
-// console.log(insertSort(createSortedArray(10000)))
-// console.log(insertSort(createSortedArray(100000)))
-// console.log(choiceSort(createSortedArray(1000)))
-// console.log(choiceSort(createSortedArray(10000)))
-// console.log(choiceSort(createSortedArray(100000)))
-// function ReturnAnything() {
-//     console.log(bubbleSort(createSortedReverseArray(1000)))
-//     console.log(bubbleSort(createSortedReverseArray(10000)))
-//     console.log(bubbleSort(createSortedReverseArray(100000)))
-//     console.log(insertSort(createSortedReverseArray(1000)))
-//     console.log(insertSort(createSortedReverseArray(10000)))
-//     console.log(insertSort(createSortedReverseArray(100000)))
-//     console.log(choiceSort(createSortedReverseArray(1000)))
-//     console.log(choiceSort(createSortedReverseArray(10000)))
-//     console.log(choiceSort(createSortedReverseArray(100000)))
-//
-// }
-// console.log(createArray(100));
-
-function bubbleSort(array) {
-    for (let i = 1; i < array.length; i++) {
-        for (let j = 0; j < array.length - 1; j++) {
-            if (array[j] > array[j + 1]) {
-                let temp = array[j];
-                array[j] = array[j + 1];
-                array[j + 1] = temp;
-            }
-        }
-    }
-    return array;
-}
+import bubbleSort from './bubbleSort.js';
+import insertSort from './insertSort.js';
+import choiceSort from './choiceSort.js';
 
 
 console.log(choiceSort(createSortedReverseArray(createSortedArray(10000))))
 
+export async function bubbleSorts(arrayOfNumbers) {
+    const table = document.getElementById("result-table")
+    for (const number of arrayOfNumbers) {
+        let randomArray = createArray(number);
+        let sortedArray = createSortedArray(number);
+        let reverseSortedArray = createSortedReverseArray(createSortedArray(number));
 
-function choiceSort(array)  {
-    for (let i = 0; i < array.length - 1; i ++) {
-        for (let j = i + 1; j < array.length; j++) {
-            if (array[i] > array[j]) {
-                let temp = array[i];
-                array[i] = array[j];
-                array[j] = temp
-            }
+        function allSorting(sortFunc, array) {
+            let startOne = performance.now();
+            sortFunc([...array]);
+            return (performance.now() - startOne).toFixed(2)
         }
+
+        let timeBTakenOne = allSorting(bubbleSort, randomArray)
+
+        let timeSortedTakenOne = allSorting(bubbleSort, sortedArray);
+
+        let reverseBROne = allSorting(bubbleSort, reverseSortedArray);
+
+
+        let row = document.createElement("tr");
+        row.innerHTML = `
+                            <td>Bubble Gum ${number}</td>
+                            <td>${timeBTakenOne}</td>
+                            <td>${timeSortedTakenOne}</td>
+                            <td>${reverseBROne}</td>
+                            `;
+        table.appendChild(row);
+
     }
-    return array;
 }
+export async function choiceSorts(arrayOfNumbers) {
+    const table = document.getElementById("result-table")
+    for (const number of arrayOfNumbers) {
+        let randomArray = createArray(number);
+        let sortedArray = createSortedArray(number);
+        let reverseSortedArray = createSortedReverseArray(createSortedArray(number));
 
-
-function insertSort(array) {
-    for (let i = 1; i < array.length; i++) {
-        let inter = i;
-        while (inter > 0 && array[inter] < array[inter - 1]) {
-            let temp = array[inter];
-            array[inter] = array[inter - 1]
-            array[inter - 1] = temp
-            inter--;
+        function allSorting(sortFunc, array) {
+            let startOne = performance.now();
+            sortFunc([...array]);
+            return (performance.now() - startOne).toFixed(2)
         }
+
+        let timeBTakenOne = allSorting(choiceSort, randomArray);
+
+        let timeSortedTakenOne = allSorting(choiceSort, sortedArray);
+
+        let reverseBROne = allSorting(choiceSort, reverseSortedArray);
+
+
+
+        let row4 = document.createElement("tr");
+        row4.innerHTML = `
+                            <td>Choice Sort ${number}</td>
+                            <td>${timeBTakenOne}</td>
+                            <td>${timeSortedTakenOne}</td>
+                            <td>${reverseBROne}</td>
+                            `;
+        table.appendChild(row4);
+
     }
-    return array;
+}
+export async function insertSorts(arrayOfNumbers) {
+    const table = document.getElementById("result-table")
+    for (const number of arrayOfNumbers) {
+        let randomArray = createArray(number);
+        let sortedArray = createSortedArray(number);
+        let reverseSortedArray = createSortedReverseArray(createSortedArray(number));
+
+        function allSorting(sortFunc, array) {
+            let startOne = performance.now();
+            sortFunc([...array]);
+            return (performance.now() - startOne).toFixed(2)
+        }
+
+        let timeBTakenOne = allSorting(insertSort, randomArray)
+
+        let timeSortedTakenOne = allSorting(insertSort, sortedArray);
+
+        let reverseBROne = allSorting(insertSort, reverseSortedArray);
+
+
+        let row6 = document.createElement("tr");
+        row6.innerHTML = `
+                            <td>Inser Sort ${number}</td>
+                            <td>${timeBTakenOne}</td>
+                            <td>${timeSortedTakenOne}</td>
+                            <td>${reverseBROne}</td>
+                            `;
+        table.appendChild(row6);
+
+    }
 }
 
 function createArray(number) {
@@ -98,8 +116,6 @@ function createSortedArray(number) {
 function createSortedReverseArray(array) {
     return array.reverse();
 }
-
-
 
 
 
