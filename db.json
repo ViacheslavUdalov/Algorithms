@@ -241,6 +241,94 @@
       },
       "date": "2024-11-11T15:52:02.636Z",
       "id": 22
+    },
+    {
+      "sortType": "choice",
+      "arraySize": 10000,
+      "times": {
+        "random": "31.10",
+        "sorted": "21.80",
+        "reversed": "23.10"
+      },
+      "date": "2024-11-11T15:52:02.742Z",
+      "id": 23
+    },
+    {
+      "sortType": "choice",
+      "arraySize": 15000,
+      "times": {
+        "random": "62.90",
+        "sorted": "70.40",
+        "reversed": "64.70"
+      },
+      "date": "2024-11-11T15:52:02.952Z",
+      "id": 24
+    },
+    {
+      "sortType": "choice",
+      "arraySize": 20000,
+      "times": {
+        "random": "110.50",
+        "sorted": "99.80",
+        "reversed": "100.00"
+      },
+      "date": "2024-11-11T15:52:03.295Z",
+      "id": 25
+    },
+    {
+      "sortType": "insert",
+      "arraySize": 1000,
+      "times": {
+        "random": "0.70",
+        "sorted": "0.00",
+        "reversed": "0.50"
+      },
+      "date": "2024-11-11T15:52:03.317Z",
+      "id": 26
+    },
+    {
+      "sortType": "insert",
+      "arraySize": 5000,
+      "times": {
+        "random": "4.00",
+        "sorted": "0.00",
+        "reversed": "7.90"
+      },
+      "date": "2024-11-11T15:52:03.344Z",
+      "id": 27
+    },
+    {
+      "sortType": "insert",
+      "arraySize": 10000,
+      "times": {
+        "random": "15.90",
+        "sorted": "0.10",
+        "reversed": "32.20"
+      },
+      "date": "2024-11-11T15:52:03.426Z",
+      "id": 28
+    },
+    {
+      "sortType": "insert",
+      "arraySize": 15000,
+      "times": {
+        "random": "37.00",
+        "sorted": "0.00",
+        "reversed": "71.80"
+      },
+      "date": "2024-11-11T15:52:03.565Z",
+      "id": 29
+    },
+    {
+      "sortType": "insert",
+      "arraySize": 20000,
+      "times": {
+        "random": "63.50",
+        "sorted": "0.00",
+        "reversed": "127.20"
+      },
+      "date": "2024-11-11T15:52:03.788Z",
+      "id": 30
     }
   ]
 }
