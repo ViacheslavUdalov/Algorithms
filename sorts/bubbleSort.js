@@ -1,3 +1,5 @@
+//Сортировка называется устойчивой, если она не меняет порядок равных элементов.
+
 function bubbleSort(array) {
     for (let i = 1; i < array.length; i++) {
         for (let j = 0; j < array.length - 1; j++) {
