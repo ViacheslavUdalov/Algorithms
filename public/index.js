@@ -68,27 +68,51 @@ async function loadData() {
         if (!result.ok) {
            console.log(result.statusText);
         }
-        const data = result.json();
-
+        const data = await result.json();
         displayData(data)
     } catch (error) {
-console.log(error)
+        console.log(error);
     }
 }
 
 function displayData(data) {
     const table = document.getElementById("result-table");
 
-    data.forEach(result => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${result.sortType} Sort ${result.arraySize}</td>
-            <td>${result.times.random}</td>
-            <td>${result.times.sorted}</td>
-            <td>${result.times.reversed}</td>
-        `;
-        table.appendChild(row);
-    });
+    data
+        // removing duplicates
+        .reduce((prev, curr) => {
+            if (!prev.find(result => result.sortType === curr.sortType && result.arraySize === curr.arraySize)) {
+                prev.push(curr);
+            }
+            return prev;
+        }, [])
+        // grouping results by sortType
+        .reduce((prev, curr) => {
+            if (!prev.find(group => group.sortType === curr.sortType)) {
+                prev.push({
+                    sortType: curr.sortType,
+                    results: [],
+                });
+            }
+            prev.find(group => group.sortType === curr.sortType)
+                .results.push(curr);
+            return prev;
+        }, [])
+        .forEach(resultGroup => {
+            resultGroup.results.forEach((result, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    ${index === 0
+                        ? ('<td rowspan="' + resultGroup.results.length + '">' + resultGroup.sortType + " sort </td>")
+                        : ''}
+                    <td>${result.arraySize}</td>
+                    <td>${result.times.random}</td>
+                    <td>${result.times.sorted}</td>
+                    <td>${result.times.reversed}</td>
+                `;
+                table.appendChild(row);
+            });
+        })
 }
 
 function createArray(number) {
@@ -106,32 +130,3 @@ function createSortedReverseArray(array) {
 }
 
 export default loadData;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
