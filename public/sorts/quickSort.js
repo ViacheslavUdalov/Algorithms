@@ -7,6 +7,7 @@
 
 // worst case - O(N2) когда все элементы больше или меньше pivot.
 // average and base case - O(NlogN)
+
 function swap(array, a, b) {
     // функция смены двух элементов
     let temp = array[a];
@@ -14,7 +15,7 @@ function swap(array, a, b) {
     array[b] = temp;
 }
 
-function sort(array){
+function quicksort(array){
     // основная функция сортировки
     const length = array.length;
     quickSort(array, 0, length - 1);
@@ -65,4 +66,6 @@ function partition(array, start, end) {
 }
 
 
-console.log(sort([2, 6, 4, 4, 4, 3, 1, 5]))
+console.log(quicksort([2, 6, 4, 4, 4, 3, 1, 5]))
+
+export default quicksort;

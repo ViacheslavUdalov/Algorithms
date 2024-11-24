@@ -1,4 +1,4 @@
-function insertSort(array) {
+export function insertSort(array) {
     for (let i = 1; i < array.length; i++) {
         let inter = i;
         while (inter > 0 && array[inter] < array[inter - 1]) {
@@ -10,4 +10,3 @@ function insertSort(array) {
     }
     return array;
 }
-export default insertSort;
