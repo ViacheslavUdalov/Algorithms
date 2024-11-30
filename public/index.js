@@ -40,45 +40,28 @@
 //     }
 // }
 
-function createSortedArray(number) {
-    return new Array(number).fill(0).map((el, index) => index + 1)
-}
-
-
-function createSortedReverseArray(array) {
-    return array.reverse();
-}
-
-function createArray(number) {
-    let array = [];
-    for (let i = 0; i < number; i++) {
-        array.push(Math.floor(Math.random() * 100));
-    }
-    return array;
-}
-
-async function saveResultToDB(sortType, arraySize, times) {
-    try {
-        let response = await fetch('http://localhost:3000/results', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                sortType: sortType,
-                arraySize: arraySize,
-                times: times, // объект с временами для random, sorted, reversed
-                date: new Date().toISOString()
-            }),
-        });
-        if (!response.ok) {
-            return response.statusText
-        }
-        console.log('Data successfully saved');
-    } catch (error) {
-        console.error('Error saving data:', error);
-    }
-}
+// async function saveResultToDB(sortType, arraySize, times) {
+//     try {
+//         let response = await fetch('http://localhost:3000/results', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify({
+//                 sortType: sortType,
+//                 arraySize: arraySize,
+//                 times: times, // объект с временами для random, sorted, reversed
+//                 date: new Date().toISOString()
+//             }),
+//         });
+//         if (!response.ok) {
+//             return response.statusText
+//         }
+//         console.log('Data successfully saved');
+//     } catch (error) {
+//         console.error('Error saving data:', error);
+//     }
+// }
 
 async function loadData() {
     try {
@@ -110,8 +93,8 @@ function displayData(data) {
             if (!prev.find(group => group.sortType === curr.sortType)) {
                 prev.push({
                     sortType: curr.sortType,
-                    results: []
-                })
+                    results: [],
+                });
             }
             prev.find(group => group.sortType === curr.sortType)
                 .results.push(curr);
@@ -121,18 +104,17 @@ function displayData(data) {
             resultGroup.results.forEach((result, index) => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                ${index === 0
-                    ? ('<td rowspan="' + resultGroup.results.length + '">' + resultGroup.sortType + " sort </td>")
-                    : ''}
-                <td>${result.arraySize}</td>
-                <td>${result.times.random}</td>
-                <td>${result.times.sorted}</td>
-                <td>${result.times.reversed}</td>
+                    ${index === 0
+                        ? ('<td rowspan="' + resultGroup.results.length + '"> ' + resultGroup.sortType + " sort </td>")
+                        : ''}
+                    <td>${result.arraySize}</td>
+                    <td>${result.times.random}</td>
+                    <td>${result.times.sorted}</td>
+                    <td>${result.times.reversed}</td>
                 `;
                 table.appendChild(row);
-
-            })
-        })
+            });
+        });
 }
 
 

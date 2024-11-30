@@ -8,6 +8,43 @@
 // worst case - O(N2) когда все элементы больше или меньше pivot.
 // average and base case - O(NlogN)
 
+
+import {program} from "commander";
+import {createArray, createSortedArray, createSortedReverseArray} from "../../utils/CreateArrayFunc.js";
+
+program.option('-tq, quickSort <number>', 'run test for array length quick')
+    .option('-aq, --quick-array-type <type>', "type of array quick");
+program.parse();
+
+const options = program.opts();
+
+if (options.insertTest) {
+    const arrayLength = parseInt(options.quickSort);
+    let quickArray;
+    let quickArrayType;
+    switch (options.insertArrayType) {
+        case 's' :
+            quickArrayType = 'sorted'
+            quickArray = createSortedArray(arrayLength);
+            break;
+        case 'ran' :
+            quickArrayType = 'random'
+            quickArray = createArray(arrayLength);
+            break;
+        case 'rev' :
+            quickArrayType = 'reversed'
+            quickArray = createSortedReverseArray(createSortedArray(arrayLength));
+            break;
+        default:
+            quickArray = createArray(arrayLength);
+            break;
+    }
+    console.time(`${mergeArrayType} - insertSort`);
+    quicksort(quickArray);
+    console.timeEnd(`${mergeArrayType} - insertSort`);
+}
+
+
 function swap(array, a, b) {
     // функция смены двух элементов
     let temp = array[a];

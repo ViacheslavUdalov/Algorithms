@@ -1,19 +1,38 @@
 import {program} from "commander";
-import {createArray} from "../../utils/CreateArrayFunc.js";
+import {createArray, createSortedArray, createSortedReverseArray} from "../../utils/CreateArrayFunc.js";
 
 //Сортировка называется устойчивой, если она не меняет порядок равных элементов.
 
-program.option('-t, test <number>', 'run test for array length');
+program.option('-t, bubble <number>', 'run test for array length bubble')
+        .option('-a, --array-type <type>', "type of array");
 program.parse();
 
 const options = program.opts();
 
 if (options.test) {
-    const arrayLength = parseInt(options.t);
-    const testArray = createArray(arrayLength);
-    console.time('bubbleSort');
-    bubbleSort(testArray);
-    console.timeEnd('bubbleSort');
+    const arrayLength = parseInt(options.bubble);
+    let bubbleArray;
+    let arrayType;
+    switch (options.arrayType) {
+        case 's' :
+            arrayType = 'sorted'
+            bubbleArray = createSortedArray(arrayLength);
+            break;
+        case 'ran' :
+            arrayType = 'random'
+            bubbleArray = createArray(arrayLength);
+            break;
+        case 'rev' :
+            arrayType = 'reversed'
+            bubbleArray = createSortedReverseArray(createSortedArray(arrayLength));
+            break;
+        default:
+            bubbleArray = createArray(arrayLength);
+            break;
+    }
+    console.time(`${arrayType} - bubbleSort`);
+    bubbleSort(bubbleArray);
+    console.timeEnd(`${arrayType} - bubbleSort`);
 }
 
 function bubbleSort(array) {
