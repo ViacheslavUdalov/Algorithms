@@ -13,12 +13,12 @@ import {program} from "commander";
 import {createArray, createSortedArray, createSortedReverseArray} from "../../utils/CreateArrayFunc.js";
 
 program.option('-tq, quickSort <number>', 'run test for array length quick')
-    .option('-aq, --quick-array-type <type>', "type of array quick");
+        .option('-aq, --quick-array-type <type>', "type of array quick");
 program.parse();
 
 const options = program.opts();
 
-if (options.insertTest) {
+if (options.quickSort) {
     const arrayLength = parseInt(options.quickSort);
     let quickArray;
     let quickArrayType;
@@ -39,9 +39,9 @@ if (options.insertTest) {
             quickArray = createArray(arrayLength);
             break;
     }
-    console.time(`${mergeArrayType} - insertSort`);
+    console.time(`${quickArrayType} - quickSort`);
     quicksort(quickArray);
-    console.timeEnd(`${mergeArrayType} - insertSort`);
+    console.timeEnd(`${quickArrayType} - quickSort`);
 }
 
 

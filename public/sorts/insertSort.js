@@ -2,7 +2,7 @@ import {program} from "commander";
 import {createArray, createSortedArray, createSortedReverseArray} from "../../utils/CreateArrayFunc.js";
 
 program.option('-ti, insertTest <number>', 'run test for array length insert')
-    .option('-ai, --insert-array-type <type>', "type of array insert");
+        .option('-ai, --insert-array-type <type>', "type of array insert");
 program.parse();
 
 const options = program.opts();
@@ -29,7 +29,7 @@ if (options.insertTest) {
             break;
     }
     console.time(`${insertArrayType} - insertSort`);
-    insertArray(insertArray);
+    insertSort(insertArray);
     console.timeEnd(`${insertArrayType} - insertSort`);
 }
 

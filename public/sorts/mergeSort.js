@@ -12,12 +12,13 @@ import {program} from "commander";
 import {createArray, createSortedArray, createSortedReverseArray} from "../../utils/CreateArrayFunc.js";
 
 program.option('-tm, mergeSort <number>', 'run test for array length merge')
-    .option('-am, --merge-array-type <type>', "type of array merge");
+        .option('-am, --merge-array-type <type>', "type of array merge");
+
 program.parse();
 
 const options = program.opts();
 
-if (options.insertTest) {
+if (options.mergeSort) {
     const arrayLength = parseInt(options.mergeSort);
     let mergeArray;
     let mergeArrayType;
@@ -38,9 +39,9 @@ if (options.insertTest) {
             mergeArray = createArray(arrayLength);
             break;
     }
-    console.time(`${mergeArrayType} - insertSort`);
+    console.time(`${mergeArrayType} - mergeSort`);
     mergeSort(mergeArray);
-    console.timeEnd(`${mergeArrayType} - insertSort`);
+    console.timeEnd(`${mergeArrayType} - mergeSort`);
 }
 
 
@@ -72,6 +73,6 @@ function mergeSort(array) {
     return mergeHelper(leftArray, rightArray);
 }
 
-console.log(mergeSort([5, 4, 6, 5, 3, 4, 3, 2, 1]));
+// console.log(mergeSort([5, 4, 6, 5, 3, 4, 3, 2, 1]));
 
 export default mergeSort;

@@ -2,7 +2,7 @@ import {program} from "commander";
 import {createArray, createSortedArray, createSortedReverseArray} from "../../utils/CreateArrayFunc.js";
 
 program.option('-tс, choiceTest <number>', 'run test for array length choice')
-    .option('-aс, --choice-array-type <type>', "type of array");
+        .option('-aс, --choice-array-type <type>', "type of array");
 program.parse();
 
 const options = program.opts();

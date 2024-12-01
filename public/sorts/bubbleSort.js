@@ -9,7 +9,7 @@ program.parse();
 
 const options = program.opts();
 
-if (options.test) {
+if (options.bubble) {
     const arrayLength = parseInt(options.bubble);
     let bubbleArray;
     let arrayType;
@@ -47,4 +47,5 @@ function bubbleSort(array) {
     }
     return array;
 }
+
 export default bubbleSort;
