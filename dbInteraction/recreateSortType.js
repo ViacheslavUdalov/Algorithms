@@ -1,22 +1,17 @@
 export async function recreateResultDB(sortType, arraySize, arrayType, time) {
     try {
         // получение данных по типу сортировки и размеру массива
-        let getData = await fetch(`http://localhost:3000/results?sortType=${sortType}&arraySize=${arraySize}`);
+        const getData = await fetch(`http://localhost:3000/results?sortType=${sortType}&arraySize=${arraySize}`);
         if (!getData.ok) {
-            throw new Error("Нет данных")
+            throw new Error("Нет данных, нельзя обновить данные, если их нет, вызовите метод create")
         }
-        let dataForMap = await getData.json();
+        let resultItem = await getData.json();
 
         // по нулевому индексу, потому что в бд есть дупликат
-        console.log(dataForMap[0])
-        dataForMap[0].times[arrayType] = time;
+        resultItem.times[arrayType] = time;
 
-
-        console.log("new getData")
-        console.log(dataForMap);
-
-        // обноление по айди
-        let response = await fetch(`http://localhost:3000/results/${dataForMap[0].id}`, {
+        // обновление по айди
+        const response = await fetch(`http://localhost:3000/results/${resultItem.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -24,7 +19,7 @@ export async function recreateResultDB(sortType, arraySize, arrayType, time) {
             body: JSON.stringify({
                 times: getData.times
             }), // объект с временами для random, sorted, reversed
-            date: new Date().toISOString()
+            date: new Date().toString()
         });
         if (!response.ok) {
             return response.statusText

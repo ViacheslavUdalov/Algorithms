@@ -1,17 +1,21 @@
 import {program} from "commander";
 import {createArray, createSortedArray, createSortedReverseArray} from "../../utils/CreateArrayFunc.js";
 import {recreateResultDB} from "../../dbInteraction/recreateSortType.js";
+import {deleteFromDb} from "../../dbInteraction/deleteFromDb.js";
+import {createSingleSorting} from "../../dbInteraction/createSingleSorting.js";
 
 //Сортировка называется устойчивой, если она не меняет порядок равных элементов.
 
 program.option('-t, bubble <number>', 'run test for array length bubble')
     .option('-a, --array-type <type>', "type of array")
-    .option('-bd, --bd-process <process>', "bd process");
+    .option('-bd, --bd-process <process>', "bd process")
+    .option('-v, --console-writing <process>', "write to console");
 program.parse();
 
 const options = program.opts();
 
 if (options.bubble) {
+    console.log(options.consoleWriting)
     const arrayLength = parseInt(options.bubble);
     let bubbleArray;
     let arrayType;
@@ -41,16 +45,26 @@ if (options.bubble) {
 
     // let timeConsole = console.timeEnd(`${arrayType} - bubbleSort`);
     let timeEnd = (performance.now() - startTime).toFixed(2);
-    console.log(timeEnd);
+    if (options.consoleWriting) {
+        console.log(timeEnd);
+    }
+
     // console.log(timeConsole)
 
     switch (options.bdProcess) {
         case 'recreate' :
             await recreateResultDB('bubble', parseInt(options.bubble), arrayType, timeEnd)
             break;
+        case 'delete' :
+            await deleteFromDb('bubble')
+            break;
+        case 'create' :
+            await createSingleSorting('bubble', parseInt(options.bubble), timeEnd)
+            break;
         default:
-            console.log('default Bd');
-            await recreateResultDB('bubble', parseInt(options.bubble), arrayType, timeEnd)
+            if (options.consoleWriting) {
+                console.log('default Bd');
+            }
             break;
     }
 }

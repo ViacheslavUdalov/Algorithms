@@ -1,6 +1,6 @@
 export async function saveResultToDB(sortType, arraySize, times) {
     try {
-        let response = await fetch('http://localhost:3000/results', {
+        const response = await fetch('http://localhost:3000/results', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

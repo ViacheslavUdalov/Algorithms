@@ -1,61 +1,6 @@
 {
   "results": [
     {
-      "sortType": "bubble",
-      "arraySize": 1000,
-      "times": {
-        "random": "2.00",
-        "sorted": "0.60",
-        "reversed": "0.80"
-      },
-      "date": "2024-11-11T15:50:15.037Z",
-      "id": "1"
-    },
-    {
-      "sortType": "bubble",
-      "arraySize": 5000,
-      "times": {
-        "random": "21.20",
-        "sorted": "16.00",
-        "reversed": "24.70"
-      },
-      "date": "2024-11-11T15:50:15.251Z",
-      "id": "2"
-    },
-    {
-      "sortType": "bubble",
-      "arraySize": 10000,
-      "times": {
-        "random": "87.10",
-        "sorted": "63.90",
-        "reversed": "64.30"
-      },
-      "date": "2024-11-11T15:50:15.478Z",
-      "id": "3"
-    },
-    {
-      "sortType": "bubble",
-      "arraySize": 15000,
-      "times": {
-        "random": "213.90",
-        "sorted": "143.30",
-        "reversed": "145.00"
-      },
-      "date": "2024-11-11T15:50:16.014Z",
-      "id": "4"
-    },
-    {
-      "sortType": "bubble",
-      "arraySize": 20000,
-      "times": {
-        "random": "416.10",
-        "sorted": "254.60",
-        "reversed": "256.40"
-      },
-      "date": "2024-11-11T15:50:16.976Z",
-      "id": "5"
-    },
-    {
       "sortType": "choice",
       "arraySize": 1000,
       "times": {
@@ -164,61 +109,6 @@
       },
       "date": "2024-11-11T15:50:18.109Z",
       "id": "15"
-    },
-    {
-      "sortType": "bubble",
-      "arraySize": 1000,
-      "times": {
-        "random": "1.90",
-        "sorted": "0.60",
-        "reversed": "0.80"
-      },
-      "date": "2024-11-11T15:52:00.732Z",
-      "id": "16"
-    },
-    {
-      "sortType": "bubble",
-      "arraySize": 5000,
-      "times": {
-        "random": "19.90",
-        "sorted": "16.10",
-        "reversed": "16.10"
-      },
-      "date": "2024-11-11T15:52:00.821Z",
-      "id": "17"
-    },
-    {
-      "sortType": "bubble",
-      "arraySize": 10000,
-      "times": {
-        "random": "86.00",
-        "sorted": "64.30",
-        "reversed": "65.50"
-      },
-      "date": "2024-11-11T15:52:01.048Z",
-      "id": "18"
-    },
-    {
-      "sortType": "bubble",
-      "arraySize": 15000,
-      "times": {
-        "random": "215.20",
-        "sorted": "144.30",
-        "reversed": "146.10"
-      },
-      "date": "2024-11-11T15:52:01.587Z",
-      "id": "19"
-    },
-    {
-      "sortType": "bubble",
-      "arraySize": 20000,
-      "times": {
-        "random": "417.40",
-        "sorted": "260.90",
-        "reversed": "264.50"
-      },
-      "date": "2024-11-11T15:52:02.559Z",
-      "id": "20"
     },
     {
       "sortType": "choice",
@@ -549,6 +439,15 @@
         "reversed": "0.90"
       },
       "date": "2024-11-24T15:58:36.634Z"
+    },
+    {
+      "id": "a011",
+      "sortType": "bubble",
+      "arraySize": 1000,
+      "times": {
+        "sortType": "1.51"
+      },
+      "date": "Mon Dec 02 2024 17:46:40 GMT+0300 (Москва, стандартное время)"
     }
   ]
 }
