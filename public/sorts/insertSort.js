@@ -1,8 +1,8 @@
 import {program} from "commander";
 import {createArray, createSortedArray, createSortedReverseArray} from "../../utils/CreateArrayFunc.js";
 
-program.option('-ti, insertTest <number>', 'run test for array length insert')
-        .option('-ai, --insert-array-type <type>', "type of array insert");
+program.option('-t, insertTest <number>', 'run test for array length insert')
+        .option('-a, --insert-array-type <type>', "type of array insert");
 program.parse();
 
 const options = program.opts();
@@ -11,6 +11,7 @@ if (options.insertTest) {
     const arrayLength = parseInt(options.insertTest);
     let insertArray;
     let insertArrayType;
+    console.log(options)
     switch (options.insertArrayType) {
         case 's' :
             insertArrayType = 'sorted'
@@ -19,13 +20,16 @@ if (options.insertTest) {
         case 'ran' :
             insertArrayType = 'random'
             insertArray = createArray(arrayLength);
+
             break;
         case 'rev' :
             insertArrayType = 'reversed'
             insertArray = createSortedReverseArray(createSortedArray(arrayLength));
             break;
-        default:
+        // case 'ran' :
+        default :
             insertArray = createArray(arrayLength);
+            insertArrayType = 'default'
             break;
     }
     console.time(`${insertArrayType} - insertSort`);

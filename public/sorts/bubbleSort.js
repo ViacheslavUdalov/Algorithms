@@ -1,10 +1,12 @@
 import {program} from "commander";
 import {createArray, createSortedArray, createSortedReverseArray} from "../../utils/CreateArrayFunc.js";
+import {recreateResultDB} from "../../dbInteraction/recreateSortType.js";
 
 //Сортировка называется устойчивой, если она не меняет порядок равных элементов.
 
 program.option('-t, bubble <number>', 'run test for array length bubble')
-        .option('-a, --array-type <type>', "type of array");
+    .option('-a, --array-type <type>', "type of array")
+    .option('-bd, --bd-process <process>', "bd process");
 program.parse();
 
 const options = program.opts();
@@ -30,9 +32,27 @@ if (options.bubble) {
             bubbleArray = createArray(arrayLength);
             break;
     }
-    console.time(`${arrayType} - bubbleSort`);
+
+    // поменял console.time на перфоменс, по времени выдаёт тоже самое, погрешность ~0.05ms
+    let startTime = performance.now();
+    // console.time(`${arrayType} - bubbleSort`);
+
     bubbleSort(bubbleArray);
-    console.timeEnd(`${arrayType} - bubbleSort`);
+
+    // let timeConsole = console.timeEnd(`${arrayType} - bubbleSort`);
+    let timeEnd = (performance.now() - startTime).toFixed(2);
+    console.log(timeEnd);
+    // console.log(timeConsole)
+
+    switch (options.bdProcess) {
+        case 'recreate' :
+            await recreateResultDB('bubble', parseInt(options.bubble), arrayType, timeEnd)
+            break;
+        default:
+            console.log('default Bd');
+            await recreateResultDB('bubble', parseInt(options.bubble), arrayType, timeEnd)
+            break;
+    }
 }
 
 function bubbleSort(array) {
