@@ -7,6 +7,44 @@
 
 // worst case - O(N2) когда все элементы больше или меньше pivot.
 // average and base case - O(NlogN)
+
+
+import {program} from "commander";
+import {createArray, createSortedArray, createSortedReverseArray} from "../../utils/CreateArrayFunc.js";
+
+program.option('-tq, quickSort <number>', 'run test for array length quick')
+        .option('-aq, --quick-array-type <type>', "type of array quick");
+program.parse();
+
+const options = program.opts();
+
+if (options.quickSort) {
+    const arrayLength = parseInt(options.quickSort);
+    let quickArray;
+    let quickArrayType;
+    switch (options.insertArrayType) {
+        case 's' :
+            quickArrayType = 'sorted'
+            quickArray = createSortedArray(arrayLength);
+            break;
+        case 'ran' :
+            quickArrayType = 'random'
+            quickArray = createArray(arrayLength);
+            break;
+        case 'rev' :
+            quickArrayType = 'reversed'
+            quickArray = createSortedReverseArray(createSortedArray(arrayLength));
+            break;
+        default:
+            quickArray = createArray(arrayLength);
+            break;
+    }
+    console.time(`${quickArrayType} - quickSort`);
+    quicksort(quickArray);
+    console.timeEnd(`${quickArrayType} - quickSort`);
+}
+
+
 function swap(array, a, b) {
     // функция смены двух элементов
     let temp = array[a];
@@ -14,7 +52,7 @@ function swap(array, a, b) {
     array[b] = temp;
 }
 
-function sort(array){
+function quicksort(array){
     // основная функция сортировки
     const length = array.length;
     quickSort(array, 0, length - 1);
@@ -65,4 +103,6 @@ function partition(array, start, end) {
 }
 
 
-console.log(sort([2, 6, 4, 4, 4, 3, 1, 5]))
+console.log(quicksort([2, 6, 4, 4, 4, 3, 1, 5]))
+
+export default quicksort;

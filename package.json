@@ -1,6 +1,13 @@
 {
   "type": "module",
+  "scripts": {
+    "start": "npx json-server db.json"
+  },
   "devDependencies": {
+    "express": "^4.21.1",
     "json-server": "^1.0.0-beta.3"
+  },
+  "dependencies": {
+    "commander": "12.1.0"
   }
 }

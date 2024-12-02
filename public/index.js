@@ -1,3 +1,4 @@
+
 // export async function commonFunction(arrayOfNumbers, funcForSort, row, sortType) {
 //     const table = document.getElementById("result-table");
 //
@@ -38,9 +39,10 @@
 //         })
 //     }
 // }
+
 // async function saveResultToDB(sortType, arraySize, times) {
 //     try {
-//        let response = await fetch('http://localhost:3000/results', {
+//         let response = await fetch('http://localhost:3000/results', {
 //             method: 'POST',
 //             headers: {
 //                 'Content-Type': 'application/json',
@@ -53,7 +55,7 @@
 //             }),
 //         });
 //         if (!response.ok) {
-//           return response.statusText
+//             return response.statusText
 //         }
 //         console.log('Data successfully saved');
 //     } catch (error) {
@@ -66,72 +68,54 @@ async function loadData() {
         const result = await fetch("http://localhost:3000/results");
 
         if (!result.ok) {
-           console.log(result.statusText);
+            console.log(result.statusText);
         }
-        const data = result.json();
-
+        const data = await result.json();
+        // await commonFunction([1000, 5000, 10000, 15000, 20000], mergeSort, "row1", "merge")
+        // await commonFunction([1000, 5000, 10000, 15000, 20000], quicksort, "row1", "quick")
         displayData(data)
     } catch (error) {
-console.log(error)
+        console.log(error);
     }
 }
 
 function displayData(data) {
     const table = document.getElementById("result-table");
 
-    data.forEach(result => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${result.sortType} Sort ${result.arraySize}</td>
-            <td>${result.times.random}</td>
-            <td>${result.times.sorted}</td>
-            <td>${result.times.reversed}</td>
-        `;
-        table.appendChild(row);
-    });
+    data
+        .reduce((prev, curr) => {
+            if (!prev.find(result => result.sortType === curr.sortType && result.arraySize === curr.arraySize)) {
+                prev.push(curr);
+            }
+            return prev;
+        }, [])
+        .reduce((prev, curr) => {
+            if (!prev.find(group => group.sortType === curr.sortType)) {
+                prev.push({
+                    sortType: curr.sortType,
+                    results: [],
+                });
+            }
+            prev.find(group => group.sortType === curr.sortType)
+                .results.push(curr);
+            return prev;
+        }, [])
+        .forEach((resultGroup) => {
+            resultGroup.results.forEach((result, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    ${index === 0
+                        ? ('<td rowspan="' + resultGroup.results.length + '"> ' + resultGroup.sortType + " sort </td>")
+                        : ''}
+                    <td>${result.arraySize}</td>
+                    <td>${result.times.random}</td>
+                    <td>${result.times.sorted}</td>
+                    <td>${result.times.reversed}</td>
+                `;
+                table.appendChild(row);
+            });
+        });
 }
 
-function createArray(number) {
-    let array = [];
-    for (let i = 0; i < number; i++) {
-        array.push(Math.floor(Math.random() * 100));
-    }
-    return array;
-}
-function createSortedArray(number) {
-    return new Array(number).fill(0).map((el, index) => index + 1)
-}
-function createSortedReverseArray(array) {
-    return array.reverse();
-}
 
 export default loadData;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

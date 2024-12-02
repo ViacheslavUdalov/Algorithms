@@ -9,7 +9,7 @@
         "reversed": "0.80"
       },
       "date": "2024-11-11T15:50:15.037Z",
-      "id": 1
+      "id": "1"
     },
     {
       "sortType": "bubble",
@@ -20,7 +20,7 @@
         "reversed": "24.70"
       },
       "date": "2024-11-11T15:50:15.251Z",
-      "id": 2
+      "id": "2"
     },
     {
       "sortType": "bubble",
@@ -31,7 +31,7 @@
         "reversed": "64.30"
       },
       "date": "2024-11-11T15:50:15.478Z",
-      "id": 3
+      "id": "3"
     },
     {
       "sortType": "bubble",
@@ -42,7 +42,7 @@
         "reversed": "145.00"
       },
       "date": "2024-11-11T15:50:16.014Z",
-      "id": 4
+      "id": "4"
     },
     {
       "sortType": "bubble",
@@ -53,7 +53,7 @@
         "reversed": "256.40"
       },
       "date": "2024-11-11T15:50:16.976Z",
-      "id": 5
+      "id": "5"
     },
     {
       "sortType": "choice",
@@ -64,7 +64,7 @@
         "reversed": "0.40"
       },
       "date": "2024-11-11T15:50:17.007Z",
-      "id": 6
+      "id": "6"
     },
     {
       "sortType": "choice",
@@ -75,7 +75,7 @@
         "reversed": "6.00"
       },
       "date": "2024-11-11T15:50:17.039Z",
-      "id": 7
+      "id": "7"
     },
     {
       "sortType": "choice",
@@ -86,7 +86,7 @@
         "reversed": "23.00"
       },
       "date": "2024-11-11T15:50:17.134Z",
-      "id": 8
+      "id": "8"
     },
     {
       "sortType": "choice",
@@ -97,7 +97,7 @@
         "reversed": "52.10"
       },
       "date": "2024-11-11T15:50:17.312Z",
-      "id": 9
+      "id": "9"
     },
     {
       "sortType": "choice",
@@ -108,7 +108,7 @@
         "reversed": "91.70"
       },
       "date": "2024-11-11T15:50:17.601Z",
-      "id": 10
+      "id": "10"
     },
     {
       "sortType": "insert",
@@ -119,7 +119,7 @@
         "reversed": "0.50"
       },
       "date": "2024-11-11T15:50:17.635Z",
-      "id": 11
+      "id": "11"
     },
     {
       "sortType": "insert",
@@ -130,7 +130,7 @@
         "reversed": "8.10"
       },
       "date": "2024-11-11T15:50:17.677Z",
-      "id": 12
+      "id": "12"
     },
     {
       "sortType": "insert",
@@ -141,7 +141,7 @@
         "reversed": "31.90"
       },
       "date": "2024-11-11T15:50:17.760Z",
-      "id": 13
+      "id": "13"
     },
     {
       "sortType": "insert",
@@ -152,7 +152,7 @@
         "reversed": "71.70"
       },
       "date": "2024-11-11T15:50:17.882Z",
-      "id": 14
+      "id": "14"
     },
     {
       "sortType": "insert",
@@ -163,7 +163,7 @@
         "reversed": "127.70"
       },
       "date": "2024-11-11T15:50:18.109Z",
-      "id": 15
+      "id": "15"
     },
     {
       "sortType": "bubble",
@@ -174,7 +174,7 @@
         "reversed": "0.80"
       },
       "date": "2024-11-11T15:52:00.732Z",
-      "id": 16
+      "id": "16"
     },
     {
       "sortType": "bubble",
@@ -185,7 +185,7 @@
         "reversed": "16.10"
       },
       "date": "2024-11-11T15:52:00.821Z",
-      "id": 17
+      "id": "17"
     },
     {
       "sortType": "bubble",
@@ -196,7 +196,7 @@
         "reversed": "65.50"
       },
       "date": "2024-11-11T15:52:01.048Z",
-      "id": 18
+      "id": "18"
     },
     {
       "sortType": "bubble",
@@ -207,7 +207,7 @@
         "reversed": "146.10"
       },
       "date": "2024-11-11T15:52:01.587Z",
-      "id": 19
+      "id": "19"
     },
     {
       "sortType": "bubble",
@@ -218,7 +218,7 @@
         "reversed": "264.50"
       },
       "date": "2024-11-11T15:52:02.559Z",
-      "id": 20
+      "id": "20"
     },
     {
       "sortType": "choice",
@@ -229,7 +229,7 @@
         "reversed": "0.40"
       },
       "date": "2024-11-11T15:52:02.589Z",
-      "id": 21
+      "id": "21"
     },
     {
       "sortType": "choice",
@@ -240,7 +240,7 @@
         "reversed": "5.80"
       },
       "date": "2024-11-11T15:52:02.636Z",
-      "id": 22
+      "id": "22"
     },
     {
       "sortType": "choice",
@@ -251,7 +251,7 @@
         "reversed": "23.10"
       },
       "date": "2024-11-11T15:52:02.742Z",
-      "id": 23
+      "id": "23"
     },
     {
       "sortType": "choice",
@@ -262,7 +262,7 @@
         "reversed": "64.70"
       },
       "date": "2024-11-11T15:52:02.952Z",
-      "id": 24
+      "id": "24"
     },
     {
       "sortType": "choice",
@@ -273,7 +273,7 @@
         "reversed": "100.00"
       },
       "date": "2024-11-11T15:52:03.295Z",
-      "id": 25
+      "id": "25"
     },
     {
       "sortType": "insert",
@@ -284,7 +284,7 @@
         "reversed": "0.50"
       },
       "date": "2024-11-11T15:52:03.317Z",
-      "id": 26
+      "id": "26"
     },
     {
       "sortType": "insert",
@@ -295,7 +295,7 @@
         "reversed": "7.90"
       },
       "date": "2024-11-11T15:52:03.344Z",
-      "id": 27
+      "id": "27"
     },
     {
       "sortType": "insert",
@@ -306,7 +306,7 @@
         "reversed": "32.20"
       },
       "date": "2024-11-11T15:52:03.426Z",
-      "id": 28
+      "id": "28"
     },
     {
       "sortType": "insert",
@@ -317,7 +317,7 @@
         "reversed": "71.80"
       },
       "date": "2024-11-11T15:52:03.565Z",
-      "id": 29
+      "id": "29"
     },
     {
       "sortType": "insert",
@@ -328,7 +328,227 @@
         "reversed": "127.20"
       },
       "date": "2024-11-11T15:52:03.788Z",
-      "id": 30
+      "id": "30"
+    },
+    {
+      "id": "8353",
+      "sortType": "merge",
+      "arraySize": 1000,
+      "times": {
+        "random": "1.20",
+        "sorted": "0.80",
+        "reversed": "0.70"
+      },
+      "date": "2024-11-24T15:58:34.702Z"
+    },
+    {
+      "id": "873a",
+      "sortType": "merge",
+      "arraySize": 5000,
+      "times": {
+        "random": "5.40",
+        "sorted": "3.10",
+        "reversed": "7.80"
+      },
+      "date": "2024-11-24T15:58:34.727Z"
+    },
+    {
+      "id": "9ea6",
+      "sortType": "merge",
+      "arraySize": 10000,
+      "times": {
+        "random": "8.60",
+        "sorted": "6.40",
+        "reversed": "9.40"
+      },
+      "date": "2024-11-24T15:58:34.757Z"
+    },
+    {
+      "id": "d107",
+      "sortType": "merge",
+      "arraySize": 15000,
+      "times": {
+        "random": "10.90",
+        "sorted": "6.40",
+        "reversed": "7.60"
+      },
+      "date": "2024-11-24T15:58:34.786Z"
+    },
+    {
+      "id": "f6de",
+      "sortType": "merge",
+      "arraySize": 20000,
+      "times": {
+        "random": "15.80",
+        "sorted": "8.60",
+        "reversed": "22.20"
+      },
+      "date": "2024-11-24T15:58:34.838Z"
+    },
+    {
+      "id": "786c",
+      "sortType": "quick",
+      "arraySize": 1000,
+      "times": {
+        "random": "0.60",
+        "sorted": "0.20",
+        "reversed": "0.10"
+      },
+      "date": "2024-11-24T15:58:34.850Z"
+    },
+    {
+      "id": "70de",
+      "sortType": "quick",
+      "arraySize": 5000,
+      "times": {
+        "random": "0.50",
+        "sorted": "0.20",
+        "reversed": "0.30"
+      },
+      "date": "2024-11-24T15:58:34.972Z"
+    },
+    {
+      "id": "3028",
+      "sortType": "quick",
+      "arraySize": 10000,
+      "times": {
+        "random": "1.00",
+        "sorted": "0.70",
+        "reversed": "0.80"
+      },
+      "date": "2024-11-24T15:58:34.979Z"
+    },
+    {
+      "id": "c66d",
+      "sortType": "quick",
+      "arraySize": 15000,
+      "times": {
+        "random": "1.30",
+        "sorted": "1.10",
+        "reversed": "0.80"
+      },
+      "date": "2024-11-24T15:58:34.988Z"
+    },
+    {
+      "id": "eef9",
+      "sortType": "quick",
+      "arraySize": 20000,
+      "times": {
+        "random": "1.30",
+        "sorted": "0.70",
+        "reversed": "0.90"
+      },
+      "date": "2024-11-24T15:58:34.996Z"
+    },
+    {
+      "id": "c1cb",
+      "sortType": "merge",
+      "arraySize": 1000,
+      "times": {
+        "random": "1.00",
+        "sorted": "0.40",
+        "reversed": "0.40"
+      },
+      "date": "2024-11-24T15:58:36.388Z"
+    },
+    {
+      "id": "76c4",
+      "sortType": "merge",
+      "arraySize": 5000,
+      "times": {
+        "random": "3.60",
+        "sorted": "1.80",
+        "reversed": "2.10"
+      },
+      "date": "2024-11-24T15:58:36.400Z"
+    },
+    {
+      "id": "0528",
+      "sortType": "merge",
+      "arraySize": 10000,
+      "times": {
+        "random": "7.20",
+        "sorted": "5.30",
+        "reversed": "4.20"
+      },
+      "date": "2024-11-24T15:58:36.421Z"
+    },
+    {
+      "id": "b7a4",
+      "sortType": "merge",
+      "arraySize": 15000,
+      "times": {
+        "random": "14.60",
+        "sorted": "7.90",
+        "reversed": "8.60"
+      },
+      "date": "2024-11-24T15:58:36.456Z"
+    },
+    {
+      "id": "60e8",
+      "sortType": "merge",
+      "arraySize": 20000,
+      "times": {
+        "random": "16.40",
+        "sorted": "9.00",
+        "reversed": "9.60"
+      },
+      "date": "2024-11-24T15:58:36.498Z"
+    },
+    {
+      "id": "e718",
+      "sortType": "quick",
+      "arraySize": 1000,
+      "times": {
+        "random": "0.30",
+        "sorted": "0.10",
+        "reversed": "0.00"
+      },
+      "date": "2024-11-24T15:58:36.504Z"
+    },
+    {
+      "id": "0d57",
+      "sortType": "quick",
+      "arraySize": 5000,
+      "times": {
+        "random": "0.40",
+        "sorted": "0.20",
+        "reversed": "0.20"
+      },
+      "date": "2024-11-24T15:58:36.509Z"
+    },
+    {
+      "id": "1c3b",
+      "sortType": "quick",
+      "arraySize": 10000,
+      "times": {
+        "random": "0.70",
+        "sorted": "0.40",
+        "reversed": "0.40"
+      },
+      "date": "2024-11-24T15:58:36.514Z"
+    },
+    {
+      "id": "c145",
+      "sortType": "quick",
+      "arraySize": 15000,
+      "times": {
+        "random": "1.00",
+        "sorted": "0.60",
+        "reversed": "0.50"
+      },
+      "date": "2024-11-24T15:58:36.627Z"
+    },
+    {
+      "id": "9196",
+      "sortType": "quick",
+      "arraySize": 20000,
+      "times": {
+        "random": "1.30",
+        "sorted": "0.70",
+        "reversed": "0.90"
+      },
+      "date": "2024-11-24T15:58:36.634Z"
     }
   ]
 }

@@ -32,30 +32,25 @@
 <table>
     <thead>
     <tr>
-        <td></td>
-        <td>random</td>
-        <td>sorted</td>
-        <td>reversed</td>
+        <td>sort type</td>
+        <td>array length</td>
+        <td>random, ms</td>
+        <td>sorted, ms</td>
+        <td>reversed, ms</td>
     </tr>
     </thead>
     <tbody id="result-table">
 
     </tbody>
 </table>
-<script src="index.js"></script>
-<script  type="module" defer>
+<script src="index.js" ></script>
+<script type="module">
     import   loadData  from './index.js';
-    // import bubbleSort  from './sorts/bubbleSort.js';
-    // import  choiceSort  from './sorts/choiceSort.js';
-    // import  insertSort  from './sorts/insertSort.js';
-
 // json-server --watch db.json --port 63342
     window.onload = async  () => {
+
         await loadData();
 
-    //     await commonFunction([1000, 5000, 10000, 15000, 20000], bubbleSort, "row1", "bubble")
-    //     await commonFunction([1000, 5000, 10000, 15000, 20000], choiceSort, "row2", "choice")
-    //     await commonFunction([1000, 5000, 10000, 15000, 20000], insertSort, "row3", "insert")
     }
 </script>
 </body>
