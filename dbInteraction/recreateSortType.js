@@ -1,3 +1,5 @@
+import {helperLog} from "../public/sorts/bubbleSort.js";
+
 export async function recreateResultDB(sortType, arraySize, arrayType, time) {
     try {
         // получение данных по типу сортировки и размеру массива
@@ -8,6 +10,7 @@ export async function recreateResultDB(sortType, arraySize, arrayType, time) {
         let resultItem = await getData.json();
 
         // по нулевому индексу, потому что в бд есть дупликат
+        helperLog(resultItem)
         resultItem.times[arrayType] = time;
 
         // обновление по айди
@@ -17,14 +20,14 @@ export async function recreateResultDB(sortType, arraySize, arrayType, time) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                times: getData.times
+                times: getData.times,
             }), // объект с временами для random, sorted, reversed
-            date: new Date().toString()
+            date: new Date().toString(),
         });
         if (!response.ok) {
             return response.statusText
         }
-        console.log('Data successfully saved');
+        helperLog('Data successfully saved');
     } catch (error) {
         console.error('Error saving data:', error);
     }

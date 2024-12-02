@@ -1,3 +1,5 @@
+import {helperLog} from "../public/sorts/bubbleSort.js";
+
 export async function deleteFromDb(sortType) {
    try {
         // получение данных по типу сортировки
@@ -7,7 +9,7 @@ export async function deleteFromDb(sortType) {
         }
         let data = await getData.json()
        if (data.length === 0) {
-           console.log("Нет данных для удаления")
+           helperLog("Нет данных для удаления")
        }
 
 
@@ -22,7 +24,7 @@ export async function deleteFromDb(sortType) {
             if (!response.ok) {
                 return response.statusText
             }
-            console.log('Data successfully delete');
+            helperLog('Data successfully delete');
         })
 
     } catch (error) {

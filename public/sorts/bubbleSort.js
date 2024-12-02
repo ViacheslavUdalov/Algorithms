@@ -15,7 +15,6 @@ program.parse();
 const options = program.opts();
 
 if (options.bubble) {
-    console.log(options.consoleWriting)
     const arrayLength = parseInt(options.bubble);
     let bubbleArray;
     let arrayType;
@@ -59,13 +58,19 @@ if (options.bubble) {
             await deleteFromDb('bubble')
             break;
         case 'create' :
-            await createSingleSorting('bubble', parseInt(options.bubble), timeEnd)
+            await createSingleSorting('bubble', parseInt(options.bubble), arrayType, timeEnd)
             break;
         default:
             if (options.consoleWriting) {
                 console.log('default Bd');
             }
             break;
+    }
+}
+
+export function helperLog(message) {
+    if (options.consoleWriting) {
+        console.log(message)
     }
 }
 
