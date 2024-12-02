@@ -40,7 +40,6 @@
 //     }
 // }
 
-
 async function loadData() {
     try {
         const result = await fetch("http://localhost:3000/results");
