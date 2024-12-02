@@ -8,43 +8,6 @@
 // all cases - O(NlogN)
 
 
-import {program} from "commander";
-import {createArray, createSortedArray, createSortedReverseArray} from "../../utils/CreateArrayFunc.js";
-
-program.option('-tm, mergeSort <number>', 'run test for array length merge')
-        .option('-am, --merge-array-type <type>', "type of array merge");
-
-program.parse();
-
-const options = program.opts();
-
-if (options.mergeSort) {
-    const arrayLength = parseInt(options.mergeSort);
-    let mergeArray;
-    let mergeArrayType;
-    switch (options.insertArrayType) {
-        case 's' :
-            mergeArrayType = 'sorted'
-            mergeArray = createSortedArray(arrayLength);
-            break;
-        case 'ran' :
-            mergeArrayType = 'random'
-            mergeArray = createArray(arrayLength);
-            break;
-        case 'rev' :
-            mergeArrayType = 'reversed'
-            mergeArray = createSortedReverseArray(createSortedArray(arrayLength));
-            break;
-        default:
-            mergeArray = createArray(arrayLength);
-            break;
-    }
-    console.time(`${mergeArrayType} - mergeSort`);
-    mergeSort(mergeArray);
-    console.timeEnd(`${mergeArrayType} - mergeSort`);
-}
-
-
 function mergeHelper(firstArray, secondArray) {
     let resultArray = [];
     while (firstArray.length && secondArray.length) {

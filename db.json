@@ -1,61 +1,6 @@
 {
   "results": [
     {
-      "sortType": "choice",
-      "arraySize": 1000,
-      "times": {
-        "random": "1.40",
-        "sorted": "0.10",
-        "reversed": "0.40"
-      },
-      "date": "2024-11-11T15:50:17.007Z",
-      "id": "6"
-    },
-    {
-      "sortType": "choice",
-      "arraySize": 5000,
-      "times": {
-        "random": "6.40",
-        "sorted": "5.20",
-        "reversed": "6.00"
-      },
-      "date": "2024-11-11T15:50:17.039Z",
-      "id": "7"
-    },
-    {
-      "sortType": "choice",
-      "arraySize": 10000,
-      "times": {
-        "random": "23.40",
-        "sorted": "21.20",
-        "reversed": "23.00"
-      },
-      "date": "2024-11-11T15:50:17.134Z",
-      "id": "8"
-    },
-    {
-      "sortType": "choice",
-      "arraySize": 15000,
-      "times": {
-        "random": "51.20",
-        "sorted": "48.00",
-        "reversed": "52.10"
-      },
-      "date": "2024-11-11T15:50:17.312Z",
-      "id": "9"
-    },
-    {
-      "sortType": "choice",
-      "arraySize": 20000,
-      "times": {
-        "random": "89.50",
-        "sorted": "85.00",
-        "reversed": "91.70"
-      },
-      "date": "2024-11-11T15:50:17.601Z",
-      "id": "10"
-    },
-    {
       "sortType": "insert",
       "arraySize": 1000,
       "times": {
@@ -109,61 +54,6 @@
       },
       "date": "2024-11-11T15:50:18.109Z",
       "id": "15"
-    },
-    {
-      "sortType": "choice",
-      "arraySize": 1000,
-      "times": {
-        "random": "1.70",
-        "sorted": "0.50",
-        "reversed": "0.40"
-      },
-      "date": "2024-11-11T15:52:02.589Z",
-      "id": "21"
-    },
-    {
-      "sortType": "choice",
-      "arraySize": 5000,
-      "times": {
-        "random": "6.30",
-        "sorted": "5.50",
-        "reversed": "5.80"
-      },
-      "date": "2024-11-11T15:52:02.636Z",
-      "id": "22"
-    },
-    {
-      "sortType": "choice",
-      "arraySize": 10000,
-      "times": {
-        "random": "31.10",
-        "sorted": "21.80",
-        "reversed": "23.10"
-      },
-      "date": "2024-11-11T15:52:02.742Z",
-      "id": "23"
-    },
-    {
-      "sortType": "choice",
-      "arraySize": 15000,
-      "times": {
-        "random": "62.90",
-        "sorted": "70.40",
-        "reversed": "64.70"
-      },
-      "date": "2024-11-11T15:52:02.952Z",
-      "id": "24"
-    },
-    {
-      "sortType": "choice",
-      "arraySize": 20000,
-      "times": {
-        "random": "110.50",
-        "sorted": "99.80",
-        "reversed": "100.00"
-      },
-      "date": "2024-11-11T15:52:03.295Z",
-      "id": "25"
     },
     {
       "sortType": "insert",
@@ -441,15 +331,37 @@
       "date": "2024-11-24T15:58:36.634Z"
     },
     {
-      "id": "bfef",
+      "id": "85b3",
       "sortType": "bubble",
       "arraySize": 1000,
       "times": {
         "random": "0.00",
-        "sorted": "1.73",
+        "sorted": "1.59",
         "reversed": "0.00"
       },
-      "date": "Mon Dec 02 2024 19:01:28 GMT+0300 (Москва, стандартное время)"
+      "date": "Mon Dec 02 2024 22:12:57 GMT+0300 (Москва, стандартное время)"
+    },
+    {
+      "id": "6c21",
+      "sortType": "bubble",
+      "arraySize": 5000,
+      "times": {
+        "random": "25.02",
+        "sorted": "19.62",
+        "reversed": "0.00"
+      },
+      "date": "Mon Dec 02 2024 22:13:13 GMT+0300 (Москва, стандартное время)"
+    },
+    {
+      "id": "6c75",
+      "sortType": "bubble",
+      "arraySize": 2000,
+      "times": {
+        "random": "5.10",
+        "sorted": "0.00",
+        "reversed": "0.00"
+      },
+      "date": "Mon Dec 02 2024 22:19:35 GMT+0300 (Москва, стандартное время)"
     }
   ]
 }

@@ -1,4 +1,4 @@
-import {helperLog} from "../public/sorts/bubbleSort.js";
+import {helperLog} from "../toolings.js";
 
 export async function recreateResultDB(sortType, arraySize, arrayType, time) {
     try {
@@ -11,16 +11,17 @@ export async function recreateResultDB(sortType, arraySize, arrayType, time) {
 
         // по нулевому индексу, потому что в бд есть дупликат
         helperLog(resultItem)
-        resultItem.times[arrayType] = time;
+        helperLog(resultItem[0].times)
+        resultItem[0].times[arrayType] = time;
 
         // обновление по айди
-        const response = await fetch(`http://localhost:3000/results/${resultItem.id}`, {
+        const response = await fetch(`http://localhost:3000/results/${resultItem[0].id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                times: getData.times,
+                times: resultItem[0].times,
             }), // объект с временами для random, sorted, reversed
             date: new Date().toString(),
         });

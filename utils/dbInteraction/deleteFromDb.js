@@ -1,4 +1,4 @@
-import {helperLog} from "../public/sorts/bubbleSort.js";
+import {helperLog} from "../toolings.js";
 
 export async function deleteFromDb(sortType) {
    try {
