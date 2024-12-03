@@ -1,4 +1,4 @@
-import {helperLog} from "../toolings.js";
+import {helperLog} from "../useTooling.js";
 
 export async function deleteFromDb(sortType) {
    try {

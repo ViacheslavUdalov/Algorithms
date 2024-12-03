@@ -1,4 +1,4 @@
-import {helperLog} from "../toolings.js";
+import {helperLog} from "../useTooling.js";
 
 export async function recreateResultDB(sortType, arraySize, arrayType, time) {
     try {

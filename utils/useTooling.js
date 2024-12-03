@@ -12,7 +12,7 @@ program.option('-t, run <number>', 'run test for array length')
 program.parse();
 
 const options = program.opts();
-export async function toolings(funcForRes, sortType) {
+export async function useTooling(funcForRes, sortType) {
 if (options.run) {
     const arrayLength = parseInt(options.run);
     let arrayFunc;
