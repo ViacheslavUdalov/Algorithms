@@ -25,7 +25,7 @@ export async function deleteFromDb(sortType) {
                 return response.statusText
             }
             helperLog('Data successfully delete');
-        })
+        });
 
     } catch (error) {
         console.error('Error deleting data:', error);
