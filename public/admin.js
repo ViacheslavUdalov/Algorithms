@@ -10,22 +10,11 @@ import e from "express";
 
 export async function writeToDb(sortType) {
     try {
-        const dataExist = await fetch(`http://localhost:3000/result`);
-        if (dataExist.ok) {
-
-// проверка есть ли уже данные по типу и размеру массива, если есть, то выходим
-            let data = await dataExist.json();
-
-            if (data.length !== 0) {
-                helperLog("уже есть данные")
-                return "уже есть данные"
-            }
-        }
-        helperLog("Данных нет - Записываем");
         helperLog(sortType);
         let arrayOfFuncs = [bubbleSort, choiceSort, insertSort, mergeSort, quickSort];
 
         if (!sortType) {
+            console.log('нет типа сортировки')
             for (let func of arrayOfFuncs) {
                 await commonFunction([1000, 5000, 10000], func, func.name);
 
@@ -65,7 +54,11 @@ export async function deleteDb(sortType) {
             helperLog("Нет данных для удаления");
         }
         if (sortType) {
+            console.log(data);
+            console.log(sortType)
             data = data.filter(data => data.sortType === sortType)
+            console.log('DATA AFTER')
+            console.log(data)
         }
         for (const elem of data) {
 
@@ -114,6 +107,7 @@ export async function commonFunction(arrayOfNumbers, funcForSort, sortType) {
                 reversed: reverseBROne
             }
         }
+        console.log(data);
         const response = await fetch('http://localhost:3000/result', {
             method: 'POST',
             headers: {
