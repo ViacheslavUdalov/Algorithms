@@ -10,7 +10,7 @@ import e from "express";
 
 export async function writeToDb(sortType) {
     try {
-        const dataExist = await fetch(`http://localhost:3000/results`);
+        const dataExist = await fetch(`http://localhost:3000/result`);
         if (dataExist.ok) {
 
 // проверка есть ли уже данные по типу и размеру массива, если есть, то выходим
@@ -42,7 +42,8 @@ export async function writeToDb(sortType) {
                 return 'не найдена сортировка';
             }
         }
-        const response = await fetch('http://localhost:3000/results', {
+        console.log(res)
+        const response = await fetch('http://localhost:3000/result', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -66,7 +67,7 @@ export async function recreateDb(sortType = null) {
 export async function deleteDb(sortType) {
     try {
         // получение данных по типу сортировки
-        const getData = await fetch(`http://localhost:3000/results`);
+        const getData = await fetch(`http://localhost:3000/result`);
 
         if (!getData.ok) {
             return 'данных нет - работаем'
@@ -83,7 +84,7 @@ export async function deleteDb(sortType) {
         for (const elem of data) {
 
             // обноление по типу сотрировки
-            const response = await fetch(`http://localhost:3000/results/${elem.id}`, {
+            const response = await fetch(`http://localhost:3000/result/${elem.id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,5 +1,152 @@
 {
   "result": [
-
+    {
+      "0": [
+        {
+          "sortType": "bubbleSort",
+          "arrayType": 1000,
+          "times": {
+            "random": "2.29",
+            "sorted": "0.98",
+            "reversed": "1.01"
+          }
+        },
+        {
+          "sortType": "bubbleSort",
+          "arrayType": 5000,
+          "times": {
+            "random": "24.32",
+            "sorted": "21.87",
+            "reversed": "25.40"
+          }
+        },
+        {
+          "sortType": "bubbleSort",
+          "arrayType": 10000,
+          "times": {
+            "random": "96.17",
+            "sorted": "86.18",
+            "reversed": "97.44"
+          }
+        }
+      ],
+      "1": [
+        {
+          "sortType": "choiceSort",
+          "arrayType": 1000,
+          "times": {
+            "random": "1.80",
+            "sorted": "0.37",
+            "reversed": "0.50"
+          }
+        },
+        {
+          "sortType": "choiceSort",
+          "arrayType": 5000,
+          "times": {
+            "random": "9.67",
+            "sorted": "8.06",
+            "reversed": "10.93"
+          }
+        },
+        {
+          "sortType": "choiceSort",
+          "arrayType": 10000,
+          "times": {
+            "random": "35.72",
+            "sorted": "32.68",
+            "reversed": "44.68"
+          }
+        }
+      ],
+      "2": [
+        {
+          "sortType": "insertSort",
+          "arrayType": 1000,
+          "times": {
+            "random": "1.57",
+            "sorted": "0.02",
+            "reversed": "0.54"
+          }
+        },
+        {
+          "sortType": "insertSort",
+          "arrayType": 5000,
+          "times": {
+            "random": "6.90",
+            "sorted": "0.01",
+            "reversed": "13.77"
+          }
+        },
+        {
+          "sortType": "insertSort",
+          "arrayType": 10000,
+          "times": {
+            "random": "27.65",
+            "sorted": "0.02",
+            "reversed": "54.31"
+          }
+        }
+      ],
+      "3": [
+        {
+          "sortType": "mergeSort",
+          "arrayType": 1000,
+          "times": {
+            "random": "1.56",
+            "sorted": "0.89",
+            "reversed": "1.00"
+          }
+        },
+        {
+          "sortType": "mergeSort",
+          "arrayType": 5000,
+          "times": {
+            "random": "3.06",
+            "sorted": "1.38",
+            "reversed": "1.22"
+          }
+        },
+        {
+          "sortType": "mergeSort",
+          "arrayType": 10000,
+          "times": {
+            "random": "4.83",
+            "sorted": "3.46",
+            "reversed": "2.60"
+          }
+        }
+      ],
+      "4": [
+        {
+          "sortType": "quicksort",
+          "arrayType": 1000,
+          "times": {
+            "random": "0.42",
+            "sorted": "0.31",
+            "reversed": "0.18"
+          }
+        },
+        {
+          "sortType": "quicksort",
+          "arrayType": 5000,
+          "times": {
+            "random": "0.79",
+            "sorted": "0.22",
+            "reversed": "0.11"
+          }
+        },
+        {
+          "sortType": "quicksort",
+          "arrayType": 10000,
+          "times": {
+            "random": "0.47",
+            "sorted": "0.22",
+            "reversed": "0.22"
+          }
+        }
+      ],
+      "id": "cfaf"
+    }
   ]
 }
