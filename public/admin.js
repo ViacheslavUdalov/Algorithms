@@ -1,69 +1,89 @@
-import {program} from "commander";
 import {helperLog} from "../utils/useTooling.js";
-
-program.option('-ad, --admin <type>', "type of operation");
-program.parse();
-
-const options = program.opts();
-
-if (options.admin) {
-
-}
+import {createArray, createSortedArray, createSortedReverseArray} from "../utils/CreateArrayFunc.js";
+import choiceSort from "../sorts/choiceSort.js";
+import bubbleSort from "../sorts/bubbleSort.js";
+import {insertSort} from "../sorts/insertSort.js";
+import mergeSort from "../sorts/mergeSort.js";
+import quickSort from "../sorts/quickSort.js";
+import e from "express";
 
 
-async function writeToDb() {
+export async function writeToDb(sortType) {
     try {
         const dataExist = await fetch(`http://localhost:3000/results`);
         if (dataExist.ok) {
 
 // проверка есть ли уже данные по типу и размеру массива, если есть, то выходим
             let data = await dataExist.json();
+
             if (data.length !== 0) {
                 helperLog("уже есть данные")
                 return "уже есть данные"
             }
         }
+        let res = [];
+        helperLog("Данных нет - Записываем");
+        helperLog(sortType);
+        let arrayOfFuncs = [bubbleSort, choiceSort, insertSort, mergeSort, quickSort];
 
-        helperLog("Данных нет - Записываем")
+        if (!sortType) {
+            for (let func of arrayOfFuncs) {
+                let result = await commonFunction([1000, 5000, 10000], func, func.name);
+                res.push(result);
+            }
+        } else {
+            const selectFunc = arrayOfFuncs.find(func => func.name === sortType);
+            helperLog(selectFunc.name);
+            if (selectFunc) {
+                let result = await commonFunction([1000, 5000, 10000], selectFunc, selectFunc.name);
+                res.push(result);
+            } else {
+                helperLog("не найдена соптировка");
+                return 'не найдена сортировка';
+            }
+        }
         const response = await fetch('http://localhost:3000/results', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-
-            })
+            body: JSON.stringify(res)
         })
         if (!response.ok) {
             return response.statusText
         }
-        helperLog('Data successfully saved');
+
     } catch (error) {
         console.error('Error saving data:', error);
     }
 }
 
-async function recreateDb() {
-    await deleteDb();
-    await writeToDb();
+export async function recreateDb(sortType = null) {
+    await deleteDb(sortType);
+    await writeToDb(sortType);
 }
 
-async function deleteDb() {
+export async function deleteDb(sortType) {
     try {
         // получение данных по типу сортировки
         const getData = await fetch(`http://localhost:3000/results`);
+
         if (!getData.ok) {
-            throw new Error("Нет данных")
+            return 'данных нет - работаем'
         }
-        let data = await getData.json()
+
+        let data = await getData.json();
+
         if (data.length === 0) {
-            helperLog("Нет данных для удаления")
+            helperLog("Нет данных для удаления");
         }
+        if (sortType) {
+            data = data.filter(data => data.sortType === sortType)
+        }
+        for (const elem of data) {
 
-
-        data.map( async elem => {
             // обноление по типу сотрировки
-            const response = await fetch(`http://localhost:3000/results/`, {
+            const response = await fetch(`http://localhost:3000/results/${elem.id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -73,19 +93,15 @@ async function deleteDb() {
                 return response.statusText
             }
             helperLog('Data successfully delete');
-        });
+        }
 
     } catch (error) {
         console.error('Error deleting data:', error);
     }
 }
 
-export async function commonFunction(arrayOfNumbers, funcForSort, row, sortType) {
-    const table = document.getElementById("result-table");
-
-    // Нужно для того, что бы браузер успел отрисовать изменения в DOM, setTimeout передаётся в очередь, это позволяет браузеру обновить UI между операциями сортировки
-    await new Promise(resolve => setTimeout(resolve, 0));
-
+export async function commonFunction(arrayOfNumbers, funcForSort, sortType) {
+    let result = [];
     for (const number of arrayOfNumbers) {
         let randomArray = createArray(number);
         let sortedArray = createSortedArray(number);
@@ -103,20 +119,17 @@ export async function commonFunction(arrayOfNumbers, funcForSort, row, sortType)
 
         let reverseBROne = await allSorting(funcForSort, reverseSortedArray);
 
+        let data = {
+            sortType: sortType,
+            arrayType: number,
+            times: {
+                random: timeBTakenOne,
+                sorted: timeSortedTakenOne,
+                reversed: reverseBROne
+            }
+        }
+        result.push(data);
 
-        row = document.createElement("tr");
-        row.innerHTML = `
-                            <td>${sortType} Sort ${number}</td>
-                            <td>${timeBTakenOne}</td>
-                            <td>${timeSortedTakenOne}</td>
-                            <td>${reverseBROne}</td>
-                            `;
-        table.appendChild(row);
-
-        await saveResultToDB(sortType, number, {
-            random: timeBTakenOne,
-            sorted: timeSortedTakenOne,
-            reversed: reverseBROne
-        })
     }
+    return result;
 }
