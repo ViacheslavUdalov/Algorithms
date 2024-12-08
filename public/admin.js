@@ -21,39 +21,25 @@ export async function writeToDb(sortType) {
                 return "уже есть данные"
             }
         }
-        let res = [];
         helperLog("Данных нет - Записываем");
         helperLog(sortType);
         let arrayOfFuncs = [bubbleSort, choiceSort, insertSort, mergeSort, quickSort];
 
         if (!sortType) {
             for (let func of arrayOfFuncs) {
-                let result = await commonFunction([1000, 5000, 10000], func, func.name);
-                res.push(result);
+                await commonFunction([1000, 5000, 10000], func, func.name);
+
             }
         } else {
             const selectFunc = arrayOfFuncs.find(func => func.name === sortType);
             helperLog(selectFunc.name);
             if (selectFunc) {
-                let result = await commonFunction([1000, 5000, 10000], selectFunc, selectFunc.name);
-                res.push(result);
+                await commonFunction([1000, 5000, 10000], selectFunc, selectFunc.name);
             } else {
                 helperLog("не найдена соптировка");
                 return 'не найдена сортировка';
             }
         }
-        console.log(res)
-        const response = await fetch('http://localhost:3000/result', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(res)
-        })
-        if (!response.ok) {
-            return response.statusText
-        }
-
     } catch (error) {
         console.error('Error saving data:', error);
     }
@@ -102,7 +88,6 @@ export async function deleteDb(sortType) {
 }
 
 export async function commonFunction(arrayOfNumbers, funcForSort, sortType) {
-    let result = [];
     for (const number of arrayOfNumbers) {
         let randomArray = createArray(number);
         let sortedArray = createSortedArray(number);
@@ -129,8 +114,16 @@ export async function commonFunction(arrayOfNumbers, funcForSort, sortType) {
                 reversed: reverseBROne
             }
         }
-        result.push(data);
-
+        const response = await fetch('http://localhost:3000/result', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        if (!response.ok) {
+            return response.statusText
+        }
     }
-    return result;
+
 }
