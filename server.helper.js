@@ -7,11 +7,12 @@ import quickSort from "./sorts/quickSort.js";
 import {createArray, createSortedArray, createSortedReverseArray} from "./utils/CreateArrayFunc.js";
 import * as fs from "fs";
 import {dbFilePath} from "./server.js";
-
+import { v4 as uuidv4 } from 'uuid';
 
 
 export async function writeToDbe(sortType, arraySize) {
     try {
+        let result = [];
         helperLog(sortType);
         let arrayOfFuncs = [bubbleSort, choiceSort, insertSort, mergeSort, quickSort];
 
@@ -19,7 +20,8 @@ export async function writeToDbe(sortType, arraySize) {
             console.log('нет типа сортировки')
             for (let func of arrayOfFuncs) {
                 for (let array of [1000, 5000, 10000]) {
-                    await commonFunctionExpress(array, func, func.name);
+                    let interRes = await commonFunctionExpress(array, func, func.name);
+                    result.push(interRes);
                 }
 
             }
@@ -29,17 +31,22 @@ export async function writeToDbe(sortType, arraySize) {
             console.log('Есть тип сортировки')
             if (selectFunc) {
                 if (arraySize) {
-                    await commonFunctionExpress(arraySize, selectFunc, selectFunc.name);
+                    let interRes = await commonFunctionExpress(arraySize, selectFunc, selectFunc.name);
+                    result.push(interRes);
                 } else {
                     for (let array of [1000, 5000, 10000]) {
-                        await commonFunctionExpress(array, selectFunc, selectFunc.name);
+                        let interRes = await commonFunctionExpress(array, selectFunc, selectFunc.name);
+                        result.push(interRes);
                     }
                 }
             } else {
                 helperLog("не найдена сортировка");
                 return 'не найдена сортировка';
             }
+
         }
+        console.log(result);
+        await writeDataToDb(result);
     } catch (error) {
         console.error('Error saving data:', error);
     }
@@ -77,8 +84,9 @@ async function deleteDb(sortType, arraySize) {
         let data = await getDataFromDb();
         console.log(data);
 
-        if (data.length === 0) {
+        if (!data) {
             helperLog("Нет данных для удаления");
+            return;
         }
         if (sortType) {
             data = data.filter(data => data.sortType === sortType)
@@ -125,6 +133,7 @@ async function commonFunctionExpress(number, funcForSort, sortType) {
     let reverseBROne = await allSorting(funcForSort, reverseSortedArray);
 
     let data = {
+        id: uuidv4(),
         sortType: sortType,
         arrayType: number,
         times: {
@@ -133,8 +142,6 @@ async function commonFunctionExpress(number, funcForSort, sortType) {
             reversed: reverseBROne
         }
     }
-    console.log(data)
-    await writeDataToDb(data);
     return data;
 }
 

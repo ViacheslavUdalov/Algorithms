@@ -7,7 +7,6 @@ export function createArray(number) {
 }
 
 export function createSortedArray(number) {
-    console.log(number)
     return new Array(number).fill(0).map((el, index) => index + 1)
 }
 
