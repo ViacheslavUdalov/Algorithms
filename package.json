@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "start": "npx json-server db.json",
+    "start": "node server.js",
     "jest": "jest"
   },
   "devDependencies": {
