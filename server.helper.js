@@ -26,7 +26,8 @@ export async function writeToDbe(sortType, arraySize) {
                 }
 
             }
-            await writeDataToDb(result);
+            let localData = await concatenate(result)
+            await writeDataToDb(localData);
         } else {
             const selectFunc = arrayOfFuncs.find(func => func.name.toUpperCase() === sortType.toUpperCase());
             helperLog(selectFunc.name);
@@ -46,7 +47,8 @@ export async function writeToDbe(sortType, arraySize) {
                 helperLog("не найдена сортировка");
                 return 'не найдена сортировка';
             }
-            await writeDataToDb(result);
+            let localData = await concatenate(result)
+            await writeDataToDb(localData);
         }
 
     } catch (error) {
@@ -72,18 +74,23 @@ async function getDataFromDb() {
 
 }
 
+async function concatenate(newData) {
+    console.log('1!!!!!!!!!!!!!!!!!!!!!!!!')
+    console.log(newData)
+    let currdata = await getDataFromDb();
+
+    let currJsonData = currdata ? JSON.parse(currdata) : []
+    console.log('currDATA')
+
+    let date = [...currJsonData, ...newData]
+    console.log(date)
+    return date;
+}
+
 async function writeDataToDb(data) {
     try {
-        console.log('1!!!!!!!!!!!!!!!!!!!!!!!!')
-        console.log(data)
-        let currdata = await getDataFromDb();
-let currJsonData = JSON.parse(currdata)
-        console.log('currDATA')
-        console.log(JSON.parse(currdata))
 
-        let newData = [...currJsonData, ...data]
-        console.log(newData)
-        await fs.writeFile(dbFilePath, JSON.stringify(newData, null, 2), 'utf8');
+        await fs.writeFile(dbFilePath, JSON.stringify(data, null, 2), 'utf8');
         return data;
     } catch (e) {
         console.log(e)
@@ -98,14 +105,15 @@ async function deleteDb(sortType, arraySize) {
             helperLog("Нет данных для удаления");
             return;
         }
+        let updatedDate = JSON.parse(data);
         if (sortType !== null) {
-            data = data.filter(item => item.sortType.toUpperCase() !== sortType.toUpperCase())
+            updatedDate = updatedDate.filter(item => item.sortType.toUpperCase() !== sortType.toUpperCase())
         }
         if (arraySize !== null) {
-            data = data.filter(item => item.arraySize !== arraySize && item.sortType.toUpperCase() !== sortType.toUpperCase())
+            updatedDate = updatedDate.filter(item => item.arraySize !== arraySize && item.sortType.toUpperCase() !== sortType.toUpperCase())
         }
 
-        await writeDataToDb(data);
+        await writeDataToDb(updatedDate);
     } catch (error) {
         console.error('Error deleting data:', error);
     }
