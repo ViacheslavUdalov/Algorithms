@@ -67,6 +67,6 @@ function partition(array, start, end) {
 }
 
 
-console.log(quicksort([2, 6, 4, 4, 4, 3, 1, 5]))
+// console.log(quicksort([2, 6, 4, 4, 4, 3, 1, 5]))
 
 export default quicksort;

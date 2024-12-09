@@ -5,9 +5,10 @@ import {insertSort} from "./sorts/insertSort.js";
 import mergeSort from "./sorts/mergeSort.js";
 import quickSort from "./sorts/quickSort.js";
 import {createArray, createSortedArray, createSortedReverseArray} from "./utils/CreateArrayFunc.js";
-import * as fs from "fs";
+import {promises as fs} from 'fs';
 import {dbFilePath} from "./server.js";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
+import {json} from "express";
 
 
 export async function writeToDbe(sortType, arraySize) {
@@ -25,8 +26,9 @@ export async function writeToDbe(sortType, arraySize) {
                 }
 
             }
+            await writeDataToDb(result);
         } else {
-            const selectFunc = arrayOfFuncs.find(func => func.name === sortType);
+            const selectFunc = arrayOfFuncs.find(func => func.name.toUpperCase() === sortType.toUpperCase());
             helperLog(selectFunc.name);
             console.log('Есть тип сортировки')
             if (selectFunc) {
@@ -35,6 +37,7 @@ export async function writeToDbe(sortType, arraySize) {
                     result.push(interRes);
                 } else {
                     for (let array of [1000, 5000, 10000]) {
+                        console.log(array)
                         let interRes = await commonFunctionExpress(array, selectFunc, selectFunc.name);
                         result.push(interRes);
                     }
@@ -43,10 +46,9 @@ export async function writeToDbe(sortType, arraySize) {
                 helperLog("не найдена сортировка");
                 return 'не найдена сортировка';
             }
-
+            await writeDataToDb(result);
         }
-        console.log(result);
-        await writeDataToDb(result);
+
     } catch (error) {
         console.error('Error saving data:', error);
     }
@@ -54,61 +56,56 @@ export async function writeToDbe(sortType, arraySize) {
 
 
 export async function recreateDb(sortType = null, arraySize = null) {
+    debugger
     await deleteDb(sortType, arraySize);
     await writeToDbe(sortType, arraySize);
 }
 
 async function getDataFromDb() {
-    fs.readFile(dbFilePath, 'utf8', (err, data) => {
-        if (err) {
-            return err
-        } else {
-            return data
-        }
-    });
+    try {
+        const data = await fs.readFile(dbFilePath, 'utf8');
+        return data
+    } catch (e) {
+        console.log(e)
+        return null;
+    }
+
 }
 
 async function writeDataToDb(data) {
-    fs.writeFile(dbFilePath, JSON.stringify(data, null, 2), 'utf8', (err) => {
-        if (err) {
-            return err
-        } else {
-            return data
-        }
-    });
+    try {
+        console.log('1!!!!!!!!!!!!!!!!!!!!!!!!')
+        console.log(data)
+        let currdata = await getDataFromDb();
+let currJsonData = JSON.parse(currdata)
+        console.log('currDATA')
+        console.log(JSON.parse(currdata))
+
+        let newData = [...currJsonData, ...data]
+        console.log(newData)
+        await fs.writeFile(dbFilePath, JSON.stringify(newData, null, 2), 'utf8');
+        return data;
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 
 async function deleteDb(sortType, arraySize) {
     try {
         let data = await getDataFromDb();
-        console.log(data);
-
         if (!data) {
             helperLog("Нет данных для удаления");
             return;
         }
-        if (sortType) {
-            data = data.filter(data => data.sortType === sortType)
+        if (sortType !== null) {
+            data = data.filter(item => item.sortType.toUpperCase() !== sortType.toUpperCase())
         }
-        if (arraySize) {
-            data = data.filter(data => data.arraySize === arraySize)
-        }
-        for (const elem of data) {
-
-            // обноление по типу сотрировки
-            const response = await fetch(`http://localhost:3000/result/${elem.id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            if (!response.ok) {
-                return response.statusText
-            }
-            helperLog('Data successfully delete');
+        if (arraySize !== null) {
+            data = data.filter(item => item.arraySize !== arraySize && item.sortType.toUpperCase() !== sortType.toUpperCase())
         }
 
+        await writeDataToDb(data);
     } catch (error) {
         console.error('Error deleting data:', error);
     }
@@ -142,6 +139,7 @@ async function commonFunctionExpress(number, funcForSort, sortType) {
             reversed: reverseBROne
         }
     }
+    console.log(data)
     return data;
 }
 

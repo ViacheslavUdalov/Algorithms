@@ -19,3 +19,4 @@ export async function recreateWithSortType(sortType = null, arraySize= null) {
         console.error('Error:', error);
     }
 }
+
