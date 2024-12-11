@@ -1,6 +1,6 @@
 import express from 'express';
 import path from 'path';
-import {recreateDb} from "./server.helper.js";
+import {checkBdForData, getDataFromDb, recreateDb} from "./server.helper.js";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -23,13 +23,22 @@ app.get('/', (req, res) => {
 app.get('/admin.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
+app.get('/getData', async (req, res) => {
+    let data = await getDataFromDb();
+    res.status(200).json({message: JSON.parse(data)})
+});
+app.get('/check', async (req, res) => {
+    let response = await checkBdForData();
+
+    res.status(200).json({message:response})
+});
 
 app.post(`/writeToDb`, async (req, res) => {
   try {
       console.log(req.body);
         let { sortType, arraySize } = req.body;
 
-      await recreateDb(sortType || null, arraySize || null);
+      await recreateDb(sortType || null, Number(arraySize) || null);
 
         res.status(200).json({message: "Komaru One Love"})
 

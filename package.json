@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "nodemon server.js --config nodemon.json",
     "jest": "jest"
   },
   "devDependencies": {

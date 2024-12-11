@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="mystyle.css">
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
@@ -10,9 +11,12 @@
 </header>
 
 <main>
-    <div>
-        <label for="sortType">Тип сортировки:</label>
-        <select id="sortType">
+    <a href="/" class="tit">Погнали на главную</a>
+
+    <div class="options">
+    <div >
+        <label class="label" for="sortType">Тип сортировки:</label>
+        <select class="option" id="sortType">
             <option value="">Komaru(nothing)</option>
             <option value="bubbleSort">Bubble Sort</option>
             <option value="quickSort">Quick Sort</option>
@@ -23,18 +27,25 @@
     </div>
 
     <div>
-        <label for="arraySize">размер массива:</label>
-        <select id="arraySize">
-            <option value="">Komaru(nothing)</option>
+        <label class="label" for="arraySize">размер массива:</label>
+        <select class="option" id="arraySize">
+            <option  value="">Komaru(nothing)</option>
             <option value="1000">1000</option>
             <option value="5000">5000</option>
             <option value="10000">10000</option>
         </select>
+
     </div>
-    <button id="wholeBase">перезаписать бд</button>
-    <button id="byType" disabled>Перезаписать по типу соритровки</button>
-    <button id="byTypeAndArray" disabled>Перезаписать по типу соритровки
-        и размеру массива</button>
+    <button class='button' id="wholeBase">перезаписать бд</button>
+    <button class='button' id="byType" >Перезаписать по типу соритровки</button>
+    <button class='button' id="byTypeAndArray" >Перезаписать по типу соритровки
+        и размеру массива
+    </button>
+        <button class='button' id="examination" >проверить Бд</button>
+    </div>
+    <div id="pylemyetchik">
+
+    </div>
 </main>
 
 <footer>
@@ -42,45 +53,7 @@
 </footer>
 
 <script src="admin.js"></script>
-<script type="module">
-    import {recreateWithSortType} from "./admin.js";
-
-    document.getElementById("wholeBase").addEventListener('click', async () => {
-        await recreateWithSortType();
-    })
-    document.getElementById("byType").addEventListener('click', async () => {
-        let sortTypeOpt = document.getElementById("sortType").value;
-        await recreateWithSortType(sortTypeOpt);
-    })
-    document.getElementById("byTypeAndArray")
-        .addEventListener('click', async () => {
-            let sortTypeOpt = document.getElementById("sortType").value;
-            let arraySizeOpt = document.getElementById("arraySize").value;
-
-            await recreateWithSortType(sortTypeOpt, arraySizeOpt);
-        })
-
-
-    document.getElementById("sortType").addEventListener('change', buttonDisabled);
-    document.getElementById("arraySize").addEventListener('change', buttonDisabled);
-
-
-    export function buttonDisabled() {
-        const sortType = document.getElementById("sortType").value;
-        const arraySize = document.getElementById("arraySize").value;
-
-        const byTypeButton = document.getElementById("byType");
-        const byTypeAndArrayButton = document.getElementById("byTypeAndArray");
-
-        if (!sortType && !arraySize) {
-            byTypeButton.disabled = true;
-            byTypeAndArrayButton.disabled = true;
-        }
-        else {
-            byTypeButton.disabled = !sortType;
-            byTypeAndArrayButton.disabled = !(arraySize && sortType);
-        }
-    }
-</script>
+<!--<script type="module">-->
+<!--</script>-->
 </body>
 </html>
