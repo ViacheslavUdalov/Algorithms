@@ -1,4 +1,6 @@
-
+window.onload = async  () => {
+    await loadData();
+}
 async function loadData() {
     try {
         const result = await fetch("http://localhost:4000/getData");
@@ -15,23 +17,6 @@ async function loadData() {
 
 function displayData(data) {
     const table = document.getElementById("result-table");
-    // .reduce((prev, curr) => {
-    //     if (!prev.find(result => result.sortType === curr.sortType && result.arraySize === curr.arraySize)) {
-    //         prev.push(curr);
-    //     }
-    //     return prev;
-    // }, [])
-    // .reduce((prev, curr) => {
-    //     if (!prev.find(group => group.sortType === curr.sortType)) {
-    //         prev.push({
-    //             sortType: curr.sortType,
-    //             results: [],
-    //         });
-    //     }
-    //     prev.find(group => group.sortType === curr.sortType)
-    //         .results.push(curr);
-    //     return prev;
-    // }, [])
     data.forEach((result, index) => {
                 const row = document.createElement("tr");
                 row.innerHTML = `

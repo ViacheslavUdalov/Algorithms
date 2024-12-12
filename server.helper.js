@@ -4,12 +4,11 @@ import choiceSort from "./sorts/choiceSort.js";
 import {insertSort} from "./sorts/insertSort.js";
 import mergeSort from "./sorts/mergeSort.js";
 import quickSort from "./sorts/quickSort.js";
-import {createArray, createSortedArray, createSortedReverseArray} from "./utils/CreateArrayFunc.js";
 import {promises as fs} from 'fs';
 import {dbFilePath} from "./server.js";
 import {v4 as uuidv4} from 'uuid';
 import config from "./config.js";
-
+import {runChild} from "./chlid.js";
 
 export async function writeToDbe(sortType, arraySize) {
     try {
@@ -39,7 +38,6 @@ export async function writeToDbe(sortType, arraySize) {
                     result.push(interRes);
                 } else {
                     for (let array of [1000, 5000, 10000]) {
-                        console.log(array)
                         let interRes = await commonFunctionExpress(array, selectFunc, selectFunc.name);
                         console.log(interRes)
                         result.push(interRes);
@@ -77,12 +75,8 @@ export async function getDataFromDb() {
 
 async function concatenate(newData) {
     let currdata = await getDataFromDb();
-
     let currJsonData = currdata ? JSON.parse(currdata) : []
-    // console.log('currDATA')
-
     let date = [...currJsonData, ...newData]
-    // console.log(date)
     return date;
 }
 
@@ -105,7 +99,6 @@ async function deleteDb(sortType, arraySize) {
             return;
         }
         let updatedDate = JSON.parse(data);
-        // console.log(arraySize)
         if (sortType !== null && arraySize === null) {
             updatedDate = updatedDate.filter(item => item.sortType.toUpperCase() !== sortType.toUpperCase())
         }
@@ -117,7 +110,6 @@ async function deleteDb(sortType, arraySize) {
             await writeDataToDb([]);
             return;
         }
-        // console.log(updatedDate)
         await writeDataToDb(updatedDate);
 
     } catch (error) {
@@ -127,21 +119,12 @@ async function deleteDb(sortType, arraySize) {
 
 
 async function commonFunctionExpress(number, funcForSort, sortType) {
-    let randomArray = createArray(number);
-    let sortedArray = createSortedArray(number);
-    let reverseSortedArray = createSortedReverseArray(createSortedArray(number));
 
-    async function allSorting(sortFunc, array) {
-        let startOne = performance.now();
-        sortFunc(array);
-        return (performance.now() - startOne).toFixed(2)
-    }
+    let timeBTakenOne = await runChild(number, sortType, 'ran');
 
-    let timeBTakenOne = await allSorting(funcForSort, randomArray)
+    let timeSortedTakenOne = await runChild(number, sortType, 's');
 
-    let timeSortedTakenOne = await allSorting(funcForSort, sortedArray);
-
-    let reverseBROne = await allSorting(funcForSort, reverseSortedArray);
+    let reverseBROne = await runChild(number, sortType, 'rev');
 
     let data = {
         id: uuidv4(),
@@ -173,7 +156,12 @@ export async function checkBdForData() {
     if (missingData.length > 0) {
         return missingData
     } else {
-        return "база данных заполнена полностью - все сортировки и размеры массивы"
+        let result = new Map();
+        config.sortTypes.forEach(sortType => {
+            result.set(sortType, [...config.arrayTypes]);
+        });
+        return `База данных заполнена полностью — все сортировки и размеры массивов: ${JSON.stringify(
+            Object.fromEntries(result))}`;
     }
 }
 

@@ -43,7 +43,6 @@ app.post(`/writeToDb`, async (req, res) => {
         res.status(200).json({message: "Komaru One Love"})
 
   } catch (e) {
-      console.log('KKKKooooooooooooommmmmmmmmaaaaaaarrrrrrrrruuuuuuuuuuu')
       console.log(e);
   }
 

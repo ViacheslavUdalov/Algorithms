@@ -1,14 +1,11 @@
 import {program} from "commander";
 import {createArray, createSortedArray, createSortedReverseArray} from "./CreateArrayFunc.js";
-import {recreateResultDB} from "./dbInteraction/recreateSortType.js";
-import {deleteFromDb} from "./dbInteraction/deleteFromDb.js";
-import {createSingleSorting} from "./dbInteraction/createSingleSorting.js";
 
 
 program.option('-t, run <number>', 'run test for array length')
     .option('-a, --array-type <type>', "type of array")
     .option('-bd, --bd-process <process>', "bd process")
-    .option('-v, --console-writing <process>', "write to console")
+    .option('-v, --console-writing', "write to console")
     .option('-admin, --admin <type>', 'using admin process')
     .option('-sortType, --sort-type <type>', 'func sort Type')
 
@@ -51,21 +48,23 @@ export async function useTooling(funcForRes, sortType) {
             console.log(timeEnd);
         }
 
-        switch (options.bdProcess) {
-            case 'recreate' :
-                await recreateResultDB(sortType, arrayLength, arrayType, timeEnd)
-                break;
-            case 'delete' :
-                await deleteFromDb(sortType)
-                break;
-            case 'create' :
-                await createSingleSorting(sortType, arrayLength, arrayType, timeEnd)
-                break;
-            default:
-                helperLog("default bd")
-                break;
-        }
+        // switch (options.bdProcess) {
+        //     case 'recreate' :
+        //         await recreateResultDB(sortType, arrayLength, arrayType, timeEnd)
+        //         break;
+        //     case 'delete' :
+        //         await deleteFromDb(sortType)
+        //         break;
+        //     case 'create' :
+        //         await createSingleSorting(sortType, arrayLength, arrayType, timeEnd)
+        //         break;
+        //     default:
+        //         helperLog("default bd")
+        //         break;
+        // }
+        return timeEnd;
     }
+
 }
 
 
