@@ -1,122 +1,85 @@
-import {program} from "commander";
-import {helperLog} from "../utils/useTooling.js";
+document.getElementById("wholeBase").addEventListener('click', async () => {
+    await recreateWithSortType();
+});
 
-program.option('-ad, --admin <type>', "type of operation");
-program.parse();
+document.getElementById("byType").addEventListener('click', async () => {
+    let sortTypeOpt = document.getElementById("sortType").value;
+    await recreateWithSortType(sortTypeOpt);
+});
 
-const options = program.opts();
+document.getElementById("byTypeAndArray")
+    .addEventListener('click', async () => {
+        let sortTypeOpt = document.getElementById("sortType").value;
+        let arraySizeOpt = document.getElementById("arraySize").value;
 
-if (options.admin) {
+        await recreateWithSortType(sortTypeOpt, arraySizeOpt);
+    });
 
-}
+document.getElementById("examination")
+    .addEventListener('click', async () => {
+        await checkBd();
+    });
 
 
-async function writeToDb() {
+document.getElementById("sortType").addEventListener('change', buttonDisabled);
+document.getElementById("arraySize").addEventListener('change', buttonDisabled);
+
+
+async function recreateWithSortType(sortType = null, arraySize = null) {
     try {
-        const dataExist = await fetch(`http://localhost:3000/results`);
-        if (dataExist.ok) {
-
-// проверка есть ли уже данные по типу и размеру массива, если есть, то выходим
-            let data = await dataExist.json();
-            if (data.length !== 0) {
-                helperLog("уже есть данные")
-                return "уже есть данные"
-            }
-        }
-
-        helperLog("Данных нет - Записываем")
-        const response = await fetch('http://localhost:3000/results', {
+        const response = await fetch('http://localhost:4000/writeToDb', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-
-            })
-        })
-        if (!response.ok) {
-            return response.statusText
-        }
-        helperLog('Data successfully saved');
-    } catch (error) {
-        console.error('Error saving data:', error);
-    }
-}
-
-async function recreateDb() {
-    await deleteDb();
-    await writeToDb();
-}
-
-async function deleteDb() {
-    try {
-        // получение данных по типу сортировки
-        const getData = await fetch(`http://localhost:3000/results`);
-        if (!getData.ok) {
-            throw new Error("Нет данных")
-        }
-        let data = await getData.json()
-        if (data.length === 0) {
-            helperLog("Нет данных для удаления")
-        }
-
-
-        data.map( async elem => {
-            // обноление по типу сотрировки
-            const response = await fetch(`http://localhost:3000/results/`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            if (!response.ok) {
-                return response.statusText
-            }
-            helperLog('Data successfully delete');
+            body: JSON.stringify({sortType, arraySize})
         });
 
+        if (!response.ok) {
+            throw new Error('Failed to send data');
+        }
+
+        const result = await response.json();
+        console.log('Server response:', result);
     } catch (error) {
-        console.error('Error deleting data:', error);
+        console.error('Error:', error);
     }
 }
 
-export async function commonFunction(arrayOfNumbers, funcForSort, row, sortType) {
-    const table = document.getElementById("result-table");
 
-    // Нужно для того, что бы браузер успел отрисовать изменения в DOM, setTimeout передаётся в очередь, это позволяет браузеру обновить UI между операциями сортировки
-    await new Promise(resolve => setTimeout(resolve, 0));
+function buttonDisabled() {
+    const sortType = document.getElementById("sortType").value;
+    const arraySize = document.getElementById("arraySize").value;
 
-    for (const number of arrayOfNumbers) {
-        let randomArray = createArray(number);
-        let sortedArray = createSortedArray(number);
-        let reverseSortedArray = createSortedReverseArray(createSortedArray(number));
+    const byTypeButton = document.getElementById("byType");
+    const byTypeAndArrayButton = document.getElementById("byTypeAndArray");
 
-        async function allSorting(sortFunc, array) {
-            let startOne = performance.now();
-            sortFunc([...array]);
-            return (performance.now() - startOne).toFixed(2)
+    if (!sortType && !arraySize) {
+        byTypeButton.disabled = true;
+        byTypeAndArrayButton.disabled = true;
+    } else {
+        byTypeButton.disabled = !sortType;
+        byTypeAndArrayButton.disabled = !(arraySize && sortType);
+    }
+}
+
+async function checkBd() {
+    try {
+        const response = await fetch('http://localhost:4000/check');
+
+        if (!response.ok) {
+            throw new Error('Failed to send data');
         }
 
-        let timeBTakenOne = await allSorting(funcForSort, randomArray)
-
-        let timeSortedTakenOne = await allSorting(funcForSort, sortedArray);
-
-        let reverseBROne = await allSorting(funcForSort, reverseSortedArray);
-
-
-        row = document.createElement("tr");
+        const result = await response.json();
+        const div = document.getElementById("pylemyetchik");
+        const row = document.createElement("div");
         row.innerHTML = `
-                            <td>${sortType} Sort ${number}</td>
-                            <td>${timeBTakenOne}</td>
-                            <td>${timeSortedTakenOne}</td>
-                            <td>${reverseBROne}</td>
-                            `;
-        table.appendChild(row);
-
-        await saveResultToDB(sortType, number, {
-            random: timeBTakenOne,
-            sorted: timeSortedTakenOne,
-            reversed: reverseBROne
-        })
+                   <span>${result.message}</span>
+                `;
+        div.appendChild(row);
+        console.log('Server response:', result);
+    } catch (error) {
+        console.error('Error:', error);
     }
 }
