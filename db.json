@@ -1,152 +1,152 @@
 [
   {
-    "id": "78e7d084-39e7-4112-a114-13e483fe6374",
-    "sortType": "bubbleSort",
-    "arraySize": 1000,
-    "times": {
-      "random": "2.13",
-      "sorted": "1.56",
-      "reversed": "2.13"
-    }
-  },
-  {
-    "id": "32433463-9d4e-4ba3-8c9f-dde307651b2c",
+    "id": "1a53c673-03c1-4349-88f2-bbc1fedf608c",
     "sortType": "bubbleSort",
     "arraySize": 5000,
     "times": {
-      "random": "33.64",
-      "sorted": "19.53",
-      "reversed": "25.90"
+      "random": "25.92",
+      "sorted": "19.54",
+      "reversed": "25.79"
     }
   },
   {
-    "id": "ee293baa-b10b-4aae-9cd8-29eefa5e36b8",
+    "id": "fea900cc-97fa-42db-850c-b6cb2a127caa",
     "sortType": "bubbleSort",
     "arraySize": 10000,
     "times": {
-      "random": "97.85",
-      "sorted": "84.68",
-      "reversed": "99.16"
+      "random": "96.51",
+      "sorted": "83.19",
+      "reversed": "98.77"
     }
   },
   {
-    "id": "853d86a4-566f-4d1f-827e-cda5e0398094",
+    "id": "6d8056c0-d6f6-4604-b487-05798214f596",
     "sortType": "choiceSort",
     "arraySize": 1000,
     "times": {
-      "random": "1.68",
-      "sorted": "1.28",
-      "reversed": "1.69"
+      "random": "1.58",
+      "sorted": "1.15",
+      "reversed": "1.64"
     }
   },
   {
-    "id": "d4434e7b-97f3-42be-b702-f1b86c6b8ab6",
+    "id": "831545ad-9d9a-4106-bd18-bff3f10e57b4",
     "sortType": "choiceSort",
     "arraySize": 5000,
     "times": {
       "random": "10.96",
-      "sorted": "10.97",
-      "reversed": "11.88"
+      "sorted": "10.47",
+      "reversed": "12.23"
     }
   },
   {
-    "id": "c37e6171-c4dd-46f3-a3f5-4a1683dc8297",
+    "id": "01001914-92a3-4823-b8e6-9eb9c9707492",
     "sortType": "choiceSort",
     "arraySize": 10000,
     "times": {
-      "random": "38.43",
-      "sorted": "38.48",
-      "reversed": "46.22"
+      "random": "37.47",
+      "sorted": "38.57",
+      "reversed": "46.89"
     }
   },
   {
-    "id": "a43828a9-9443-4ace-850f-e65cd710c83c",
+    "id": "199bb089-f880-43ca-b58c-0b7d7736a919",
     "sortType": "insertSort",
     "arraySize": 1000,
     "times": {
-      "random": "1.32",
+      "random": "1.34",
       "sorted": "0.06",
-      "reversed": "1.65"
+      "reversed": "1.62"
     }
   },
   {
-    "id": "092edf16-83f5-4d15-86b5-556b2a577c57",
+    "id": "b73181a3-ceb7-412f-8f93-d2a039fbd9c9",
     "sortType": "insertSort",
     "arraySize": 5000,
     "times": {
-      "random": "7.69",
+      "random": "7.78",
       "sorted": "0.21",
-      "reversed": "14.50"
+      "reversed": "14.91"
     }
   },
   {
-    "id": "7d40763e-f546-4c41-9409-f1da3f0fb15f",
+    "id": "100659b8-a250-44be-9fe1-e58201530a65",
     "sortType": "insertSort",
     "arraySize": 10000,
     "times": {
-      "random": "66.37",
-      "sorted": "0.66",
-      "reversed": "58.94"
+      "random": "27.65",
+      "sorted": "0.31",
+      "reversed": "54.90"
     }
   },
   {
-    "id": "3c6d3dcc-4ab4-4597-b55c-7c4f025fbcff",
+    "id": "277861f7-f78b-4387-ba60-f4cb8a476360",
     "sortType": "mergeSort",
     "arraySize": 1000,
     "times": {
-      "random": "1.43",
-      "sorted": "1.26",
-      "reversed": "1.28"
+      "random": "1.41",
+      "sorted": "1.28",
+      "reversed": "1.40"
     }
   },
   {
-    "id": "646d40a3-021b-4f09-9828-54827783109e",
+    "id": "9438a64e-bc03-4016-80c2-9389529fa5d5",
     "sortType": "mergeSort",
     "arraySize": 5000,
     "times": {
-      "random": "6.41",
-      "sorted": "4.80",
-      "reversed": "4.77"
+      "random": "5.83",
+      "sorted": "4.49",
+      "reversed": "4.58"
     }
   },
   {
-    "id": "edbbf25d-5fa3-4907-9140-116854f6438b",
+    "id": "99c2a8ad-4dbf-4367-a1ce-083de5190a3d",
     "sortType": "mergeSort",
     "arraySize": 10000,
     "times": {
-      "random": "8.79",
-      "sorted": "6.40",
-      "reversed": "6.30"
+      "random": "8.58",
+      "sorted": "6.19",
+      "reversed": "6.24"
     }
   },
   {
-    "id": "744b9b65-cb8a-47b2-8a80-5354e8a403b7",
+    "id": "07f60ba1-6951-44a0-9794-c5b7ba561356",
     "sortType": "quickSort",
     "arraySize": 1000,
     "times": {
-      "random": "0.49",
-      "sorted": "0.37",
-      "reversed": "0.37"
+      "random": "0.99",
+      "sorted": "0.43",
+      "reversed": "0.38"
     }
   },
   {
-    "id": "372a005a-0f83-4b30-ab7a-1092f6783397",
+    "id": "71ae3760-ccf8-4852-8ef2-1a36337d6b7d",
     "sortType": "quickSort",
     "arraySize": 5000,
     "times": {
       "random": "1.75",
-      "sorted": "1.57",
-      "reversed": "1.48"
+      "sorted": "1.44",
+      "reversed": "1.40"
     }
   },
   {
-    "id": "7dbd9b28-f038-4a84-bace-f743eccaef37",
+    "id": "b0650055-c090-42c8-bd28-9e2a61e7802c",
     "sortType": "quickSort",
     "arraySize": 10000,
     "times": {
-      "random": "2.56",
-      "sorted": "1.89",
-      "reversed": "2.23"
+      "random": "2.23",
+      "sorted": "1.99",
+      "reversed": "2.14"
+    }
+  },
+  {
+    "id": "a70d9176-a7b2-4919-8849-e350374670bb",
+    "sortType": "bubbleSort",
+    "arraySize": 1000,
+    "times": {
+      "random": "2.23",
+      "sorted": "1.64",
+      "reversed": "2.29"
     }
   }
 ]

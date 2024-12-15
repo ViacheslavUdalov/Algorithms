@@ -40,9 +40,33 @@
     </div>
     <div id="pylemyetchik">
     </div>
+    <button id="Koma">Koma</button>
 </main>
 <footer>
 </footer>
 <script src="admin.js" type="module"></script>
+<script>
+    const socket = new WebSocket('ws://localhost:8080');
+
+    // socket.onopen = function (event) {
+    //     socket.send('koma')
+    //     // alert('You are Connected to WebSocket Server');
+    // };
+
+    socket.onmessage = function (event) {
+        console.log(event)
+        const outputDiv = document
+            .getElementById('output');
+        outputDiv
+            .innerHTML += `<p>Received <b>"${event.data}"</b> from server.</p>`;
+    };
+
+    socket.onclose = function (event) {
+        console.log('Disconnected from WebSocket server');
+        alert('disconnected')
+    };
+
+
+</script>
 </body>
 </html>

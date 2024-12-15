@@ -3,23 +3,32 @@ import path from 'path';
 import {checkBdForData, getDataFromDb, recreateDb} from "./server.helper.js";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import {WebSocketServer} from 'ws'
+import {WebSocketServer} from "ws";
 
 const app = express();
 const port = 4000;
 
-const wss = new WebSocketServer({ port: 8080 });
+const wss = new WebSocketServer({port: 8080});
 
 wss.on('connection', function connection(ws) {
 
     console.log('Client connected');
 
 
-    ws.on('message', function incoming(message) {
+    ws.on('message', async function incoming(message) {
+        try {
+            console.log("message")
+            console.log(message)
+            const {sortType, arraySize} = JSON.parse(message);
+            let res = await recreateDb(sortType || null, arraySize || null);
+            console.log('Received: %s', message);
 
-        console.log('Received: %s', message);
+            ws.send(message);
+        } catch (e) {
+            console.error(e);
+            ws.send({error: `Ошибука ${e}`});
+        }
 
-        ws.send(`${message}`);
     });
 
 

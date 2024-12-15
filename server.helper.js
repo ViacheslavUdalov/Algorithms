@@ -9,6 +9,7 @@ import {dbFilePath} from "./server.js";
 import {v4 as uuidv4} from 'uuid';
 import config from "./config.js";
 import {runChild} from "./chlid.js";
+import e from "express";
 
 const ARRAY_SIZES = config.arrayTypes;
 const SORT_TYPES = config.sortTypes;
@@ -53,7 +54,7 @@ async function concatenate(newData) {
     return date;
 }
 
-async function writeDataToDb(data) {
+export async function writeDataToDb(data) {
     try {
         await fs.writeFile(dbFilePath,
             JSON.stringify(data, null, 2), 'utf8');

@@ -26,6 +26,26 @@ document.getElementById("examination")
 document.getElementById("sortType").addEventListener('change', buttonDisabled);
 document.getElementById("arraySize").addEventListener('change', buttonDisabled);
 
+document.getElementById('Koma').addEventListener('click', () => {
+    let sortTypeOpt = document.getElementById("sortType").value;
+    let arraySizeOpt = document.getElementById("arraySize").value;
+    requestSort(sortTypeOpt, arraySizeOpt)
+})
+
+function requestSort(sortType, arraySize) {
+    if (socket.readyState === WebSocket.OPEN) {
+        console.log(sortType, arraySize)
+        const parsedArraySize = parseInt(arraySize, 10);
+
+        console.log(JSON.stringify({sortType, arraySize}));
+        socket.send(JSON.stringify({sortType, arraySize: parsedArraySize}));
+    } else {
+        console.error('Web socket закрыты')
+    }
+
+}
+
+
     // let selectedElement = document.getElementById('sortType');
     // config.sortTypes.forEach(el => {
     //     debugger

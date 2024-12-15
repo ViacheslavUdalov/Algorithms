@@ -1,6 +1,16 @@
 window.onload = async  () => {
     await loadData();
 }
+
+
+function sendMessage() {
+    const messageInput = document
+        .getElementById('messageInput');
+    const message = messageInput.value;
+    socket.send(message);
+    messageInput.value = '';
+}
+
 async function loadData() {
     try {
         const result = await fetch("http://localhost:4000/getData");

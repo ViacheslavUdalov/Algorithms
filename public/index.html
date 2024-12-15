@@ -44,40 +44,8 @@
 </table>
 
 <div id="output"></div>
+
 <script src="index.js"></script>
-<script>
-    const socket = new WebSocket('ws://localhost:8080');
 
-    socket.onopen = function (event) {
-        socket.send(event)
-        alert('You are Connected to WebSocket Server');
-    };
-
-    socket.onmessage = function (event) {
-        const outputDiv = document
-            .getElementById('output');
-        outputDiv
-            .innerHTML += `<p>Received <b>"${event.data}"</b> from server.</p>`;
-    };
-
-    socket.onclose = function (event) {
-        console.log('Disconnected from WebSocket server');
-        alert('disconnected')
-    };
-
-    function sendMessage() {
-        // Get the message input element
-        const messageInput = document
-            .getElementById('messageInput');
-        // Get the value of
-        // the message input
-        const message = messageInput.value;
-        // Send the message to
-        // the WebSocket server
-        socket.send(message);
-        // Clear the message input
-        messageInput.value = '';
-    }
-</script>
 </body>
 </html>
