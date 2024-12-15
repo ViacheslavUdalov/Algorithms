@@ -19,22 +19,18 @@ export async function useTooling(funcForRes, sortType) {
         let arrayFunc;
         let arrayType;
         switch (options.arrayType) {
-            case 's' :
+            case 's':
                 arrayType = 'sorted'
                 arrayFunc = createSortedArray(arrayLength);
                 break;
-            case 'ran' :
-                arrayType = 'random'
-                arrayFunc = createArray(arrayLength);
-                break;
-            case 'rev' :
+            case 'rev':
                 arrayType = 'reversed'
                 arrayFunc = createSortedReverseArray(createSortedArray(arrayLength));
                 break;
+            case 'ran':
             default:
                 arrayFunc = createArray(arrayLength);
                 arrayType = 'random'
-                break;
         }
 
         // поменял console.time на перфоменс, по времени выдаёт тоже самое, погрешность ~0.05ms
@@ -43,10 +39,11 @@ export async function useTooling(funcForRes, sortType) {
         funcForRes(arrayFunc);
 
         let timeEnd = (performance.now() - startTime).toFixed(2);
-
-        if (options.consoleWriting) {
+        // console.log('TIMEEND')
+        // console.log(timeEnd)
+        // if (options.consoleWriting) {
             console.log(timeEnd);
-        }
+        // }
 
         // switch (options.bdProcess) {
         //     case 'recreate' :
@@ -62,7 +59,7 @@ export async function useTooling(funcForRes, sortType) {
         //         helperLog("default bd")
         //         break;
         // }
-        return timeEnd;
+        // return timeEnd;
     }
 
 }

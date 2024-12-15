@@ -10,64 +10,37 @@ import {v4 as uuidv4} from 'uuid';
 import config from "./config.js";
 import {runChild} from "./chlid.js";
 
-export async function writeToDbe(sortType, arraySize) {
-    try {
-        let result = [];
-        helperLog(sortType);
-        let arrayOfFuncs = [bubbleSort, choiceSort, insertSort, mergeSort, quickSort];
+const ARRAY_SIZES = config.arrayTypes;
+const SORT_TYPES = config.sortTypes;
+const ARRAY_OF_SORT_FUNCTIONS = [bubbleSort, choiceSort, insertSort, mergeSort, quickSort];
 
-        if (!sortType) {
-            console.log('нет типа сортировки')
-            for (let func of arrayOfFuncs) {
-                for (let array of [1000, 5000, 10000]) {
-                    let interRes = await commonFunctionExpress(array, func, func.name);
-                    result.push(interRes);
-                }
-            }
-            let localData = await concatenate(result)
-            await writeDataToDb(localData);
-
-        } else {
-            const selectFunc = arrayOfFuncs.find(func => func.name.toUpperCase() === sortType.toUpperCase());
-            helperLog(selectFunc.name);
-            console.log('Есть тип сортировки')
-            if (selectFunc) {
-                if (arraySize) {
-                    console.log('попали в массив')
-                    let interRes = await commonFunctionExpress(arraySize, selectFunc, selectFunc.name);
-                    result.push(interRes);
-                } else {
-                    for (let array of [1000, 5000, 10000]) {
-                        let interRes = await commonFunctionExpress(array, selectFunc, selectFunc.name);
-                        console.log(interRes)
-                        result.push(interRes);
-                    }
-                }
-            } else {
-                helperLog("не найдена сортировка");
-                return 'не найдена сортировка';
-            }
-            let localData = await concatenate(result)
-            await writeDataToDb(localData);
+async function executeAndWriteToDb(sortType, arraySize) {
+    let sortFunctions = sortType ? ARRAY_OF_SORT_FUNCTIONS.filter(func => func.name.toUpperCase() === sortType.toUpperCase()) : ARRAY_OF_SORT_FUNCTIONS;
+    let arraySizes = arraySize ? [arraySize] : ARRAY_SIZES;
+    let result = [];
+    for (let sortFunc of sortFunctions) {
+        for (let arraySize of arraySizes) {
+            let data = await executeFunc(arraySize, sortFunc, sortFunc.name);
+            result.push(data);
         }
-
-    } catch (error) {
-        console.error('Error saving data:', error);
     }
+    console.log(result)
+    let localData = await concatenate(result);
+    await writeDataToDb(localData);
 }
 
 
 export async function recreateDb(sortType = null, arraySize = null) {
     await deleteDb(sortType, arraySize);
-    await writeToDbe(sortType, arraySize);
+    await executeAndWriteToDb(sortType, arraySize);
 }
 
 export async function getDataFromDb() {
     try {
         const data = await fs.readFile(dbFilePath, 'utf8');
-        return data
+        return data;
     } catch (e) {
-        console.log(e)
+        console.log(e);
         return null;
     }
 
@@ -75,8 +48,8 @@ export async function getDataFromDb() {
 
 async function concatenate(newData) {
     let currdata = await getDataFromDb();
-    let currJsonData = currdata ? JSON.parse(currdata) : []
-    let date = [...currJsonData, ...newData]
+    let currJsonData = currdata ? JSON.parse(currdata) : [];
+    let date = [...currJsonData, ...newData];
     return date;
 }
 
@@ -101,12 +74,10 @@ async function deleteDb(sortType, arraySize) {
         let updatedDate = JSON.parse(data);
         if (sortType !== null && arraySize === null) {
             updatedDate = updatedDate.filter(item => item.sortType.toUpperCase() !== sortType.toUpperCase())
-        }
-       else if (arraySize !== null) {
-            updatedDate = updatedDate.filter(item => !(item.arrayType === arraySize
+        } else if (arraySize !== null) {
+            updatedDate = updatedDate.filter(item => !(item.arraySize === arraySize
                 && item.sortType.toUpperCase() === sortType.toUpperCase()));
-        }
-        else if (sortType === null && arraySize === null) {
+        } else if (sortType === null && arraySize === null) {
             await writeDataToDb([]);
             return;
         }
@@ -118,35 +89,27 @@ async function deleteDb(sortType, arraySize) {
 }
 
 
-async function commonFunctionExpress(number, funcForSort, sortType) {
-
-    let timeBTakenOne = await runChild(number, sortType, 'ran');
-
-    let timeSortedTakenOne = await runChild(number, sortType, 's');
-
-    let reverseBROne = await runChild(number, sortType, 'rev');
-
-    let data = {
+async function executeFunc(arraySize, funcForSort, sortType) {
+    return {
         id: uuidv4(),
-        sortType: sortType,
-        arrayType: number,
+        sortType,
+        arraySize,
         times: {
-            random: timeBTakenOne,
-            sorted: timeSortedTakenOne,
-            reversed: reverseBROne
+            random: await runChild(arraySize, sortType, 'ran'),
+            sorted: await runChild(arraySize, sortType, 's'),
+            reversed: await runChild(arraySize, sortType, 'rev'),
         }
     }
-    return data;
 }
 
 export async function checkBdForData() {
-   let data = await getDataFromDb();
-   let missingData = [];
-  let dataForCycle = JSON.parse(data);
-    config.sortTypes.forEach(sort => {
-        config.arrayTypes.forEach(array => {
+    let data = await getDataFromDb();
+    let missingData = [];
+    let dataForCycle = JSON.parse(data);
+    SORT_TYPES.forEach(sort => {
+        ARRAY_SIZES.forEach(array => {
             let exist = dataForCycle.some(item =>
-                item.sortType.toUpperCase() === sort.toUpperCase() && item.arrayType === array
+                item.sortType.toUpperCase() === sort.toUpperCase() && item.arraySize === array
             );
             if (!exist) {
                 missingData.push({sort, array});

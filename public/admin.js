@@ -1,3 +1,5 @@
+import config from "../config.js";
+
 document.getElementById("wholeBase").addEventListener('click', async () => {
     await recreateWithSortType();
 });
@@ -12,7 +14,7 @@ document.getElementById("byTypeAndArray")
         let sortTypeOpt = document.getElementById("sortType").value;
         let arraySizeOpt = document.getElementById("arraySize").value;
 
-        await recreateWithSortType(sortTypeOpt, arraySizeOpt);
+        await recreateWithSortType(sortTypeOpt, Number(arraySizeOpt));
     });
 
 document.getElementById("examination")
@@ -23,6 +25,29 @@ document.getElementById("examination")
 
 document.getElementById("sortType").addEventListener('change', buttonDisabled);
 document.getElementById("arraySize").addEventListener('change', buttonDisabled);
+
+    // let selectedElement = document.getElementById('sortType');
+    // config.sortTypes.forEach(el => {
+    //     debugger
+    //     let option = document.createElement('option');
+    //     option.value = el;
+    //     option.textContent = el;
+    //     console.log(option)
+    //     selectedElement.appendChild(option);
+    // })
+
+functionForSortAndArraysForHTML('sortTypes', 'sortType')
+functionForSortAndArraysForHTML('arrayTypes', 'arraySize')
+function functionForSortAndArraysForHTML(typeForConfig, getHTMLElement) {
+    let selectedElement = document.getElementById(getHTMLElement);
+    config[typeForConfig].forEach(el => {
+        let option = document.createElement('option');
+        option.value = el;
+        option.textContent = el;
+        console.log(option)
+        selectedElement.appendChild(option);
+    })
+}
 
 
 async function recreateWithSortType(sortType = null, arraySize = null) {
@@ -41,11 +66,19 @@ async function recreateWithSortType(sortType = null, arraySize = null) {
 
         const result = await response.json();
         console.log('Server response:', result);
+        return innerResultToClient('Новые данные успешно вернулись с сервера!');
     } catch (error) {
         console.error('Error:', error);
     }
 }
-
+function innerResultToClient(stringForReturnResult) {
+    const div = document.getElementById("pylemyetchik");
+    const row = document.createElement("div");
+    row.innerHTML = `
+                   <span>${stringForReturnResult}</span>
+                `;
+    div.appendChild(row);
+}
 
 function buttonDisabled() {
     const sortType = document.getElementById("sortType").value;
@@ -72,12 +105,7 @@ async function checkBd() {
         }
 
         const result = await response.json();
-        const div = document.getElementById("pylemyetchik");
-        const row = document.createElement("div");
-        row.innerHTML = `
-                   <span>${result.message}</span>
-                `;
-        div.appendChild(row);
+        innerResultToClient(result.message);
         console.log('Server response:', result);
     } catch (error) {
         console.error('Error:', error);
