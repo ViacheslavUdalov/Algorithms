@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const AlgorithmsSchema = new mongoose.Schema({
-    id: { type: String, required: true },
+    id: { type: String, required: false },
     sortType: { type: String, required: true },
     arraySize: { type: Number, required: true },
     times: {
@@ -14,4 +14,4 @@ const AlgorithmsSchema = new mongoose.Schema({
 
 const Algorithm = mongoose.model('Algorithm', AlgorithmsSchema);
 
-module.exports = Algorithm;
+export default Algorithm

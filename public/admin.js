@@ -35,7 +35,6 @@ document.getElementById('Koma').addEventListener('click', () => {
 const socket = new WebSocket('ws://localhost:8080');
 
 socket.onopen = function (event) {
-    socket.send('Вы подключились');
     console.log("Connection opened");
 };
 
@@ -78,7 +77,6 @@ function functionForSortAndArraysForHTML(typeForConfig, getHTMLElement) {
         let option = document.createElement('option');
         option.value = el;
         option.textContent = el;
-        console.log(option)
         selectedElement.appendChild(option);
     })
 }
@@ -106,12 +104,23 @@ async function recreateWithSortType(sortType = null, arraySize = null) {
     }
 }
 
-function innerResultToClient(stringForReturnResult) {
+function innerResultToClient(data) {
+    // console.log(data)
     const div = document.getElementById("pylemyetchik");
     const row = document.createElement("div");
-    row.innerHTML = `
-                   <span>${stringForReturnResult}</span>
+    Object.entries(data).forEach(item => {
+        // console.log(item);
+        for (let i = 0; i < item[1].length; i++) {
+            console.log(item)
+            const span = document.createElement("span");
+            span.innerHTML = `
+                   <span>${item[0]} - тип Сортировки: ${item[1][i]?.sortType} - размер Массива: ${item[1][i]?.arraySize} -count: ${item[1][i]?.count}</span> 
                 `;
+            row.appendChild(span);
+            row.appendChild(document.createElement("br"));
+
+        }
+    })
     div.appendChild(row);
 }
 
@@ -140,6 +149,7 @@ async function checkBd() {
         }
 
         const result = await response.json();
+        // console.log(result)
         innerResultToClient(result.message);
         console.log('Server response:', result);
     } catch (error) {

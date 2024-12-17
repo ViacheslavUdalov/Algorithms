@@ -1,14 +1,11 @@
-import {helperLog} from "./utils/useTooling.js";
 import bubbleSort from "./sorts/bubbleSort.js";
 import choiceSort from "./sorts/choiceSort.js";
 import {insertSort} from "./sorts/insertSort.js";
 import mergeSort from "./sorts/mergeSort.js";
 import quickSort from "./sorts/quickSort.js";
-import {promises as fs} from 'fs';
-import {dbFilePath} from "./server.js";
-import {v4 as uuidv4} from 'uuid';
 import config from "./config.js";
 import {runChild} from "./chlid.js";
+import Algorithm from "./models/SortResultingSchema.js";
 
 const ARRAY_SIZES = config.arrayTypes;
 const SORT_TYPES = config.sortTypes;
@@ -17,17 +14,11 @@ const ARRAY_OF_SORT_FUNCTIONS = [bubbleSort, choiceSort, insertSort, mergeSort, 
 async function executeAndWriteToDb(sortType, arraySize) {
     let sortFunctions = sortType ? ARRAY_OF_SORT_FUNCTIONS.filter(func => func.name.toUpperCase() === sortType.toUpperCase()) : ARRAY_OF_SORT_FUNCTIONS;
     let arraySizes = arraySize ? [arraySize] : ARRAY_SIZES;
-    let result = [];
     for (let sortFunc of sortFunctions) {
         for (let arraySize of arraySizes) {
-            let data = await executeFunc(arraySize, sortFunc, sortFunc.name);
-            result.push(data);
+            await executeFunc(arraySize, sortFunc, sortFunc.name);
         }
     }
-    console.log(result)
-    let localData = await concatenate(result);
-    await writeDataToDb(localData);
-    return localData;
 }
 
 
@@ -36,63 +27,19 @@ export async function recreateDb(sortType = null, arraySize = null) {
     return await executeAndWriteToDb(sortType, arraySize);
 }
 
-export async function getDataFromDb() {
-    try {
-        const data = await fs.readFile(dbFilePath, 'utf8');
-        return data;
-    } catch (e) {
-        console.log(e);
-        return null;
-    }
-
-}
-
-async function concatenate(newData) {
-    let currdata = await getDataFromDb();
-    let currJsonData = currdata ? JSON.parse(currdata) : [];
-    let date = [...currJsonData, ...newData];
-    return date;
-}
-
-export async function writeDataToDb(data) {
-    try {
-        await fs.writeFile(dbFilePath,
-            JSON.stringify(data, null, 2), 'utf8');
-        return data;
-    } catch (e) {
-        console.log(e)
-    }
-}
-
-
 async function deleteDb(sortType, arraySize) {
-    try {
-        let data = await getDataFromDb();
-        if (!data) {
-            helperLog("Нет данных для удаления");
-            return;
-        }
-        let updatedDate = JSON.parse(data);
-        if (sortType !== null && arraySize === null) {
-            updatedDate = updatedDate.filter(item => item.sortType.toUpperCase() !== sortType.toUpperCase())
-        } else if (arraySize !== null) {
-            updatedDate = updatedDate.filter(item => !(item.arraySize === arraySize
-                && item.sortType.toUpperCase() === sortType.toUpperCase()));
-        } else if (sortType === null && arraySize === null) {
-            await writeDataToDb([]);
-            return;
-        }
-        await writeDataToDb(updatedDate);
+    const query = {};
+    if (sortType !== null) query.sortType = sortType;
+    if (arraySize !== null) query.arraySize = arraySize;
+    const result = await Algorithm.deleteMany(query);
 
-    } catch (error) {
-        console.error('Error deleting data:', error);
-    }
+    console.log(`result.deletedCount`, result.deletedCount);
+    return result.detetedCount;
 }
 
 
 async function executeFunc(arraySize, funcForSort, sortType) {
-    return {
-        id: uuidv4(),
+    const algorithm = new Algorithm({
         sortType,
         arraySize,
         times: {
@@ -100,25 +47,48 @@ async function executeFunc(arraySize, funcForSort, sortType) {
             sorted: await runChild(arraySize, sortType, 's'),
             reversed: await runChild(arraySize, sortType, 'rev'),
         }
-    }
+    })
+    await algorithm.save();
+    return algorithm;
 }
 
 export async function checkBdForData() {
-    let data = await getDataFromDb();
+
+    let data = await Algorithm.find();
     let missingData = [];
-    let dataForCycle = JSON.parse(data);
-    SORT_TYPES.forEach(sort => {
-        ARRAY_SIZES.forEach(array => {
+    let duplicates = [];
+    let dataForCycle = data;
+
+    SORT_TYPES.forEach(sortType => {
+        ARRAY_SIZES.forEach(arraySize => {
             let exist = dataForCycle.some(item =>
-                item.sortType.toUpperCase() === sort.toUpperCase() && item.arraySize === array
+                item.sortType.toUpperCase() === sortType.toUpperCase() && item.arraySize === arraySize
             );
             if (!exist) {
-                missingData.push({sort, array});
+                missingData.push({sortType, arraySize});
             }
         });
     });
-    if (missingData.length > 0) {
-        return missingData
+
+    const duplicatedDataMap = new Map();
+
+    dataForCycle.forEach(item => {
+        const keyForMap = `${item.sortType.toUpperCase()}_${item.arraySize}`;
+        duplicatedDataMap.set(keyForMap, (duplicatedDataMap.get(keyForMap) || 0) + 1);
+    })
+
+    for (let [key, count] of duplicatedDataMap.entries()) {
+        if (count > 1) {
+            const [sortType, arraySize] = key.split('_');
+            duplicates.push({sortType, arraySize, count});
+        }
+    }
+
+    if (missingData.length > 0 || duplicates.length > 0) {
+        return {
+            missingData,
+            duplicates
+        }
     } else {
         let result = new Map();
         config.sortTypes.forEach(sortType => {
