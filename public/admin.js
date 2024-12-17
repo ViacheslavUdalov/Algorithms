@@ -29,16 +29,39 @@ document.getElementById("arraySize").addEventListener('change', buttonDisabled);
 document.getElementById('Koma').addEventListener('click', () => {
     let sortTypeOpt = document.getElementById("sortType").value;
     let arraySizeOpt = document.getElementById("arraySize").value;
-    requestSort(sortTypeOpt, arraySizeOpt)
+    requestSort(sortTypeOpt, arraySizeOpt, 'sorting')
 })
 
-function requestSort(sortType, arraySize) {
+const socket = new WebSocket('ws://localhost:8080');
+
+socket.onopen = function (event) {
+    socket.send('Вы подключились');
+    console.log("Connection opened");
+};
+
+socket.onmessage = function (event) {
+    console.log(event)
+    const data = JSON.parse(event.data);
+    const outputDiv = document
+        .getElementById('output');
+    outputDiv
+        .innerHTML += `<p>Received <b>"${JSON.stringify(data)}"</b> from server.</p>`;
+};
+
+socket.onclose = function (event) {
+    console.log('Disconnected from WebSocket server');
+    alert('disconnected')
+};
+
+
+function requestSort(sortType, arraySize, typeForServer) {
     if (socket.readyState === WebSocket.OPEN) {
         console.log(sortType, arraySize)
         const parsedArraySize = parseInt(arraySize, 10);
 
         console.log(JSON.stringify({sortType, arraySize}));
         socket.send(JSON.stringify({sortType, arraySize: parsedArraySize}));
+
     } else {
         console.error('Web socket закрыты')
     }
@@ -46,18 +69,9 @@ function requestSort(sortType, arraySize) {
 }
 
 
-    // let selectedElement = document.getElementById('sortType');
-    // config.sortTypes.forEach(el => {
-    //     debugger
-    //     let option = document.createElement('option');
-    //     option.value = el;
-    //     option.textContent = el;
-    //     console.log(option)
-    //     selectedElement.appendChild(option);
-    // })
-
 functionForSortAndArraysForHTML('sortTypes', 'sortType')
 functionForSortAndArraysForHTML('arrayTypes', 'arraySize')
+
 function functionForSortAndArraysForHTML(typeForConfig, getHTMLElement) {
     let selectedElement = document.getElementById(getHTMLElement);
     config[typeForConfig].forEach(el => {
@@ -91,6 +105,7 @@ async function recreateWithSortType(sortType = null, arraySize = null) {
         console.error('Error:', error);
     }
 }
+
 function innerResultToClient(stringForReturnResult) {
     const div = document.getElementById("pylemyetchik");
     const row = document.createElement("div");

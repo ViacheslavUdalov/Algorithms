@@ -2,7 +2,6 @@ window.onload = async  () => {
     await loadData();
 }
 
-
 function sendMessage() {
     const messageInput = document
         .getElementById('messageInput');

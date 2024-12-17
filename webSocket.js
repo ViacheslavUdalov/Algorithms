@@ -5,7 +5,6 @@ import choiceSort from "./sorts/choiceSort.js";
 import {insertSort} from "./sorts/insertSort.js";
 import mergeSort from "./sorts/mergeSort.js";
 import quickSort from "./sorts/quickSort.js";
-import {recreateDb} from "./server.helper.js";
 
 const ARRAY_SIZES = config.arrayTypes;
 const SORT_TYPES = config.sortTypes;

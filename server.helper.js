@@ -9,7 +9,6 @@ import {dbFilePath} from "./server.js";
 import {v4 as uuidv4} from 'uuid';
 import config from "./config.js";
 import {runChild} from "./chlid.js";
-import e from "express";
 
 const ARRAY_SIZES = config.arrayTypes;
 const SORT_TYPES = config.sortTypes;
@@ -28,12 +27,13 @@ async function executeAndWriteToDb(sortType, arraySize) {
     console.log(result)
     let localData = await concatenate(result);
     await writeDataToDb(localData);
+    return localData;
 }
 
 
 export async function recreateDb(sortType = null, arraySize = null) {
     await deleteDb(sortType, arraySize);
-    await executeAndWriteToDb(sortType, arraySize);
+    return await executeAndWriteToDb(sortType, arraySize);
 }
 
 export async function getDataFromDb() {
