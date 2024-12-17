@@ -7,11 +7,19 @@ const socket = new WebSocket('ws://localhost:8080');
 
 socket.onopen = function (event) {
     console.log('connected from WebSocket server');
-
+    const dataToSend = {
+        type: 'connect',
+        message: 'Присоединились к серверу'
+    }
+    socket.send(JSON.stringify(dataToSend));
+    const Komaru = {
+        type: 'Komaru return',
+        message: 'Default: Komaru forever!'
+    }
+    socket.send(JSON.stringify(Komaru));
 };
 
 socket.onmessage = function (event) {
-    console.log(event)
     const outputDiv = document
         .getElementById('output');
     outputDiv
@@ -60,7 +68,7 @@ function displayData(data) {
             return prev;
         }, [])
         .forEach((result, index) => {
-            for(let sortRes of result.results) {
+            for (let sortRes of result.results) {
                 console.log(result);
                 const row = document.createElement("tr");
                 row.innerHTML = `

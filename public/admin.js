@@ -49,7 +49,6 @@ socket.onmessage = function (event) {
 
 socket.onclose = function (event) {
     console.log('Disconnected from WebSocket server');
-    alert('disconnected')
 };
 
 
@@ -59,7 +58,7 @@ function requestSort(sortType, arraySize, typeForServer) {
         const parsedArraySize = parseInt(arraySize, 10);
 
         console.log(JSON.stringify({sortType, arraySize}));
-        socket.send(JSON.stringify({sortType, arraySize: parsedArraySize}));
+        socket.send(JSON.stringify({type: "executeAlgorithms", sortType, arraySize: parsedArraySize}));
 
     } else {
         console.error('Web socket закрыты')
