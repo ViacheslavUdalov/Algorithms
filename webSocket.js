@@ -28,9 +28,9 @@ export function startWebSocket() {
                             ws.send('Комару подключилась!')
                             break;
                         case 'executeAlgorithms':
-                            console.log(localMessage)
+                            console.log(`localMessage`, localMessage)
                             res = await recreateDb(localMessage.sortType || null, localMessage.arraySize || null);
-                            ws.send(JSON.stringify(res));
+                            ws.send(JSON.stringify(res[0]));
                             break;
                         case 'Komaru return':
                             ws.send(localMessage.message);

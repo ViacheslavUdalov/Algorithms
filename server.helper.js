@@ -4,12 +4,15 @@ import {insertSort} from "./sorts/insertSort.js";
 import mergeSort from "./sorts/mergeSort.js";
 import quickSort from "./sorts/quickSort.js";
 import config from "./config.js";
+import Algorithm from './models/SortResultingSchema.js';
+import {runChild} from './chlid.js'
 
 const ARRAY_SIZES = config.arrayTypes;
 const SORT_TYPES = config.sortTypes;
 const ARRAY_OF_SORT_FUNCTIONS = [bubbleSort, choiceSort, insertSort, mergeSort, quickSort];
 
 async function executeAndWriteToDb(sortType, arraySize) {
+
     let sortFunctions = sortType ? ARRAY_OF_SORT_FUNCTIONS.filter(func => func.name.toUpperCase() === sortType.toUpperCase()) : ARRAY_OF_SORT_FUNCTIONS;
     let arraySizes = arraySize ? [arraySize] : ARRAY_SIZES;
     let res = [];
@@ -19,7 +22,7 @@ async function executeAndWriteToDb(sortType, arraySize) {
             res.push(interRes);
         }
     }
-    console.log(`execute`, res);
+    // console.log(`execute`, res);
     return res;
 }
 
@@ -33,6 +36,7 @@ async function deleteDb(sortType, arraySize) {
     const query = {};
     if (sortType !== null) query.sortType = sortType;
     if (arraySize !== null) query.arraySize = arraySize;
+    console.log(sortType, arraySize)
     const result = await Algorithm.deleteMany(query);
 
     console.log(`result.deletedCount`, result.deletedCount);

@@ -26,7 +26,7 @@ socket.onmessage = function (event) {
         .getElementById('output');
     outputDiv
         .innerHTML += `<p>Received <b>"${event.data}"</b> from server.</p>`;
-    renderString(JSON.parse(event.data)[0])
+    renderString(JSON.parse(event.data))
 
 };
 
@@ -44,9 +44,6 @@ async function loadData() {
 
         const data = await result.json();
         window.data = data;
-        // console.log(window.data);
-
-        // displayData(data)
     } catch (error) {
         console.log(error);
     }
@@ -56,6 +53,7 @@ async function loadData() {
 
 function renderString(data) {
     console.log('одна строка рендерится')
+    console.log(data);
     const existingRow = document.getElementById(`${data.sortType}_${data.arraySize}`);
     if (existingRow) {
         existingRow.innerHTML = `
@@ -122,7 +120,9 @@ function renderTable() {
             document.getElementById(`${sortRes.sortType}_${sortRes.arraySize}_button`)
                 .addEventListener('click', () => {
                     requestSort(sortRes.sortType, sortRes.arraySize, 'executeAlgorithms').then(() => {
-                        renderString(data)
+                        // console.log(resData);
+
+                        // renderString(data)
                     });
 
                 });
