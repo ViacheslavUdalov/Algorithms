@@ -4,8 +4,6 @@ import {insertSort} from "./sorts/insertSort.js";
 import mergeSort from "./sorts/mergeSort.js";
 import quickSort from "./sorts/quickSort.js";
 import config from "./config.js";
-import {runChild} from "./chlid.js";
-import Algorithm from "./models/SortResultingSchema.js";
 
 const ARRAY_SIZES = config.arrayTypes;
 const SORT_TYPES = config.sortTypes;
@@ -14,17 +12,21 @@ const ARRAY_OF_SORT_FUNCTIONS = [bubbleSort, choiceSort, insertSort, mergeSort, 
 async function executeAndWriteToDb(sortType, arraySize) {
     let sortFunctions = sortType ? ARRAY_OF_SORT_FUNCTIONS.filter(func => func.name.toUpperCase() === sortType.toUpperCase()) : ARRAY_OF_SORT_FUNCTIONS;
     let arraySizes = arraySize ? [arraySize] : ARRAY_SIZES;
+    let res = [];
     for (let sortFunc of sortFunctions) {
         for (let arraySize of arraySizes) {
-            await executeFunc(arraySize, sortFunc, sortFunc.name);
+            let interRes = await executeFunc(arraySize, sortFunc, sortFunc.name);
+            res.push(interRes);
         }
     }
+    console.log(`execute`, res);
+    return res;
 }
 
 
 export async function recreateDb(sortType = null, arraySize = null) {
     await deleteDb(sortType, arraySize);
-    return await executeAndWriteToDb(sortType, arraySize);
+   return  await executeAndWriteToDb(sortType, arraySize);
 }
 
 async function deleteDb(sortType, arraySize) {

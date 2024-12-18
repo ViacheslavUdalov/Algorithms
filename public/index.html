@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+    <link rel="stylesheet" href="mystyle.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>4x4 Table Component</title>
@@ -28,16 +28,10 @@
     </style>
 </head>
 <body>
+<table id="sortingTable"></table>
 <a href="/admin.html">Adminka</a>
 <table>
     <thead>
-    <tr>
-        <td>sort type</td>
-        <td>array length</td>
-        <td>random, ms</td>
-        <td>sorted, ms</td>
-        <td>reversed, ms</td>
-    </tr>
     </thead>
     <tbody id="result-table">
     </tbody>
@@ -45,7 +39,7 @@
 
 <div id="output"></div>
 
-<script src="index.js"></script>
+<script type="module" src="index.js"></script>
 <script>
 
 

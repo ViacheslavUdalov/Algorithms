@@ -17,7 +17,7 @@ export function startWebSocket() {
                 // console.log(`message`, message)
                 if (Buffer.isBuffer(message)) {
                     message = message.toString('utf-8');
-                    console.log(message)
+                    // console.log(message)
                 }
                 let res;
                 const localMessage = JSON.parse(message);
