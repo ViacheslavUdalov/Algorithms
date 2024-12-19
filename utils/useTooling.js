@@ -17,20 +17,16 @@ export async function useTooling(funcForRes, sortType) {
     if (options.run) {
         const arrayLength = parseInt(options.run);
         let arrayFunc;
-        let arrayType;
         switch (options.arrayType) {
-            case 's':
-                arrayType = 'sorted'
+            case 'sorted':
                 arrayFunc = createSortedArray(arrayLength);
                 break;
-            case 'rev':
-                arrayType = 'reversed'
+            case 'reversed':
                 arrayFunc = createSortedReverseArray(createSortedArray(arrayLength));
                 break;
-            case 'ran':
+            case 'random':
             default:
                 arrayFunc = createArray(arrayLength);
-                arrayType = 'random'
         }
 
         // поменял console.time на перфоменс, по времени выдаёт тоже самое, погрешность ~0.05ms
@@ -39,8 +35,6 @@ export async function useTooling(funcForRes, sortType) {
         funcForRes(arrayFunc);
 
         let timeEnd = (performance.now() - startTime).toFixed(2);
-        // console.log('TIMEEND')
-        // console.log(timeEnd)
         // if (options.consoleWriting) {
             console.log(timeEnd);
         // }

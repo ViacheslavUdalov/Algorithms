@@ -12,7 +12,6 @@ const SORT_TYPES = config.sortTypes;
 const ARRAY_OF_SORT_FUNCTIONS = [bubbleSort, choiceSort, insertSort, mergeSort, quickSort];
 
 async function executeAndWriteToDb(sortType, arraySize) {
-
     let sortFunctions = sortType ? ARRAY_OF_SORT_FUNCTIONS.filter(func => func.name.toUpperCase() === sortType.toUpperCase()) : ARRAY_OF_SORT_FUNCTIONS;
     let arraySizes = arraySize ? [arraySize] : ARRAY_SIZES;
     let res = [];
@@ -26,10 +25,20 @@ async function executeAndWriteToDb(sortType, arraySize) {
     return res;
 }
 
+export async function getDataFromDb() {
+    let data = await Algorithm.find();
+    return data;
+}
 
-export async function recreateDb(sortType = null, arraySize = null) {
-    await deleteDb(sortType, arraySize);
-   return  await executeAndWriteToDb(sortType, arraySize);
+
+export async function recreateDb(sortType = null, arraySize = null, arrayType = null) {
+    if (arrayType) {
+       return  await executeFuncForCell(arraySize, sortType, arrayType)
+    } else {
+        await deleteDb(sortType, arraySize);
+       return await executeAndWriteToDb(sortType, arraySize);
+    }
+
 }
 
 async function deleteDb(sortType, arraySize) {
@@ -49,12 +58,32 @@ async function executeFunc(arraySize, funcForSort, sortType) {
         sortType,
         arraySize,
         times: {
-            random: await runChild(arraySize, sortType, 'ran'),
-            sorted: await runChild(arraySize, sortType, 's'),
-            reversed: await runChild(arraySize, sortType, 'rev'),
+            random: await runChild(arraySize, sortType, 'random'),
+            sorted: await runChild(arraySize, sortType, 'sorted'),
+            reversed: await runChild(arraySize, sortType, 'reversed'),
         }
     })
     await algorithm.save();
+    return algorithm;
+}
+
+async function executeFuncForCell(arraySize, sortType, arrayType) {
+    let result = await runChild(arraySize, sortType, arrayType)
+    const algorithm = await Algorithm.findOneAndUpdate({
+            sortType,
+            arraySize
+        },
+        {
+            // для обновления
+            $set: {
+                [`times.${arrayType}`]: result,
+
+            }
+        },
+        {new: true, upsert: true}
+    )
+    console.log(`algorithm`, algorithm)
+    // console.log('result', result)
     return algorithm;
 }
 

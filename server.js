@@ -7,14 +7,10 @@ import connectDB from "./connectDB.js";
 import Algorithm from './models/SortResultingSchema.js'
 import {startWebSocket} from "./webSocket.js";
 
-
 const app = express();
 const port = 4000;
-
 await connectDB();
-startWebSocket()
-
-
+startWebSocket();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
