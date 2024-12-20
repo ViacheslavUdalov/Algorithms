@@ -54,19 +54,23 @@ async function deleteDb(sortType, arraySize) {
 
 async function executeFunc(arraySize, funcForSort, sortType) {
     eventEmmiter.emit('requestStart');
+    const random =  await runChild(arraySize, sortType, 'random');
+    eventEmmiter.emit("requestFinish", random, sortType, arraySize, 'random');
+    const sorted =  await runChild(arraySize, sortType, 'sorted');
+    eventEmmiter.emit("requestFinish", sorted, sortType, arraySize, 'sorted');
+    const reversed =  await runChild(arraySize, sortType, 'reversed');
+    eventEmmiter.emit("requestFinish", reversed, sortType, arraySize, 'reversed');
+
     const algorithm = new Algorithm({
         sortType,
         arraySize,
         times: {
-            random: await runChild(arraySize, sortType, 'random'),
-            sorted: await runChild(arraySize, sortType, 'sorted'),
-            reversed: await runChild(arraySize, sortType, 'reversed')
+            random: random,
+            sorted: sorted,
+            reversed: reversed
         }
     })
     await algorithm.save();
-    eventEmmiter.emit("requestFinish", algorithm, 'random');
-    eventEmmiter.emit("requestFinish", algorithm, 'sorted');
-    eventEmmiter.emit("requestFinish", algorithm, 'reversed');
     return algorithm;
 }
 
@@ -86,7 +90,7 @@ async function executeFuncForCell(arraySize, sortType, arrayType) {
         },
         {new: true, upsert: true}
     )
-    eventEmmiter.emit("requestFinish", algorithm, arrayType);
+    eventEmmiter.emit("requestFinish", result, sortType, arraySize, arrayType);
     return algorithm;
 }
 

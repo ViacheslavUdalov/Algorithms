@@ -19,6 +19,7 @@ export const dbFilePath = path.join(__dirname, 'db.json');
 app.use(express.json());
 
 app.use(express.static(path.join(path.resolve(), 'public')));
+app.use('/images', express.static('images'));
 
 
 app.get('/config.js', (req, res) => {

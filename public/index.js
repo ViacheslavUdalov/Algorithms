@@ -1,6 +1,7 @@
 // Client
 
 import config from "../config.js";
+
 const {sortTypes, arrayTypes} = config;
 const types = ['random', 'sorted', 'reversed'];
 const socket = new WebSocket('ws://localhost:8080');
@@ -32,8 +33,8 @@ socket.onmessage = function (event) {
             break;
         case 'updateAll' :
             window.data = jsondata.message;
-            renderTable(jsondata.message);
-            setLoading(false);
+            // renderTable(jsondata.message);
+            // setLoading(false);
             break;
         case 'updateRow' :
             renderRow(jsondata.message);
@@ -57,7 +58,7 @@ socket.onmessage = function (event) {
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
             break;
         case 'requestFinish' :
-            renderCell(jsondata.message, jsondata.arrayType);
+            renderCell(jsondata.message, jsondata.sortType, jsondata.arraySize, jsondata.arrayType);
             outputDiv = document
                 .getElementById('output');
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
@@ -101,23 +102,23 @@ function renderRow(data) {
         });
 }
 
-function renderCell(data, arrayType) {
+function renderCell(data, sortType, arraySize, arrayType) {
     console.log('одна ячейка рендерится')
-    const existingCell = document.getElementById(`${data.sortType}_${data.arraySize}_${arrayType}`);
+    const existingCell = document.getElementById(`${sortType}_${arraySize}_${arrayType}`);
     if (existingCell) {
         existingCell.innerHTML = `
-            <td id="${data.sortType}_${data.arraySize}_${Object.keys(data.times).find(el => el === arrayType)}">
-                ${data.times[arrayType] || 'null'}
- <button id="${data.sortType}_${data.arraySize}_${Object.keys(data.times).find(el => el === arrayType)}_button">Ячейка</button>
+            <td id="${sortType}_${arraySize}_${arrayType}">
+                ${data}
+ <button id="${sortType}_${arraySize}_${arrayType}_button">Ячейка</button>
 </td>
         `;
     }
-    setCellLoading(data.sortType, data.arraySize, arrayType, false);
-    document.getElementById(`${data.sortType}_${data.arraySize}_${Object.keys(data.times).find(el => el === arrayType)}_button`)
+    setCellLoading(sortType, arraySize, arrayType, false);
+    document.getElementById(`${sortType}_${arraySize}_${arrayType}_button`)
         .addEventListener('click', () => {
             console.log('кликнули')
-            updateCell(data.sortType, data.arraySize, Object.keys(data.times).find(el => el === arrayType)).then(() => {
-                renderCell(data, arrayType)
+            updateCell(sortType, arraySize, arrayType).then(() => {
+                renderCell(data, sortType, arraySize, arrayType)
             });
         });
 }
@@ -170,19 +171,19 @@ function renderTable() {
                     .addEventListener('click', async () => {
                         await updateRow(sortRes.sortType, sortRes.arraySize);
                     });
-                restartCell(sortRes, Object.keys(sortRes.times).find(el => el === 'reversed'))
-                restartCell(sortRes, Object.keys(sortRes.times).find(el => el === 'sorted'))
-                restartCell(sortRes, Object.keys(sortRes.times).find(el => el === 'random'))
+                restartCell(sortRes, sortRes.sortType, sortRes.arraySize, 'reversed');
+                restartCell(sortRes, sortRes.sortType, sortRes.arraySize, 'sorted');
+                restartCell(sortRes, sortRes.sortType, sortRes.arraySize, 'random');
             }
         });
 }
 
-function restartCell(sortResult, arrayType) {
+function restartCell(sortResult, sortType, arraySize, arrayType) {
     const elementId = `${sortResult.sortType}_${sortResult.arraySize}_${arrayType}_button`;
     const element = document.getElementById(elementId);
     element.addEventListener('click', () => {
         updateCell(sortResult.sortType, sortResult.arraySize, arrayType).then(() => {
-            renderCell(sortResult, arrayType)
+            renderCell(sortResult, sortType, arraySize, arrayType)
         });
     });
 }
@@ -191,9 +192,6 @@ document.getElementById('restartAll')
     .addEventListener('click', async () => {
         console.log('кликнули');
         await updateAll()
-            // .then(() => {
-            // renderTable();
-        // });
     });
 
 // actions
@@ -243,11 +241,13 @@ function setCellLoading(sortType, arraySize, arrayType, isLoading) {
         console.error('ячейка с данным айди не найдена');
         return;
     }
-
+    const buttonElement = document.getElementById(`${cellId}_button`);
     if (isLoading) {
         cellElement.classList.add('cell-loading');
+        buttonElement.style.display = 'none';
     } else {
         cellElement.classList.remove('cell-loading');
+        buttonElement.style.display = 'block';
     }
 }
 

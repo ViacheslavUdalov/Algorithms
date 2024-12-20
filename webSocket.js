@@ -14,9 +14,9 @@ export function startWebSocket() {
                 type: 'requestStart', message: 'Работаем'
             }))
         });
-        eventEmmiter.on('requestFinish', (data, arrayType) => {
+        eventEmmiter.on('requestFinish', (data, sortType, arraySize, arrayType) => {
             ws.send(JSON.stringify({
-                type: 'requestFinish', message: data, arrayType
+                type: 'requestFinish', message: data, sortType, arraySize, arrayType
             }));
         });
         ws.on('message', async function incoming(message) {

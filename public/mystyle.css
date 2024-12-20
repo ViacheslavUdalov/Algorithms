@@ -8,21 +8,21 @@
 }
 .cell-loading {
     position: relative;
-    color: transparent; /* Скрыть текст */
+    color: transparent;
 }
 
 .cell-loading::after {
-    content: 'Loading...';
-    color: black;
+    content: '';
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, 0.8);
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 12px;
-    text-align: center;
+    width: 40px;
+    height: 55px;
+    background-image: url('images/cat.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .label {
