@@ -1,5 +1,8 @@
 // Client
 
+import config from "../config.js";
+const {sortTypes, arrayTypes} = config;
+const types = ['random', 'sorted', 'reversed'];
 const socket = new WebSocket('ws://localhost:8080');
 
 socket.onopen = function (event) {
@@ -9,7 +12,7 @@ socket.onopen = function (event) {
         message: 'Присоединились к серверу'
     }
     socket.send(JSON.stringify(dataToSend));
-   getAllData();
+    getAllData();
     const Komaru = {
         type: 'Komaru return',
         message: 'Default: Komaru forever!'
@@ -23,9 +26,7 @@ socket.onmessage = function (event) {
     let outputDiv = '';
     switch (jsondata.type) {
         case 'getData' :
-
             window.data = jsondata.message;
-
             renderTable(jsondata.message);
             setLoading(false);
             break;
@@ -46,6 +47,17 @@ socket.onmessage = function (event) {
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
             break;
         case 'connect' :
+            outputDiv = document
+                .getElementById('output');
+            outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
+            break;
+        case 'requestStart' :
+            outputDiv = document
+                .getElementById('output');
+            outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
+            break;
+        case 'requestFinish' :
+            renderCell(jsondata.message, jsondata.arrayType);
             outputDiv = document
                 .getElementById('output');
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
@@ -74,8 +86,8 @@ function renderRow(data) {
         existingRow.innerHTML = `
             <td>${data.sortType || '!'}</td>
             <td>${data.arraySize || '!'}</td>
-            <td id="${data.sortType}_${data.arraySize}_random">${data.times.random || 'null'} <button id="${data.sortType}_${data.arraySize}_random">Ячейка</button></td>
-            <td id="${data.sortType}_${data.arraySize}_sorted">${data.times.sorted || 'null'} <button id="${data.sortType}_${data.arraySize}_sorted">Ячейка</button></td>
+            <td id="${data.sortType}_${data.arraySize}_random">${data.times.random || 'null'} <button id="${data.sortType}_${data.arraySize}_random_button">Ячейка</button></td>
+            <td id="${data.sortType}_${data.arraySize}_sorted">${data.times.sorted || 'null'} <button id="${data.sortType}_${data.arraySize}_sorted_button">Ячейка</button></td>
             <td id="${data.sortType}_${data.arraySize}_reversed">${data.times.reversed || 'null'}  <button id="${data.sortType}_${data.arraySize}_reversed_button">Ячейка</button>
 </td>
             <td><button class='button' id="${data.sortType}_${data.arraySize}_button">Запустить данную сортировку</button></td>
@@ -91,16 +103,16 @@ function renderRow(data) {
 
 function renderCell(data, arrayType) {
     console.log('одна ячейка рендерится')
-    const existingCell = document.getElementById(`${data.sortType}_${data.arraySize}_${Object.keys(data.times).find(el => el === arrayType)}`);
+    const existingCell = document.getElementById(`${data.sortType}_${data.arraySize}_${arrayType}`);
     if (existingCell) {
         existingCell.innerHTML = `
             <td id="${data.sortType}_${data.arraySize}_${Object.keys(data.times).find(el => el === arrayType)}">
                 ${data.times[arrayType] || 'null'}
  <button id="${data.sortType}_${data.arraySize}_${Object.keys(data.times).find(el => el === arrayType)}_button">Ячейка</button>
 </td>
-
         `;
     }
+    setCellLoading(data.sortType, data.arraySize, arrayType, false);
     document.getElementById(`${data.sortType}_${data.arraySize}_${Object.keys(data.times).find(el => el === arrayType)}_button`)
         .addEventListener('click', () => {
             console.log('кликнули')
@@ -124,7 +136,7 @@ function renderTable() {
             <th>Action</th>
         </tr>
     `;
-    window.data.reduce((prev, curr) => {
+    window.data && window.data.reduce((prev, curr) => {
         if (!prev.find(result => result.sortType === curr.sortType && result.arraySize === curr.arraySize)) {
             prev.push(curr);
         }
@@ -142,8 +154,8 @@ function renderTable() {
                 .results.push(curr);
             return prev;
         }, []).forEach(row => {
-        for (let sortRes of row.results) {
-            const rowElement = `
+            for (let sortRes of row.results) {
+                const rowElement = `
             <tr id="${sortRes.sortType}_${sortRes.arraySize}">
                 <td>${sortRes.sortType || '!'}</td>
                 <td>${sortRes.arraySize || '!'}</td>
@@ -153,44 +165,35 @@ function renderTable() {
                 <td><button class='button' id="${sortRes.sortType}_${sortRes.arraySize}_button">Запустить данную сортировку</button></td>
             </tr>
         `;
-            tableElement.insertAdjacentHTML('beforeend', rowElement);
+                tableElement.insertAdjacentHTML('beforeend', rowElement);
+                document.getElementById(`${sortRes.sortType}_${sortRes.arraySize}_button`)
+                    .addEventListener('click', async () => {
+                        await updateRow(sortRes.sortType, sortRes.arraySize);
+                    });
+                restartCell(sortRes, Object.keys(sortRes.times).find(el => el === 'reversed'))
+                restartCell(sortRes, Object.keys(sortRes.times).find(el => el === 'sorted'))
+                restartCell(sortRes, Object.keys(sortRes.times).find(el => el === 'random'))
+            }
+        });
+}
 
-            document.getElementById(`${sortRes.sortType}_${sortRes.arraySize}_button`)
-                .addEventListener('click', async () => {
-                    await updateRow(sortRes.sortType, sortRes.arraySize);
-                });
-            document.getElementById(`${sortRes.sortType}_${sortRes.arraySize}_${Object.keys(sortRes.times).find(el => el === 'reversed')}_button`)
-                .addEventListener('click', () => {
-                    console.log('кликнули')
-                    console.log(Object.keys(sortRes.times))
-                    updateCell(sortRes.sortType, sortRes.arraySize, Object.keys(sortRes.times).find(el => el === 'reversed')).then(() => {
-                        renderCell(sortRes, 'reversed')
-                    });
-                });
-            document.getElementById(`${sortRes.sortType}_${sortRes.arraySize}_${Object.keys(sortRes.times).find(el => el === 'sorted')}_button`)
-                .addEventListener('click', () => {
-                    console.log('кликнули')
-                    updateCell(sortRes.sortType, sortRes.arraySize, Object.keys(sortRes.times).find(el => el === 'sorted')).then(() => {
-                        renderCell(sortRes, 'sorted')
-                    });
-                });
-            document.getElementById(`${sortRes.sortType}_${sortRes.arraySize}_${Object.keys(sortRes.times).find(el => el === 'random')}_button`)
-                .addEventListener('click', () => {
-                    console.log('кликнули')
-                    updateCell(sortRes.sortType, sortRes.arraySize, Object.keys(sortRes.times).find(el => el === 'random')).then(() => {
-                        renderCell(sortRes, 'random')
-                    });
-                });
-        }
+function restartCell(sortResult, arrayType) {
+    const elementId = `${sortResult.sortType}_${sortResult.arraySize}_${arrayType}_button`;
+    const element = document.getElementById(elementId);
+    element.addEventListener('click', () => {
+        updateCell(sortResult.sortType, sortResult.arraySize, arrayType).then(() => {
+            renderCell(sortResult, arrayType)
+        });
     });
 }
 
 document.getElementById('restartAll')
-    .addEventListener('click', () => {
+    .addEventListener('click', async () => {
         console.log('кликнули');
-        updateAll().then(() => {
-            renderTable();
-        });
+        await updateAll()
+            // .then(() => {
+            // renderTable();
+        // });
     });
 
 // actions
@@ -223,29 +226,54 @@ function getAllData() {
 function setLoading(isLoading) {
     const loadingElement = document.getElementById('loading');
     const buttonElement = document.getElementById('restartAll');
-    const table = document.getElementById('sortingTable');
     if (isLoading) {
         loadingElement.style.display = 'block';
         buttonElement.style.display = 'none';
-        table.style.display = 'none';
     } else {
         loadingElement.style.display = 'none';
         buttonElement.style.display = 'block';
-        table.style.display = 'inline-block';
     }
 }
+
+function setCellLoading(sortType, arraySize, arrayType, isLoading) {
+    const cellId = `${sortType}_${arraySize}_${arrayType}`;
+    const cellElement = document.getElementById(cellId);
+
+    if (!cellElement) {
+        console.error('ячейка с данным айди не найдена');
+        return;
+    }
+
+    if (isLoading) {
+        cellElement.classList.add('cell-loading');
+    } else {
+        cellElement.classList.remove('cell-loading');
+    }
+}
+
 // updaters
 
 async function updateRow(sortType, arraySize) {
+    const types = ['random', 'sorted', 'reversed'];
+    for (const arrayType of types) {
+        setCellLoading(sortType, arraySize, arrayType, true);
+    }
+
     await requestSort(sortType, arraySize, "updateRow");
 }
 
 async function updateAll() {
-    setLoading(true);
+    for (const sortType of sortTypes) {
+        for (const arraySize of arrayTypes) {
+            for (const arrayType of types) {
+                setCellLoading(sortType, arraySize, arrayType, true);
+            }
+        }
+    }
     await requestSort(null, null, "updateAll");
-
 }
 
 async function updateCell(sortType, arraySize, arrayType) {
+    setCellLoading(sortType, arraySize, sortType, true);
     await requestSort(sortType, arraySize, "updateCell", arrayType);
 }

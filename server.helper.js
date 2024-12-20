@@ -6,6 +6,8 @@ import quickSort from "./sorts/quickSort.js";
 import config from "./config.js";
 import Algorithm from './models/SortResultingSchema.js';
 import {runChild} from './chlid.js'
+import eventEmmiter from "./eventEmmiter.js";
+
 
 const ARRAY_SIZES = config.arrayTypes;
 const SORT_TYPES = config.sortTypes;
@@ -33,10 +35,10 @@ export async function getDataFromDb() {
 
 export async function recreateDb(sortType = null, arraySize = null, arrayType = null) {
     if (arrayType) {
-       return  await executeFuncForCell(arraySize, sortType, arrayType)
+        return await executeFuncForCell(arraySize, sortType, arrayType);
     } else {
         await deleteDb(sortType, arraySize);
-       return await executeAndWriteToDb(sortType, arraySize);
+        return await executeAndWriteToDb(sortType, arraySize);
     }
 
 }
@@ -45,29 +47,31 @@ async function deleteDb(sortType, arraySize) {
     const query = {};
     if (sortType !== null) query.sortType = sortType;
     if (arraySize !== null) query.arraySize = arraySize;
-    console.log(sortType, arraySize)
     const result = await Algorithm.deleteMany(query);
-
-    console.log(`result.deletedCount`, result.deletedCount);
     return result.detetedCount;
 }
 
 
 async function executeFunc(arraySize, funcForSort, sortType) {
+    eventEmmiter.emit('requestStart');
     const algorithm = new Algorithm({
         sortType,
         arraySize,
         times: {
             random: await runChild(arraySize, sortType, 'random'),
             sorted: await runChild(arraySize, sortType, 'sorted'),
-            reversed: await runChild(arraySize, sortType, 'reversed'),
+            reversed: await runChild(arraySize, sortType, 'reversed')
         }
     })
     await algorithm.save();
+    eventEmmiter.emit("requestFinish", algorithm, 'random');
+    eventEmmiter.emit("requestFinish", algorithm, 'sorted');
+    eventEmmiter.emit("requestFinish", algorithm, 'reversed');
     return algorithm;
 }
 
 async function executeFuncForCell(arraySize, sortType, arrayType) {
+    eventEmmiter.emit('requestStart');
     let result = await runChild(arraySize, sortType, arrayType)
     const algorithm = await Algorithm.findOneAndUpdate({
             sortType,
@@ -82,17 +86,15 @@ async function executeFuncForCell(arraySize, sortType, arrayType) {
         },
         {new: true, upsert: true}
     )
-    console.log(`algorithm`, algorithm)
-    // console.log('result', result)
+    eventEmmiter.emit("requestFinish", algorithm, arrayType);
     return algorithm;
 }
 
 export async function checkBdForData() {
 
-    let data = await Algorithm.find();
+    let dataForCycle = await Algorithm.find();
     let missingData = [];
     let duplicates = [];
-    let dataForCycle = data;
 
     SORT_TYPES.forEach(sortType => {
         ARRAY_SIZES.forEach(arraySize => {

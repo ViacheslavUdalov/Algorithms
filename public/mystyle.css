@@ -6,6 +6,25 @@
     cursor: pointer;
     border: 1px solid black;
 }
+.cell-loading {
+    position: relative;
+    color: transparent; /* Скрыть текст */
+}
+
+.cell-loading::after {
+    content: 'Loading...';
+    color: black;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    text-align: center;
+}
+
 .label {
     font-size: large;
     font-weight: bold;
