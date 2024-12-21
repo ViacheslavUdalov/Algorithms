@@ -16,14 +16,14 @@ function swap(array, a, b) {
     array[b] = temp;
 }
 
-function quicksort(array){
+function quickSort(array){
     // основная функция сортировки
     const length = array.length;
-    quickSort(array, 0, length - 1);
+    quicksort(array, 0, length - 1);
     return array;
 }
 
-function quickSort(array, start, end) {
+function quicksort(array, start, end) {
     // условие выхода из функции
     if (start >= end) {
         return array;
@@ -32,9 +32,9 @@ function quickSort(array, start, end) {
     const index = partition(array, start, end);
 
     // вызов функции в первой половине.
-    quickSort(array, start, index - 1);
+    quicksort(array, start, index - 1);
     // вызов функции во второй половине.
-    quickSort(array, index, end);
+    quicksort(array, index, end);
 
     return array;
 }
@@ -67,6 +67,6 @@ function partition(array, start, end) {
 }
 
 
-console.log(quicksort([2, 6, 4, 4, 4, 3, 1, 5]))
+// console.log(quicksort([2, 6, 4, 4, 4, 3, 1, 5]))
 
-export default quicksort;
+export default quickSort;
