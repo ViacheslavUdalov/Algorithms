@@ -6,11 +6,17 @@ import {dirname} from 'path';
 import connectDB from "./connectDB.js";
 import Algorithm from './models/SortResultingSchema.js'
 import {startWebSocket} from "./webSocket.js";
+import config from './config.js';
+import { AlgorithmState } from './controllers/AlgorithmState.js';
 
 const app = express();
 const port = 4000;
 await connectDB();
-startWebSocket();
+const algoState = new AlgorithmState(Algorithm, config);
+const jobRunner = {};
+await algoState.init();
+
+startWebSocket(algoState, jobRunner);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

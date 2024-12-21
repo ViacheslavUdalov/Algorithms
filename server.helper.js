@@ -13,34 +13,19 @@ const ARRAY_SIZES = config.arrayTypes;
 const SORT_TYPES = config.sortTypes;
 const ARRAY_OF_SORT_FUNCTIONS = [bubbleSort, choiceSort, insertSort, mergeSort, quickSort];
 
-async function executeAndWriteToDb(sortType, arraySize) {
-    let sortFunctions = sortType ? ARRAY_OF_SORT_FUNCTIONS.filter(func => func.name.toUpperCase() === sortType.toUpperCase()) : ARRAY_OF_SORT_FUNCTIONS;
-    let arraySizes = arraySize ? [arraySize] : ARRAY_SIZES;
-    let res = [];
-    for (let sortFunc of sortFunctions) {
-        for (let arraySize of arraySizes) {
-            let interRes = await executeFunc(arraySize, sortFunc, sortFunc.name);
-            res.push(interRes);
-        }
-    }
-    // console.log(`execute`, res);
-    return res;
-}
-
 export async function getDataFromDb() {
     let data = await Algorithm.find();
     return data;
 }
 
 
-export async function recreateDb(sortType = null, arraySize = null, arrayType = null) {
+export async function recreateDb(algoState, sortType = null, arraySize = null, arrayType = null) {
     if (arrayType) {
-        return await executeFuncForCell(arraySize, sortType, arrayType);
+        return await executeFuncForCell(algoState, arraySize, sortType, arrayType);
     } else {
         await deleteDb(sortType, arraySize);
         return await executeAndWriteToDb(sortType, arraySize);
     }
-
 }
 
 async function deleteDb(sortType, arraySize) {
@@ -53,13 +38,9 @@ async function deleteDb(sortType, arraySize) {
 
 
 async function executeFunc(arraySize, funcForSort, sortType) {
-    eventEmmiter.emit('requestStart');
     const random =  await runChild(arraySize, sortType, 'random');
-    eventEmmiter.emit("requestFinish", random, sortType, arraySize, 'random');
     const sorted =  await runChild(arraySize, sortType, 'sorted');
-    eventEmmiter.emit("requestFinish", sorted, sortType, arraySize, 'sorted');
     const reversed =  await runChild(arraySize, sortType, 'reversed');
-    eventEmmiter.emit("requestFinish", reversed, sortType, arraySize, 'reversed');
 
     const algorithm = new Algorithm({
         sortType,
@@ -71,10 +52,10 @@ async function executeFunc(arraySize, funcForSort, sortType) {
         }
     })
     await algorithm.save();
-    return algorithm;
+    return algorithm.toObject();
 }
 
-async function executeFuncForCell(arraySize, sortType, arrayType) {
+async function executeFuncForCell(algoState, arraySize, sortType, arrayType) {
     eventEmmiter.emit('requestStart');
     let result = await runChild(arraySize, sortType, arrayType)
     const algorithm = await Algorithm.findOneAndUpdate({
@@ -90,8 +71,23 @@ async function executeFuncForCell(arraySize, sortType, arrayType) {
         },
         {new: true, upsert: true}
     )
-    eventEmmiter.emit("requestFinish", result, sortType, arraySize, arrayType);
+    algoState.updateOneAlgo(algorithm);
     return algorithm;
+}
+
+async function executeAndWriteToDb(algoState, sortType, arraySize) {
+    let sortFunctions = sortType ? ARRAY_OF_SORT_FUNCTIONS.filter(func => func.name.toUpperCase() === sortType.toUpperCase()) : ARRAY_OF_SORT_FUNCTIONS;
+    let arraySizes = arraySize ? [arraySize] : ARRAY_SIZES;
+    let res = [];
+    for (let sortFunc of sortFunctions) {
+        for (let arraySize of arraySizes) {
+            let interRes = await executeFunc(arraySize, sortFunc, sortFunc.name);
+            res.push(interRes.toObject());
+        }
+    }
+    algoState.updateAlgos(res);
+    // console.log(`execute`, res);
+    return res;
 }
 
 export async function checkBdForData() {
