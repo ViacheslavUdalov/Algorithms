@@ -24,18 +24,14 @@ export function startWebSocket(algoState, dbService, jobService) {
                 message: 'Всё сделано босс!',
             }));
         });
-
-        eventEmmiter.on('requestStart', () => {
+        
+        algoState.updateEmitter.on(ALGO_MESSAGES.extra, (algos) => {
+            console.log('ExtraAlgos')
             ws.send(JSON.stringify({
-                type: 'requestStart', message: 'Работаем'
-            }))
+                type: 'extra',
+                message: algos,
+            }));
         });
-        //
-        // eventEmmiter.on('requestFinish', (data, sortType, arraySize, arrayType) => {
-        //     ws.send(JSON.stringify({
-        //         type: 'requestFinish', message: data, sortType, arraySize, arrayType
-        //     }));
-        // });
 
         ws.on('message', async function incoming(message) {
             if (Buffer.isBuffer(message)) {

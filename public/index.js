@@ -12,6 +12,8 @@ socket.onopen = function (event) {
         type: 'connect',
         message: 'Присоединились к серверу'
     }
+    
+    
     socket.send(JSON.stringify(dataToSend));
     getAllData();
     const Komaru = {
@@ -33,8 +35,7 @@ socket.onmessage = function (event) {
             break;
         case 'updateAll' :
             window.data = jsondata.message;
-            // renderTable(jsondata.message);
-            // setLoading(false);
+            setLoading(false);
             break;
         case 'updateRow' :
             renderRow(jsondata.message);
@@ -59,18 +60,17 @@ socket.onmessage = function (event) {
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
             break;
         case 'oneUpdated' :
-            console.log('renderCell', jsondata);
             renderCell(jsondata.message, jsondata.arrayType);
+           break;
+        case 'allUpdated' :
             outputDiv = document
                 .getElementById('output');
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
             break;
-        case 'allUpdated' :
-            console.log('allUpdated', jsondata);
-            // renderTable(jsondata.message);
+        case 'extra' :
             outputDiv = document
                 .getElementById('output');
-            outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
+            outputDiv.innerHTML += `<p>Received <b>"${jsondata.message.arraySize}" - "${jsondata.message.sortType}" - "${jsondata.message._id}"</b> from server.</p>`;
             break;
         default:
             console.log(jsondata)
@@ -113,8 +113,7 @@ function renderRow(data) {
 }
 
 function renderCell(data, arrayType) {
-    console.log(data, arrayType);
-    console.log('одна ячейка рендерится');
+    console.log('одна ячейка рендерится')
     const existingCell = document.getElementById(`${data.sortType}_${data.arraySize}_${arrayType}`);
     if (existingCell) {
         existingCell.innerHTML = `
@@ -124,7 +123,6 @@ function renderCell(data, arrayType) {
 </td>
         `;
     }
-    console.log(data.arraySize, arrayType)
     setCellLoading(data.sortType, data.arraySize, arrayType, false);
     document.getElementById(`${data.sortType}_${data.arraySize}_${arrayType}_button`)
         .addEventListener('click', async () => {
@@ -249,7 +247,6 @@ function setLoading(isLoading) {
 
 function setCellLoading(sortType, arraySize, arrayType, isLoading) {
     const cellId = `${sortType}_${arraySize}_${arrayType}`;
-    console.log(cellId)
     const cellElement = document.getElementById(cellId);
 
     if (!cellElement) {

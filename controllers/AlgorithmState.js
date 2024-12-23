@@ -2,112 +2,129 @@ import EventEmitter from "node:events";
 import {helperLog} from "../utils/useTooling.js";
 
 export const ALGO_STATUSES = {
-	VALID: 'VALID',
-	MISSING: 'MISSING',
-	CALCULATING: 'CALCULATING',
-	INVALID: 'INVALID',
+    VALID: 'VALID',
+    MISSING: 'MISSING',
+    CALCULATING: 'CALCULATING',
+    INVALID: 'INVALID',
 };
 
 export const ALGO_MESSAGES = {
-	oneUpdated: 'oneUpdated',
-	allUpdated: 'allUpdated',
+    oneUpdated: 'oneUpdated',
+    allUpdated: 'allUpdated',
+    extra: 'extra'
 };
 
 class AlgoResults {
-	id;
-	sortType;
-	arraySize;
-	times = {
-		random: undefined,
-		sorted: undefined,
-		reversed: undefined
-	};
-	status;
-	isValid;
+    id;
+    sortType;
+    arraySize;
+    times = {
+        random: undefined,
+        sorted: undefined,
+        reversed: undefined
+    };
+    status;
+    isValid;
 }
 
 export class AlgorithmState {
-	config;
-	db;
-	algosData = [];
-	updateEmitter = new EventEmitter();
+    config;
+    db;
+    algosData = [];
+    updateEmitter = new EventEmitter();
 
-	constructor(db, config) {
-		this.db = db;
-		this.config = config;
-	}
+    constructor(db, config) {
+        this.db = db;
+        this.config = config;
+    }
 
-	async init() {
-		await this._syncAlgoDataWithDB();
-	}
+    async init() {
+        await this._syncAlgoDataWithDB();
+    }
 
-	getData() {
-		return this.algosData;
-	}
+    getData() {
+        return this.algosData;
+    }
 
-	updateOneAlgo(algo, arrayType) {
-		console.log(algo);
-		const oldAlgo = this.algosData.find(nextAlgo => {
-			return nextAlgo.arraySize === algo.arraySize && nextAlgo.sortType === algo.sortType;
-		});
-		if (oldAlgo) {
-			console.log(`oldAlgo`, oldAlgo)
-			Object.assign(oldAlgo, algo);
-			console.log(`algo`, algo);
-			oldAlgo.isValid = this._getIsAlgoValid(oldAlgo);
-			console.log(`oldAlgo`, oldAlgo);
-		} else {
-			algo.isValid = this._getIsAlgoValid(algo);
-			this.algosData.push(algo);
-		}
-		this.updateEmitter.emit('oneUpdated', algo, arrayType);
-	}
+    updateOneAlgo(algo, arrayType) {
+        console.log(algo);
+        const oldAlgo = this.algosData.find(nextAlgo => {
+            return nextAlgo.arraySize === algo.arraySize && nextAlgo.sortType === algo.sortType;
+        });
+        if (oldAlgo) {
+            console.log(`oldAlgo`, oldAlgo)
+            Object.assign(oldAlgo, algo);
+            console.log(`algo`, algo);
+            oldAlgo.isValid = this._getIsAlgoValid(oldAlgo);
+            console.log(`oldAlgo`, oldAlgo);
+        } else {
+            algo.isValid = this._getIsAlgoValid(algo);
+            this.algosData.push(algo);
+        }
+        this.updateEmitter.emit('oneUpdated', algo, arrayType);
+    }
 
-	updateAllAlgos(algos) {
-	
-		const algoStates = algos.map(algo => algo);
-		this._populateAlgosValidity(algoStates);
-		algoStates.push(...this._getMissingAlgos(algoStates));
-		this.algosData = algoStates;
-		this.updateEmitter.emit('allUpdated', this.algosData);
-	}
+    updateAllAlgos(algos) {
 
-	updateAlgos(algos) {
-		algos.forEach(algo => this.updateOneAlgo(algo));
-	}
+        const algoStates = algos.map(algo => algo);
+        this._populateAlgosValidity(algoStates);
+        algoStates.push(...this._getMissingAlgos(algoStates));
+        this._getExtraAlgos(algoStates);
+        this.algosData = algoStates;
+        this.updateEmitter.emit('allUpdated', this.algosData);
+    }
 
-	async _syncAlgoDataWithDB() {
-		const algos = await this.db.find({});
-		this.updateAllAlgos(algos); 
-	}
+    updateAlgos(algos) {
+        algos.forEach(algo => this.updateOneAlgo(algo));
+    }
 
-	_populateAlgosValidity(algos) {
-	
-		algos.forEach((algo, index) => {
-			algos[index].isValid = this._getIsAlgoValid(algo);
-			// console.log('algos[index]', algos[index]);
-		});
-	}
+    async _syncAlgoDataWithDB() { 
+        const algos = await this.db.find({});
+        this.updateAllAlgos(algos);
+    }
 
-	_getIsAlgoValid(algo) {
-		return this.config.arrayTypes.includes(algo.arraySize) && this.config.sortTypes.includes(algo.sortType);
-	}
+    _populateAlgosValidity(algos) {
 
-	_getMissingAlgos(algos) {
-		const missingAlgos = [];
-		this.config.arrayTypes.forEach(arraySize => {
-			this.config.sortTypes.forEach(sortType => {
-				if (!algos.find(algo => algo.sortType === sortType && algo.arraySize === arraySize)) {
-					const newAlgo = Object.assign(new AlgoResults(), {
-						sortType: sortType,
-						arraySize: arraySize,
-						status: ALGO_STATUSES.MISSING,
-						isValid: true,
-					});
-					missingAlgos.push(newAlgo);
-				}
-			});
-		});
-		return missingAlgos;
-	}
+        algos.forEach((algo, index) => {
+            algos[index].isValid = this._getIsAlgoValid(algo);
+            // console.log('algos[index]', algos[index]);
+        });
+    }
+
+    _getIsAlgoValid(algo) {
+        return this.config.arrayTypes.includes(algo.arraySize) && this.config.sortTypes.includes(algo.sortType);
+    }
+
+    _getMissingAlgos(algos) {
+        const missingAlgos = [];
+        this.config.arrayTypes.forEach(arraySize => {
+            this.config.sortTypes.forEach(sortType => {
+                if (!algos.find(algo => algo.sortType === sortType && algo.arraySize === arraySize)) {
+                    const newAlgo = Object.assign(new AlgoResults(), {
+                        sortType: sortType,
+                        arraySize: arraySize,
+                        status: ALGO_STATUSES.MISSING,
+                        isValid: true,
+                    });
+                    missingAlgos.push(newAlgo);
+                }
+            });
+        });
+        console.log(`missingAlgos`, missingAlgos)
+        return missingAlgos;
+    }
+
+    _getExtraAlgos(algos) {
+        const extraAlgos = [];
+        algos.forEach(algo => {
+                const isExtra = !this.config.arrayTypes.includes(algo.arraySize) ||
+                    !this.config.sortTypes.includes(algo.sortType);
+                if (isExtra) {
+                    extraAlgos.push(algo);
+                }
+            }
+        )
+        console.log(`extra`, extraAlgos)
+        this.updateEmitter.emit('extra', extraAlgos);
+    }
 }
