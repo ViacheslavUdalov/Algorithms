@@ -4,11 +4,11 @@ import {insertSort} from "./sorts/insertSort.js";
 import mergeSort from "./sorts/mergeSort.js";
 import quickSort from "./sorts/quickSort.js";
 import config from "./config.js";
-import Algorithm from './models/SortResultingSchema.js';
 import {runChild} from './chlid.js'
 import eventEmmiter from "./eventEmmiter.js";
 import {ALGO_STATUSES} from "./controllers/AlgorithmState.js";
 import {helperLog} from "./utils/useTooling.js";
+import Algorithm from "./models/AlgorithmSchema.js";
 
 
 const ARRAY_SIZES = config.arrayTypes;
@@ -41,9 +41,23 @@ export class DBService {
         )
         algoState.updateOneAlgo(algorithm, arrayType);
     }
+    async getOneAlgo(arraySize, sortType,) {
+        const algorithm = await Algorithm.find({
+            sortType,
+            arraySize
+        })
+        return algorithm[0];
+    }
 
-   async saveAllToDb(jobService, algoState, dbService) {
-        const result =  await jobService.executeFuncForAllAlgos(algoState, dbService);
+   async saveAllToDb(algoState) {
+       console.log( `algoState.algosData`, algoState.algosData);
+        algoState.algosData.map(async item => {
+            const {_id, ...itemForDb} = item;
+            console.log(`item`, itemForDb)
+            const algo = await new Algorithm(itemForDb);
+            algo.save();
+        });
+        algoState.updateEmitter.emit('writeTodb');
     }  
     // async saveCheckedDB(jobService, algoState, dbService) {
     //     const result =  await jobService.executeFuncForAllAlgos(algoState, dbService);

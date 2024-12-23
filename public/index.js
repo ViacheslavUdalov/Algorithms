@@ -2,6 +2,16 @@
 
 import config from "../config.js";
 
+document.getElementById('writeToDb')
+    .addEventListener('click', async () => {
+        console.log('кликнули')
+        const Komaru = {
+            type: 'writeToDb',
+            message: 'Default: Komaru forever записал в бд!'
+        }
+        socket.send(JSON.stringify(Komaru));
+    });
+
 const {sortTypes, arrayTypes} = config;
 const types = ['random', 'sorted', 'reversed'];
 const socket = new WebSocket('ws://localhost:8080');
@@ -12,7 +22,6 @@ socket.onopen = function (event) {
         type: 'connect',
         message: 'Присоединились к серверу'
     }
-    
     
     socket.send(JSON.stringify(dataToSend));
     getAllData();
@@ -71,6 +80,12 @@ socket.onmessage = function (event) {
             outputDiv = document
                 .getElementById('output');
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message.arraySize}" - "${jsondata.message.sortType}" - "${jsondata.message._id}"</b> from server.</p>`;
+            break;
+        case 'writeToDb' :
+            console.log('writeToDb')
+            outputDiv = document
+                .getElementById('output');
+            outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
             break;
         default:
             console.log(jsondata)
@@ -167,7 +182,9 @@ function renderTable() {
             return prev;
         }, []).forEach(row => {
             for (let sortRes of row.results) {
-                const rowElement = `
+                let rowElement;
+                if (sortRes.sortType && sortRes.arraySize) {
+                    rowElement = `
             <tr id="${sortRes.sortType}_${sortRes.arraySize}">
                 <td>${sortRes.sortType || '!'}</td>
                 <td>${sortRes.arraySize || '!'}</td>
@@ -176,7 +193,9 @@ function renderTable() {
                 <td id="${sortRes.sortType}_${sortRes.arraySize}_reversed">${sortRes.times.reversed || 'null'}<button id="${sortRes.sortType}_${sortRes.arraySize}_reversed_button">Ячейка</button></td>
                 <td><button class='button' id="${sortRes.sortType}_${sortRes.arraySize}_button">Запустить данную сортировку</button></td>
             </tr>
-        `;
+        `;  
+                }
+             
                 tableElement.insertAdjacentHTML('beforeend', rowElement);
                 document.getElementById(`${sortRes.sortType}_${sortRes.arraySize}_button`)
                     .addEventListener('click', async () => {
@@ -190,12 +209,12 @@ function renderTable() {
 }
 
 function restartCell(sortResult, arrayType) {
-    // console.log(sortResult)
+    console.log(sortResult)
     const elementId = `${sortResult.sortType}_${sortResult.arraySize}_${arrayType}_button`;
     const element = document.getElementById(elementId);
     element.addEventListener('click', () => {
         updateCell(sortResult.sortType, sortResult.arraySize, arrayType, sortResult.id).then(() => {
-            renderCell(sortResult, arrayType)
+            renderCell(sortResult, arrayType);
         });
     });
 }

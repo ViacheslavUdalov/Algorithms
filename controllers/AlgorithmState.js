@@ -33,7 +33,7 @@ export class AlgorithmState {
     algosData = [];
     updateEmitter = new EventEmitter();
 
-    constructor(db, config) {
+    constructor(db, config, dbService) {
         this.db = db;
         this.config = config;
     }
@@ -43,29 +43,30 @@ export class AlgorithmState {
     }
 
     getData() {
+        console.log(this.algosData)
         return this.algosData;
     }
 
-    updateOneAlgo(algo, arrayType) {
-        console.log(algo);
+    async updateOneAlgo(arraySize, sortType, arrayType, result) {
+        console.log('updateOneAlgo')
+    
+        console.log(result)
         const oldAlgo = this.algosData.find(nextAlgo => {
-            return nextAlgo.arraySize === algo.arraySize && nextAlgo.sortType === algo.sortType;
+            return nextAlgo.arraySize === arraySize && nextAlgo.sortType === sortType;
         });
         if (oldAlgo) {
-            console.log(`oldAlgo`, oldAlgo)
-            Object.assign(oldAlgo, algo);
-            console.log(`algo`, algo);
+            console.log(`oldAlgo`, oldAlgo);
+            oldAlgo.times[arrayType] = result;
             oldAlgo.isValid = this._getIsAlgoValid(oldAlgo);
             console.log(`oldAlgo`, oldAlgo);
         } else {
-            algo.isValid = this._getIsAlgoValid(algo);
-            this.algosData.push(algo);
+            oldAlgo.isValid = this._getIsAlgoValid(oldAlgo);
+            this.algosData.push(oldAlgo);
         }
-        this.updateEmitter.emit('oneUpdated', algo, arrayType);
+        this.updateEmitter.emit('oneUpdated', oldAlgo, arrayType);
     }
 
     updateAllAlgos(algos) {
-
         const algoStates = algos.map(algo => algo);
         this._populateAlgosValidity(algoStates);
         algoStates.push(...this._getMissingAlgos(algoStates));
@@ -78,16 +79,14 @@ export class AlgorithmState {
         algos.forEach(algo => this.updateOneAlgo(algo));
     }
 
-    async _syncAlgoDataWithDB() { 
+    async _syncAlgoDataWithDB() {
         const algos = await this.db.find({});
         this.updateAllAlgos(algos);
     }
 
     _populateAlgosValidity(algos) {
-
         algos.forEach((algo, index) => {
             algos[index].isValid = this._getIsAlgoValid(algo);
-            // console.log('algos[index]', algos[index]);
         });
     }
 
@@ -120,11 +119,12 @@ export class AlgorithmState {
                 const isExtra = !this.config.arrayTypes.includes(algo.arraySize) ||
                     !this.config.sortTypes.includes(algo.sortType);
                 if (isExtra) {
-                    extraAlgos.push(algo);
+                    extraAlgos.push(algo); 
                 }
-            }
+            } 
         )
         console.log(`extra`, extraAlgos)
-        this.updateEmitter.emit('extra', extraAlgos);
+        this.updateEmitter.emit(ALGO_MESSAGES.extra, extraAlgos);
     }
-}
+} 
+ 

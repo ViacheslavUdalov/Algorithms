@@ -4,11 +4,11 @@ import {insertSort} from "./sorts/insertSort.js";
 import mergeSort from "./sorts/mergeSort.js";
 import quickSort from "./sorts/quickSort.js";
 import config from "./config.js";
-import Algorithm from './models/SortResultingSchema.js';
 import {runChild} from './chlid.js'
 import eventEmmiter from "./eventEmmiter.js";
 import {DBService} from "./DBService.js";
 import {ALGO_STATUSES} from "./controllers/AlgorithmState.js";
+import Algorithm from "./models/AlgorithmSchema.js";
 
 
 const ARRAY_SIZES = config.arrayTypes;
@@ -22,10 +22,10 @@ export class JobRunner {
     }
 
 
-    async executeFuncForString(algoState, dbService, sortType, arraySize) {
-        const random = await this.executeFuncForCell(algoState, dbService, arraySize, sortType, 'random');
-        const sorted = await this.executeFuncForCell(algoState, dbService, arraySize, sortType, 'sorted');
-        const reversed = await this.executeFuncForCell(algoState, dbService, arraySize, sortType, 'reversed');
+    async executeFuncForString(algoState, sortType, arraySize) {
+        const random = await this.executeFuncForCell(algoState, arraySize, sortType, 'random');
+        const sorted = await this.executeFuncForCell(algoState, arraySize, sortType, 'sorted');
+        const reversed = await this.executeFuncForCell(algoState, arraySize, sortType, 'reversed');
         const algorithm = {
             arraySize,
             sortType,
@@ -40,17 +40,17 @@ export class JobRunner {
         return algorithm;
     }
 
-    async executeFuncForCell(algoState, dbService, arraySize, sortType, arrayType) {
+    async executeFuncForCell(algoState, arraySize, sortType, arrayType) {
         const result = await runChild(arraySize, sortType, arrayType);
-        await dbService.saveDataForCell(algoState, arraySize, sortType, arrayType, result);
+        await algoState.updateOneAlgo(arraySize, sortType, arrayType, result);
         return result;
     }
 
-    async executeFuncForAllAlgos(algoState, dbService) {
+    async executeFuncForAllAlgos(algoState) {
         let res = [];
         for (let sortFunc of ARRAY_OF_SORT_FUNCTIONS) {
             for (let arraySize of ARRAY_SIZES) {
-                let interRes = await this.executeFuncForString(algoState, dbService, sortFunc.name, arraySize);
+                let interRes = await this.executeFuncForString(algoState, sortFunc.name, arraySize);
                 res.push(interRes);
             }
         }

@@ -13,9 +13,9 @@ export function startWebSocket(algoState, dbService, jobService) {
             console.log('ОТправляем данные')
             ws.send(JSON.stringify({
                 type: 'oneUpdated',
-                message: algo,
-                arrayType
-            }));
+                message: algo, 
+                arrayType 
+            })); 
         });
 
         algoState.updateEmitter.on(ALGO_MESSAGES.allUpdated, (algos) => {
@@ -23,13 +23,20 @@ export function startWebSocket(algoState, dbService, jobService) {
                 type: 'allUpdated',
                 message: 'Всё сделано босс!',
             }));
-        });
+        }); 
         
         algoState.updateEmitter.on(ALGO_MESSAGES.extra, (algos) => {
             console.log('ExtraAlgos')
             ws.send(JSON.stringify({
-                type: 'extra',
-                message: algos,
+                type: 'extra', 
+                message: algos, 
+            }));
+        });
+        algoState.updateEmitter.on('writeToDb', () => {
+            console.log('writeToDb')
+            ws.send(JSON.stringify({
+                type: 'writeToDb',
+                message: 'сохранили в бд!',
             }));
         });
 
@@ -44,36 +51,41 @@ export function startWebSocket(algoState, dbService, jobService) {
                 case 'connect':
                     ws.send(JSON.stringify({
                         type: 'connect', message: 'Комару подключилась!'
-                    }))
-                    break;
+                    })) 
+                    break;  
                 case 'getData':
                     let result = algoState.getData();
                     ws.send(JSON.stringify({type: 'getData', message: result}));
                     break;
                 case 'updateAll':
                     console.log('updateAll');
-                  await dbService.deleteDb();
-                  await dbService.saveAllToDb(jobService, algoState, dbService);
+                  // await dbService();
+                  await jobService.executeFuncForAllAlgos(algoState);
                     break;
-                case 'updateRow':
+                case 'writeToDb':
+                    console.log('writeToDb');
+                  await  dbService.deleteDb();
+                    await dbService.saveAllToDb(algoState); 
+                    break; 
+                case 'updateRow':   
                     console.log('updateRow')
-                    res = await jobService.executeFuncForString(algoState, dbService, localMessage.sortType, localMessage.arraySize);
-                    break;
+                    res = await jobService.executeFuncForString(algoState, localMessage.sortType, localMessage.arraySize);
+                    break; 
                 case 'updateCell':
                     console.log(`localMessage`, localMessage)
-                   await jobService.executeFuncForCell(algoState, dbService, localMessage.arraySize, localMessage.sortType, localMessage.arrayType);
-                    break;
+                   await jobService.executeFuncForCell(algoState, localMessage.arraySize, localMessage.sortType, localMessage.arrayType);
+                    break; 
                 case 'Komaru return':
                     ws.send(JSON.stringify({type: 'Komaru return', message: localMessage.message}));
                     break;
                 default:
                     ws.send(JSON.stringify({type: 'По дефолу', message: 'По дефолу'}));
 
-            }
-        });
-
+            } 
+        });  
+ 
         ws.on('close', function () {
             console.log('Client disconnected');
         });
     });
-}
+} 

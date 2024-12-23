@@ -3,19 +3,19 @@ import path from 'path';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 import connectDB from "./connectDB.js";
-import Algorithm from './models/SortResultingSchema.js'
 import {startWebSocket} from "./webSocket.js";
 import config from './config.js';
 import { AlgorithmState } from './controllers/AlgorithmState.js';
 import {JobRunner} from "./jobService.js";
 import {DBService} from "./DBService.js";
+import Algorithm from "./models/AlgorithmSchema.js";
 
 const app = express();
 const port = 4000;
 await connectDB();
-const algoState = new AlgorithmState(Algorithm, config);
 const dbService = new DBService(config);
-const jobRunner = new JobRunner(config, dbService);
+const algoState = new AlgorithmState(Algorithm, config, dbService);
+const jobRunner = new JobRunner(config);
 await algoState.init();
 
 startWebSocket(algoState, dbService, jobRunner);
