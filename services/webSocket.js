@@ -1,9 +1,9 @@
 import {WebSocketServer} from "ws";
-import eventEmmiter from "./eventEmmiter.js";
-import { ALGO_MESSAGES } from "./controllers/AlgorithmState.js";
+import {ALGO_MESSAGES} from "../controllers/AlgorithmState.js";
+import {AuthDb} from "./authDb.js";
 
 
-export function startWebSocket(algoState, dbService, jobService) {
+export function startWebSocket(algoState, dbService, JobService, AuthDb) {
     const wss = new WebSocketServer({port: 8080});
 
     wss.on('connection', function connection(ws) {
@@ -60,7 +60,7 @@ export function startWebSocket(algoState, dbService, jobService) {
                 case 'updateAll':
                     console.log('updateAll');
                   // await dbService();
-                  await jobService.executeFuncForAllAlgos(algoState);
+                  await JobService.executeFuncForAllAlgos(algoState);
                     break;
                 case 'writeToDb':
                     console.log('writeToDb');
@@ -69,23 +69,29 @@ export function startWebSocket(algoState, dbService, jobService) {
                     break; 
                 case 'updateRow':   
                     console.log('updateRow')
-                    res = await jobService.executeFuncForString(algoState, localMessage.sortType, localMessage.arraySize);
+                    res = await JobService.executeFuncForString(algoState, localMessage.sortType, localMessage.arraySize);
                     break; 
                 case 'updateCell':
                     console.log(`localMessage`, localMessage)
-                   await jobService.executeFuncForCell(algoState, localMessage.arraySize, localMessage.sortType, localMessage.arrayType);
+                   await JobService.executeFuncForCell(algoState, localMessage.arraySize, localMessage.sortType, localMessage.arrayType);
                     break; 
-                case 'Komaru return':
+                case 'Komaru return':  
                     ws.send(JSON.stringify({type: 'Komaru return', message: localMessage.message}));
+                    break;
+                case 'register':
+                    console.log(localMessage);
+                   const data = await AuthDb.register(localMessage.data)
+                    ws.send(JSON.stringify({type: 'register', message: data}));
+                    break;
+                case 'login':
                     break;
                 default:
                     ws.send(JSON.stringify({type: 'По дефолу', message: 'По дефолу'}));
 
-            } 
-        });  
- 
-        ws.on('close', function () {
-            console.log('Client disconnected');
-        });
+            }  
+        }); 
+        ws.on('close', function () { 
+            console.log('Client disconnected'); 
+        }); 
     });
-} 
+}   

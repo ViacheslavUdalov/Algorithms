@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration and Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input {
+      margin-bottom: 15px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .switch {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .switch a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .switch a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div class="container" id="form-container">
+  <div id="register">
+    <h2>Register</h2>
+    <form onsubmit="handleForm(event)">
+      <label for="reg-email">Email:</label>
+      <input type="email" id="reg-email" placeholder="email" required>
+      
+      <label for="reg-username">имя пользователя:</label>
+      <input type="text" id="reg-username" placeholder="имя пользователя" required>
+
+      <label for="reg-password">Password:</label>
+      <input type="password" id="reg-password" placeholder="пароль" required>
+
+      <label for="reg-confirm-password">Confirm Password:</label>
+      <input type="password" id="reg-confirm-password" placeholder="пароль ещё разок" required>
+      
+      <label for="reg-role">Confirm Password:</label>
+      <input type="text" id="reg-role" placeholder="Роль" required>
+
+      <button type="submit">регаемся</button>
+    </form>
+    <div class="switch">
+      Уже Зареган? <a href="#" onclick="showLogin()">Log In</a>
+    </div>
+  </div>
+
+  <div id="login" style="display: none;">
+    <h2>Login</h2>
+    <form>
+      <label for="login-email">Email:</label>
+      <input type="email" id="login-email" placeholder="Enter your email" required>
+
+      <label for="login-password">Password:</label>
+      <input type="password" id="login-password" placeholder="Enter your password" required>
+
+      <button type="submit">Log In</button>
+    </form>
+    <div class="switch">
+      Don't have an account? <a href="#" onclick="showRegister()">Sign Up</a>
+    </div>
+  </div> 
+</div>
+
+<script src="register.js">
+</script>
+</body>
+</html>

@@ -33,7 +33,7 @@ export class AlgorithmState {
     algosData = [];
     updateEmitter = new EventEmitter();
 
-    constructor(db, config, dbService) {
+    constructor(db, config) {
         this.db = db;
         this.config = config;
     }

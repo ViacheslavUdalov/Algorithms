@@ -3,22 +3,24 @@ import path from 'path';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 import connectDB from "./connectDB.js";
-import {startWebSocket} from "./webSocket.js";
 import config from './config.js';
 import { AlgorithmState } from './controllers/AlgorithmState.js';
-import {JobRunner} from "./jobService.js";
-import {DBService} from "./DBService.js";
 import Algorithm from "./models/AlgorithmSchema.js";
+import {startWebSocket} from "./services/webSocket.js";
+import {DBService} from "./services/DBService.js";
+import {JobService} from "./services/jobService.js";
+import {AuthDb} from "./services/authDb.js";
 
 const app = express();
 const port = 4000;
 await connectDB();
 const dbService = new DBService(config);
-const algoState = new AlgorithmState(Algorithm, config, dbService);
-const jobRunner = new JobRunner(config);
+const algoState = new AlgorithmState(Algorithm, config);
+const jobRunner = new JobService(config);
+const AuthService = new AuthDb(config);
 await algoState.init();
 
-startWebSocket(algoState, dbService, jobRunner);
+startWebSocket(algoState, dbService, jobRunner, AuthService);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -27,7 +29,8 @@ export const dbFilePath = path.join(__dirname, 'db.json');
 app.use(express.json());
 
 app.use(express.static(path.join(path.resolve(), 'public')));
-app.use('/images', express.static('images'));
+app.use(express.static(path.join(path.resolve(), 'auth')));
+app.use('/images', express.static('images')); 
 
 
 app.get('/config.js', (req, res) => {

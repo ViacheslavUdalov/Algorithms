@@ -1,24 +1,20 @@
-import bubbleSort from "./sorts/bubbleSort.js";
-import choiceSort from "./sorts/choiceSort.js";
-import {insertSort} from "./sorts/insertSort.js";
-import mergeSort from "./sorts/mergeSort.js";
-import quickSort from "./sorts/quickSort.js";
-import config from "./config.js";
-import {runChild} from './chlid.js'
-import eventEmmiter from "./eventEmmiter.js";
-import {DBService} from "./DBService.js";
-import {ALGO_STATUSES} from "./controllers/AlgorithmState.js";
-import Algorithm from "./models/AlgorithmSchema.js";
-
+import bubbleSort from "../sorts/bubbleSort.js";
+import choiceSort from "../sorts/choiceSort.js";
+import {insertSort} from "../sorts/insertSort.js";
+import mergeSort from "../sorts/mergeSort.js";
+import quickSort from "../sorts/quickSort.js";
+import {ALGO_STATUSES} from "../controllers/AlgorithmState.js";
+import Algorithm from "../models/AlgorithmSchema.js";
+import config from "../config.js";
 
 const ARRAY_SIZES = config.arrayTypes;
 const SORT_TYPES = config.sortTypes;
-const ARRAY_OF_SORT_FUNCTIONS = [bubbleSort, choiceSort, insertSort, mergeSort, quickSort];
+const ARRAY_OF_SORT_FUNCTIONS = [bubbleSort, choiceSort, 
+    insertSort, mergeSort, quickSort];
 
-export class JobRunner {
+export class JobService {
     constructor(config) {
         this.config = config;
-        this.DBService = DBService;
     }
 
 

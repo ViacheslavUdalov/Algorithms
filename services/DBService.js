@@ -1,14 +1,10 @@
-import bubbleSort from "./sorts/bubbleSort.js";
-import choiceSort from "./sorts/choiceSort.js";
-import {insertSort} from "./sorts/insertSort.js";
-import mergeSort from "./sorts/mergeSort.js";
-import quickSort from "./sorts/quickSort.js";
-import config from "./config.js";
-import {runChild} from './chlid.js'
-import eventEmmiter from "./eventEmmiter.js";
-import {ALGO_STATUSES} from "./controllers/AlgorithmState.js";
-import {helperLog} from "./utils/useTooling.js";
-import Algorithm from "./models/AlgorithmSchema.js";
+import Algorithm from "../models/AlgorithmSchema.js";
+import config from "../config.js";
+import bubbleSort from "../sorts/bubbleSort.js";
+import choiceSort from "../sorts/choiceSort.js";
+import {insertSort} from "../sorts/insertSort.js";
+import mergeSort from "../sorts/mergeSort.js";
+import quickSort from "../sorts/quickSort.js";
 
 
 const ARRAY_SIZES = config.arrayTypes;
@@ -26,11 +22,11 @@ export class DBService {
     }
 
     async saveDataForCell(algoState, arraySize, sortType, arrayType, result) {
-        eventEmmiter.emit('requestStart');
+        algoState.updateEmitter.emit('requestStart');
         const algorithm = await Algorithm.findOneAndUpdate({
                 sortType,
                 arraySize
-            },
+            }, 
             {
                 // для обновления
                 $set: {
@@ -50,7 +46,6 @@ export class DBService {
     }
 
    async saveAllToDb(algoState) {
-       console.log( `algoState.algosData`, algoState.algosData);
         algoState.algosData.map(async item => {
             const {_id, ...itemForDb} = item;
             console.log(`item`, itemForDb)
