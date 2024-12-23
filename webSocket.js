@@ -1,26 +1,27 @@
 import {WebSocketServer} from "ws";
-import {getDataFromDb, recreateDb} from "./server.helper.js";
 import eventEmmiter from "./eventEmmiter.js";
 import { ALGO_MESSAGES } from "./controllers/AlgorithmState.js";
 
 
-export function startWebSocket(algoState, jobRunner) {
+export function startWebSocket(algoState, dbService, jobService) {
     const wss = new WebSocketServer({port: 8080});
 
     wss.on('connection', function connection(ws) {
         console.log('Client connected');
 
-        algoState.updateEmitter.on(ALGO_MESSAGES.oneUpdated, (algo) => {
+        algoState.updateEmitter.on(ALGO_MESSAGES.oneUpdated, (algo, arrayType) => {
+            console.log('ОТправляем данные')
             ws.send(JSON.stringify({
                 type: 'oneUpdated',
                 message: algo,
+                arrayType
             }));
         });
 
         algoState.updateEmitter.on(ALGO_MESSAGES.allUpdated, (algos) => {
             ws.send(JSON.stringify({
                 type: 'allUpdated',
-                message: algos,
+                message: 'Всё сделано босс!',
             }));
         });
 
@@ -29,12 +30,12 @@ export function startWebSocket(algoState, jobRunner) {
                 type: 'requestStart', message: 'Работаем'
             }))
         });
-
-        eventEmmiter.on('requestFinish', (data, sortType, arraySize, arrayType) => {
-            ws.send(JSON.stringify({
-                type: 'requestFinish', message: data, sortType, arraySize, arrayType
-            }));
-        });
+        //
+        // eventEmmiter.on('requestFinish', (data, sortType, arraySize, arrayType) => {
+        //     ws.send(JSON.stringify({
+        //         type: 'requestFinish', message: data, sortType, arraySize, arrayType
+        //     }));
+        // });
 
         ws.on('message', async function incoming(message) {
             if (Buffer.isBuffer(message)) {
@@ -54,13 +55,17 @@ export function startWebSocket(algoState, jobRunner) {
                     ws.send(JSON.stringify({type: 'getData', message: result}));
                     break;
                 case 'updateAll':
-                    recreateDb(algoState);
+                    console.log('updateAll');
+                  await dbService.deleteDb();
+                  await dbService.saveAllToDb(jobService, algoState, dbService);
                     break;
                 case 'updateRow':
-                    res = await jobRunner.recreateDb(algoState, localMessage.sortType, localMessage.arraySize);
+                    console.log('updateRow')
+                    res = await jobService.executeFuncForString(algoState, dbService, localMessage.sortType, localMessage.arraySize);
                     break;
                 case 'updateCell':
-                    res = await recreateDb(algoState, localMessage.sortType, localMessage.arraySize, localMessage.arrayType);
+                    console.log(`localMessage`, localMessage)
+                   await jobService.executeFuncForCell(algoState, dbService, localMessage.arraySize, localMessage.sortType, localMessage.arrayType);
                     break;
                 case 'Komaru return':
                     ws.send(JSON.stringify({type: 'Komaru return', message: localMessage.message}));

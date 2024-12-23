@@ -1,6 +1,5 @@
 import express from 'express';
 import path from 'path';
-import {checkBdForData, recreateDb} from "./server.helper.js";
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 import connectDB from "./connectDB.js";
@@ -8,15 +7,18 @@ import Algorithm from './models/SortResultingSchema.js'
 import {startWebSocket} from "./webSocket.js";
 import config from './config.js';
 import { AlgorithmState } from './controllers/AlgorithmState.js';
+import {JobRunner} from "./jobService.js";
+import {DBService} from "./DBService.js";
 
 const app = express();
 const port = 4000;
 await connectDB();
 const algoState = new AlgorithmState(Algorithm, config);
-const jobRunner = {};
+const dbService = new DBService(config);
+const jobRunner = new JobRunner(config, dbService);
 await algoState.init();
 
-startWebSocket(algoState, jobRunner);
+startWebSocket(algoState, dbService, jobRunner);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

@@ -1,6 +1,6 @@
 const config = {
     sortTypes: ['bubbleSort', 'insertSort', 'mergeSort', 'choiceSort', 'quickSort'],
-    arrayTypes: [5000, 10000, 50000]
+    arrayTypes: [1000, 5000, 10000]
 }
 
 export default config;

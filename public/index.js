@@ -40,6 +40,7 @@ socket.onmessage = function (event) {
             renderRow(jsondata.message);
             break;
         case 'updateCell' :
+            console.log('updateCell');
             renderCell(jsondata.message, jsondata.arrayType);
             break;
         case 'Komaru return' :
@@ -57,13 +58,22 @@ socket.onmessage = function (event) {
                 .getElementById('output');
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
             break;
-        case 'requestFinish' :
-            renderCell(jsondata.message, jsondata.sortType, jsondata.arraySize, jsondata.arrayType);
+        case 'oneUpdated' :
+            console.log('renderCell', jsondata);
+            renderCell(jsondata.message, jsondata.arrayType);
+            outputDiv = document
+                .getElementById('output');
+            outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
+            break;
+        case 'allUpdated' :
+            console.log('allUpdated', jsondata);
+            // renderTable(jsondata.message);
             outputDiv = document
                 .getElementById('output');
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
             break;
         default:
+            console.log(jsondata)
             console.log('не выполнен ни один из кейсов');
     }
 };
@@ -102,24 +112,27 @@ function renderRow(data) {
         });
 }
 
-function renderCell(data, sortType, arraySize, arrayType) {
-    console.log('одна ячейка рендерится')
-    const existingCell = document.getElementById(`${sortType}_${arraySize}_${arrayType}`);
+function renderCell(data, arrayType) {
+    console.log(data, arrayType);
+    console.log('одна ячейка рендерится');
+    const existingCell = document.getElementById(`${data.sortType}_${data.arraySize}_${arrayType}`);
     if (existingCell) {
         existingCell.innerHTML = `
-            <td id="${sortType}_${arraySize}_${arrayType}">
-                ${data}
- <button id="${sortType}_${arraySize}_${arrayType}_button">Ячейка</button>
+            <td id="${data.sortType}_${data.arraySize}_${arrayType}">
+                ${data.times[arrayType]}
+ <button id="${data.sortType}_${data.arraySize}_${arrayType}_button">Ячейка</button>
 </td>
         `;
     }
-    setCellLoading(sortType, arraySize, arrayType, false);
-    document.getElementById(`${sortType}_${arraySize}_${arrayType}_button`)
-        .addEventListener('click', () => {
+    console.log(data.arraySize, arrayType)
+    setCellLoading(data.sortType, data.arraySize, arrayType, false);
+    document.getElementById(`${data.sortType}_${data.arraySize}_${arrayType}_button`)
+        .addEventListener('click', async () => {
             console.log('кликнули')
-            updateCell(sortType, arraySize, arrayType).then(() => {
-                renderCell(data, sortType, arraySize, arrayType)
-            });
+          await updateCell(data.sortType, data.arraySize, arrayType, data.id)
+            //     .then(() => {
+            //     renderCell(data, arrayType)
+            // });
         });
 }
 
@@ -171,19 +184,20 @@ function renderTable() {
                     .addEventListener('click', async () => {
                         await updateRow(sortRes.sortType, sortRes.arraySize);
                     });
-                restartCell(sortRes, sortRes.sortType, sortRes.arraySize, 'reversed');
-                restartCell(sortRes, sortRes.sortType, sortRes.arraySize, 'sorted');
-                restartCell(sortRes, sortRes.sortType, sortRes.arraySize, 'random');
+                restartCell(sortRes, 'reversed');
+                restartCell(sortRes, 'sorted');
+                restartCell(sortRes,  'random');
             }
         });
 }
 
-function restartCell(sortResult, sortType, arraySize, arrayType) {
+function restartCell(sortResult, arrayType) {
+    // console.log(sortResult)
     const elementId = `${sortResult.sortType}_${sortResult.arraySize}_${arrayType}_button`;
     const element = document.getElementById(elementId);
     element.addEventListener('click', () => {
-        updateCell(sortResult.sortType, sortResult.arraySize, arrayType).then(() => {
-            renderCell(sortResult, sortType, arraySize, arrayType)
+        updateCell(sortResult.sortType, sortResult.arraySize, arrayType, sortResult.id).then(() => {
+            renderCell(sortResult, arrayType)
         });
     });
 }
@@ -191,16 +205,16 @@ function restartCell(sortResult, sortType, arraySize, arrayType) {
 document.getElementById('restartAll')
     .addEventListener('click', async () => {
         console.log('кликнули');
-        await updateAll()
+        await updateAll();
     });
 
 // actions
 
-async function requestSort(sortType, arraySize, typeForServer, arrayType = null) {
+async function requestSort(sortType, arraySize, typeForServer, arrayType = null, id = null) {
     if (socket.readyState === WebSocket.OPEN) {
         const parsedArraySize = parseInt(arraySize, 10);
 
-        socket.send(JSON.stringify({type: typeForServer, sortType, arraySize: parsedArraySize, arrayType}));
+        socket.send(JSON.stringify({type: typeForServer, sortType, arraySize: parsedArraySize, arrayType, id}));
 
     } else {
         console.error('Web socket закрыты')
@@ -235,6 +249,7 @@ function setLoading(isLoading) {
 
 function setCellLoading(sortType, arraySize, arrayType, isLoading) {
     const cellId = `${sortType}_${arraySize}_${arrayType}`;
+    console.log(cellId)
     const cellElement = document.getElementById(cellId);
 
     if (!cellElement) {
@@ -273,7 +288,7 @@ async function updateAll() {
     await requestSort(null, null, "updateAll");
 }
 
-async function updateCell(sortType, arraySize, arrayType) {
-    setCellLoading(sortType, arraySize, sortType, true);
-    await requestSort(sortType, arraySize, "updateCell", arrayType);
+async function updateCell(sortType, arraySize, arrayType, id) {
+    setCellLoading(sortType, arraySize, arrayType, true);
+    await requestSort(sortType, arraySize, "updateCell", arrayType, id);
 }

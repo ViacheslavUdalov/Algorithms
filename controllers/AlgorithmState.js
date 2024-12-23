@@ -1,4 +1,5 @@
 import EventEmitter from "node:events";
+import {helperLog} from "../utils/useTooling.js";
 
 export const ALGO_STATUSES = {
 	VALID: 'VALID',
@@ -44,22 +45,27 @@ export class AlgorithmState {
 		return this.algosData;
 	}
 
-	updateOneAlgo(algo) {
+	updateOneAlgo(algo, arrayType) {
+		console.log(algo);
 		const oldAlgo = this.algosData.find(nextAlgo => {
 			return nextAlgo.arraySize === algo.arraySize && nextAlgo.sortType === algo.sortType;
 		});
 		if (oldAlgo) {
+			console.log(`oldAlgo`, oldAlgo)
 			Object.assign(oldAlgo, algo);
+			console.log(`algo`, algo);
 			oldAlgo.isValid = this._getIsAlgoValid(oldAlgo);
+			console.log(`oldAlgo`, oldAlgo);
 		} else {
 			algo.isValid = this._getIsAlgoValid(algo);
 			this.algosData.push(algo);
 		}
-		this.updateEmitter.emit('oneUpdated', oldAlgo || algo);
+		this.updateEmitter.emit('oneUpdated', algo, arrayType);
 	}
 
 	updateAllAlgos(algos) {
-		const algoStates = algos.map(algo => algo.toObject());
+	
+		const algoStates = algos.map(algo => algo);
 		this._populateAlgosValidity(algoStates);
 		algoStates.push(...this._getMissingAlgos(algoStates));
 		this.algosData = algoStates;
@@ -72,13 +78,14 @@ export class AlgorithmState {
 
 	async _syncAlgoDataWithDB() {
 		const algos = await this.db.find({});
-		this.updateAllAlgos(algos);
+		this.updateAllAlgos(algos); 
 	}
 
 	_populateAlgosValidity(algos) {
-		algos.forEach((algo, index, algos) => {
+	
+		algos.forEach((algo, index) => {
 			algos[index].isValid = this._getIsAlgoValid(algo);
-			console.log('algos[index]', algos[index]);
+			// console.log('algos[index]', algos[index]);
 		});
 	}
 
@@ -97,7 +104,6 @@ export class AlgorithmState {
 						status: ALGO_STATUSES.MISSING,
 						isValid: true,
 					});
-
 					missingAlgos.push(newAlgo);
 				}
 			});
