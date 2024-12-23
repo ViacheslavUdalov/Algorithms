@@ -6,7 +6,7 @@ function showLogin() {
     document.getElementById('register').style.display = 'none';
     document.getElementById('login').style.display = 'block';
 }
-function handleForm(event) {
+function handleRegisterForm(event) {
     event.preventDefault();
     const email = document.getElementById('reg-email').value;
     const username = document.getElementById('reg-username').value;
@@ -29,7 +29,20 @@ function handleForm(event) {
     }
     socket.send(JSON.stringify(dataToSend));
 }
-
+function handleLoginForm(event) {
+    event.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const data = {
+        email,
+        password
+    }
+    const dataToSend = {
+        type: 'login',
+        data
+    }
+    socket.send(JSON.stringify(dataToSend));
+}
 const socket = new WebSocket('ws://localhost:8080');
 
 socket.onopen = function (event) {
@@ -41,6 +54,11 @@ socket.onmessage = function (event) {
     switch (jsondata.type) {
         case 'register' :
             console.log(jsondata)
+            localStorage.setItem('token', JSON.stringify(jsondata.message.token))
+            break;
+        case 'login' :
+            console.log(jsondata)
+            localStorage.setItem('token', JSON.stringify(jsondata.message.token))
             break;
         default:
             console.log(jsondata)

@@ -80,10 +80,13 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb) {
                     break;
                 case 'register':
                     console.log(localMessage);
-                   const data = await AuthDb.register(localMessage.data)
-                    ws.send(JSON.stringify({type: 'register', message: data}));
+                   const registerData = await AuthDb.register(localMessage.data)
+                    ws.send(JSON.stringify({type: 'register', message: registerData}));
                     break;
                 case 'login':
+                    console.log(localMessage);
+                    const loginData = await AuthDb.login(localMessage.data)
+                    ws.send(JSON.stringify({type: 'login', message: loginData}));
                     break;
                 default:
                     ws.send(JSON.stringify({type: 'По дефолу', message: 'По дефолу'}));
