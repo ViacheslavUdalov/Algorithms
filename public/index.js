@@ -4,10 +4,22 @@ import config from "../config.js";
 
 document.getElementById('writeToDb')
     .addEventListener('click', async () => {
-        console.log('кликнули')
+        const username = localStorage.getItem('username');
         const Komaru = {
             type: 'writeToDb',
-            message: 'Default: Komaru forever записал в бд!'
+            message: username
+        }
+        socket.send(JSON.stringify(Komaru));
+    });
+
+document.getElementById('logout')
+    .addEventListener('click', async () => {
+        console.log('кликнули')
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        const logout = {
+            type: 'logout',
+            message: 'Default: Komaru вы записал в бд!'
         }
         socket.send(JSON.stringify(Komaru));
     });
@@ -86,6 +98,20 @@ socket.onmessage = function (event) {
             outputDiv = document
                 .getElementById('output');
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
+            break;
+        case 'notification' :
+            console.log('notification')
+            console.log(jsondata)
+            outputDiv = document
+                .getElementById('output');
+            outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
+            break;
+        case 'register' :
+        case 'login' :
+            console.log(jsondata)
+            localStorage.setItem('token', JSON.stringify(jsondata.message.token))
+            localStorage.setItem('username', JSON.stringify(jsondata.message.userData.username))
+            // window.location.href = '/index.html';
             break;
         default:
             console.log(jsondata)
@@ -209,7 +235,6 @@ function renderTable() {
 }
 
 function restartCell(sortResult, arrayType) {
-    console.log(sortResult)
     const elementId = `${sortResult.sortType}_${sortResult.arraySize}_${arrayType}_button`;
     const element = document.getElementById(elementId);
     element.addEventListener('click', () => {

@@ -43,7 +43,6 @@ export class AlgorithmState {
     }
 
     getData() {
-        console.log(this.algosData)
         return this.algosData;
     }
 

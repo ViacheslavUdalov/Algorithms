@@ -28,6 +28,8 @@ function handleRegisterForm(event) {
         data
     }
     socket.send(JSON.stringify(dataToSend));
+   
+
 }
 function handleLoginForm(event) {
     event.preventDefault();
@@ -41,6 +43,7 @@ function handleLoginForm(event) {
         type: 'login',
         data
     }
+    
     socket.send(JSON.stringify(dataToSend));
 }
 const socket = new WebSocket('ws://localhost:8080');
@@ -50,18 +53,22 @@ socket.onopen = function (event) {
 
 socket.onmessage = function (event) { 
     let jsondata = JSON.parse(event.data);
-
+console.log(`jsondata`, jsondata)
     switch (jsondata.type) {
         case 'register' :
-            console.log(jsondata)
-            localStorage.setItem('token', JSON.stringify(jsondata.message.token))
-            break;
         case 'login' :
             console.log(jsondata)
             localStorage.setItem('token', JSON.stringify(jsondata.message.token))
+            localStorage.setItem('username', JSON.stringify(jsondata.message.userData.username))
+            // window.location.href = '/';
             break;
+        case 'notification' :
+            console.log('notification')
+            console.log(jsondata)
+           break;
         default:
             console.log(jsondata)
             console.log('не выполнен ни один из кейсов');
     }
 };
+ 
