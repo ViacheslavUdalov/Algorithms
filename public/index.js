@@ -1,6 +1,7 @@
 // Client
 
 import config from "../config.js";
+import socket from "./socketProvider.js";
 
 document.getElementById('writeToDb')
     .addEventListener('click', async () => {
@@ -27,7 +28,6 @@ document.getElementById('logout')
 
 const {sortTypes, arrayTypes} = config;
 const types = ['random', 'sorted', 'reversed'];
-export const socket = new WebSocket('ws://localhost:8080');
 
 socket.onopen = function (event) {
     console.log('connected from WebSocket server');

@@ -1,5 +1,17 @@
-import {socket} from "../public/index.js";
+import socket from "./socketProvider.js";
+document.addEventListener('DOMContentLoaded', function () {
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
 
+    loginForm.addEventListener('submit', handleLoginForm);
+    registerForm.addEventListener('submit', handleRegisterForm);
+
+    const registerLink = document.getElementById('register-link');
+    registerLink.addEventListener('click', showRegister);
+
+    const loginLink = document.getElementById('login-link');
+    loginLink.addEventListener('click', showLogin);
+});
 function showRegister() {
     document.getElementById('login').style.display = 'none';
     document.getElementById('register').style.display = 'block';
@@ -52,7 +64,6 @@ const ws = socket;
 
 ws.onopen = function (event) {
 };
-
 // ws.onmessage = function (event) { 
 //     let jsondata = JSON.parse(event.data);
 // console.log(`jsondata`, jsondata)
