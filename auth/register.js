@@ -1,3 +1,5 @@
+import {socket} from "../public/index.js";
+
 function showRegister() {
     document.getElementById('login').style.display = 'none';
     document.getElementById('register').style.display = 'block';
@@ -27,7 +29,7 @@ function handleRegisterForm(event) {
         type: 'register',
         data
     }
-    socket.send(JSON.stringify(dataToSend));
+    ws.send(JSON.stringify(dataToSend));
    
 
 }
@@ -44,31 +46,34 @@ function handleLoginForm(event) {
         data
     }
     
-    socket.send(JSON.stringify(dataToSend));
+    ws.send(JSON.stringify(dataToSend));
 }
-const socket = new WebSocket('ws://localhost:8080');
+const ws = socket;
 
-socket.onopen = function (event) {
+ws.onopen = function (event) {
 };
 
-socket.onmessage = function (event) { 
-    let jsondata = JSON.parse(event.data);
-console.log(`jsondata`, jsondata)
-    switch (jsondata.type) {
-        case 'register' :
-        case 'login' :
-            console.log(jsondata)
-            localStorage.setItem('token', JSON.stringify(jsondata.message.token))
-            localStorage.setItem('username', JSON.stringify(jsondata.message.userData.username))
-            // window.location.href = '/';
-            break;
-        case 'notification' :
-            console.log('notification')
-            console.log(jsondata)
-           break;
-        default:
-            console.log(jsondata)
-            console.log('не выполнен ни один из кейсов');
-    }
-};
- 
+// ws.onmessage = function (event) { 
+//     let jsondata = JSON.parse(event.data);
+// console.log(`jsondata`, jsondata)
+//     switch (jsondata.type) {
+//         case 'register' :
+//         case 'login' :
+//             console.log(jsondata)
+//             localStorage.setItem('token', JSON.stringify(jsondata.message.token))
+//             localStorage.setItem('username', JSON.stringify(jsondata.message.userData.username))
+//             // window.location.href = '/';
+//             break;
+//         case 'notification' :
+//             console.log('notification')
+//             console.log(jsondata)
+//             outputDiv = document
+//                 .getElementById('output');
+//             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
+//             break;
+//         default:
+//             console.log(jsondata)
+//             console.log('не выполнен ни один из кейсов');
+//     }
+// }; 
+// 

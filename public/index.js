@@ -4,10 +4,10 @@ import config from "../config.js";
 
 document.getElementById('writeToDb')
     .addEventListener('click', async () => {
-        const username = localStorage.getItem('username');
+      
         const Komaru = {
             type: 'writeToDb',
-            message: username
+            message: 'work'
         }
         socket.send(JSON.stringify(Komaru));
     });
@@ -16,17 +16,18 @@ document.getElementById('logout')
     .addEventListener('click', async () => {
         console.log('кликнули')
         localStorage.removeItem('token');
+        const username = localStorage.getItem('username');
         localStorage.removeItem('username');
         const logout = {
             type: 'logout',
-            message: 'Default: Komaru вы записал в бд!'
+            message: username
         }
-        socket.send(JSON.stringify(Komaru));
+        socket.send(JSON.stringify(logout));
     });
 
 const {sortTypes, arrayTypes} = config;
 const types = ['random', 'sorted', 'reversed'];
-const socket = new WebSocket('ws://localhost:8080');
+export const socket = new WebSocket('ws://localhost:8080');
 
 socket.onopen = function (event) {
     console.log('connected from WebSocket server');
@@ -115,7 +116,7 @@ socket.onmessage = function (event) {
             break;
         default:
             console.log(jsondata)
-            console.log('не выполнен ни один из кейсов');
+            console.log('не выполнен ни один из кейсов'); 
     }
 };
 

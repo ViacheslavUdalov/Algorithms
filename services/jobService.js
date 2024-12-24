@@ -18,7 +18,7 @@ export class JobService {
     }
 
 
-    async executeFuncForString(algoState, sortType, arraySize) {
+    async executeFuncForString(algoState, sortType, arraySize) { 
         const random = await this.executeFuncForCell(algoState, arraySize, sortType, 'random');
         const sorted = await this.executeFuncForCell(algoState, arraySize, sortType, 'sorted');
         const reversed = await this.executeFuncForCell(algoState, arraySize, sortType, 'reversed');

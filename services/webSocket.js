@@ -80,8 +80,10 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb) {
                     ws.send(JSON.stringify({type: 'Komaru return', message: localMessage.message}));
                     break;
                 case 'logout':
+                    console.log(`users`, users);
                     users = users.filter(user => user.username !== localMessage.message.username)
-                    console.log(users);
+                    
+                    console.log(`users`, users);
                     break;
                 case 'register':
                     console.log(`localMessage`, localMessage);
