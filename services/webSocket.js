@@ -65,8 +65,20 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb) {
                     break;
                 case 'writeToDb':
                     console.log('writeToDb');
-                    await dbService.deleteDb();
-                    await dbService.saveAllToDb(algoState);
+                    console.log(`localMessage.token`, localMessage);
+                    if (localMessage.message) {
+                        if (AuthDb.checkRoleIsAdmin(localMessage.message)) {
+                            console.log(`localMessage.token`, localMessage.message);
+                            await dbService.deleteDb();
+                            await dbService.saveAllToDb(algoState);
+                        } else {
+                            ws.send(JSON.stringify({type: 'Komaru return', message: 'Вы не админ'}));
+                        }
+                    } else {
+                        ws.send(JSON.stringify({type: 'Komaru return', message: 'Вы не залогинины'}));
+
+                    }
+                    
                     break;
                 case 'updateRow':
                     console.log('updateRow')
@@ -82,7 +94,7 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb) {
                 case 'logout':
                     console.log(`users`, users);
                     users = users.filter(user => user.username !== localMessage.message.username)
-                    
+
                     console.log(`users`, users);
                     break;
                 case 'register':
@@ -125,7 +137,7 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb) {
                     users.forEach((user) => {
                         if (user.ws.readyState === ws.OPEN) {
                             user.ws.send(JSON.stringify(notificationLog));
-                        } 
+                        }
                     })
                     console.log(`loginData`, loginData);
                     ws.send(JSON.stringify({type: 'login', message: loginData}));

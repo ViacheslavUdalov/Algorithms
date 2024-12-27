@@ -6,6 +6,7 @@ import quickSort from "../sorts/quickSort.js";
 import {ALGO_STATUSES} from "../controllers/AlgorithmState.js";
 import Algorithm from "../models/AlgorithmSchema.js";
 import config from "../config.js";
+import {runChild} from "../chlid.js";
 
 const ARRAY_SIZES = config.arrayTypes;
 const SORT_TYPES = config.sortTypes;

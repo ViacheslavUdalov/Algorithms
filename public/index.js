@@ -5,11 +5,12 @@ import socket from "./socketProvider.js";
 
 document.getElementById('writeToDb')
     .addEventListener('click', async () => {
-      
+
         const Komaru = {
             type: 'writeToDb',
-            message: 'work'
+            message: _getTokenFromLocalStr()
         }
+        console.log(Komaru);
         socket.send(JSON.stringify(Komaru));
     });
 
@@ -35,7 +36,7 @@ socket.onopen = function (event) {
         type: 'connect',
         message: 'Присоединились к серверу'
     }
-    
+
     socket.send(JSON.stringify(dataToSend));
     getAllData();
     const Komaru = {
@@ -83,7 +84,7 @@ socket.onmessage = function (event) {
             break;
         case 'oneUpdated' :
             renderCell(jsondata.message, jsondata.arrayType);
-           break;
+            break;
         case 'allUpdated' :
             outputDiv = document
                 .getElementById('output');
@@ -100,25 +101,15 @@ socket.onmessage = function (event) {
                 .getElementById('output');
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
             break;
-        case 'notification' :
-            console.log('notification')
-            console.log(jsondata)
-            outputDiv = document
-                .getElementById('output');
-            outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
-            break;
-        case 'register' :
-        case 'login' :
-            console.log(jsondata)
-            localStorage.setItem('token', JSON.stringify(jsondata.message.token))
-            localStorage.setItem('username', JSON.stringify(jsondata.message.userData.username))
-            // window.location.href = '/index.html';
-            break;
         default:
             console.log(jsondata)
-            console.log('не выполнен ни один из кейсов'); 
+            console.log('не выполнен ни один из кейсов');
     }
 };
+
+function _getTokenFromLocalStr() {
+    return JSON.parse(localStorage.getItem('token'));
+}
 
 socket.onclose = function (event) {
     console.log('Disconnected from WebSocket server');
@@ -169,7 +160,7 @@ function renderCell(data, arrayType) {
     document.getElementById(`${data.sortType}_${data.arraySize}_${arrayType}_button`)
         .addEventListener('click', async () => {
             console.log('кликнули')
-          await updateCell(data.sortType, data.arraySize, arrayType, data.id)
+            await updateCell(data.sortType, data.arraySize, arrayType, data.id)
             //     .then(() => {
             //     renderCell(data, arrayType)
             // });
@@ -220,17 +211,18 @@ function renderTable() {
                 <td id="${sortRes.sortType}_${sortRes.arraySize}_reversed">${sortRes.times.reversed || 'null'}<button id="${sortRes.sortType}_${sortRes.arraySize}_reversed_button">Ячейка</button></td>
                 <td><button class='button' id="${sortRes.sortType}_${sortRes.arraySize}_button">Запустить данную сортировку</button></td>
             </tr>
-        `;  
+        `;
                 }
-             
+
                 tableElement.insertAdjacentHTML('beforeend', rowElement);
+                console.log(sortRes)
                 document.getElementById(`${sortRes.sortType}_${sortRes.arraySize}_button`)
                     .addEventListener('click', async () => {
                         await updateRow(sortRes.sortType, sortRes.arraySize);
                     });
                 restartCell(sortRes, 'reversed');
                 restartCell(sortRes, 'sorted');
-                restartCell(sortRes,  'random');
+                restartCell(sortRes, 'random');
             }
         });
 }

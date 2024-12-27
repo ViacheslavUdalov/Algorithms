@@ -45,7 +45,7 @@ export class DBService {
         return algorithm[0];
     }
 
-   async saveAllToDb(algoState) {
+   async saveAllToDb(algoState, token) {
         algoState.algosData.map(async item => {
             const {_id, ...itemForDb} = item;
             console.log(`item`, itemForDb)

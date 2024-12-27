@@ -62,4 +62,14 @@ export class AuthDb {
             token
         }
     }
+    checkRoleIsAdmin(token) {
+console.log(`token`, token)
+        const decoded = jwt.verify(token, 'udalovich115');
+        if (decoded.role !== 'admin') {
+            return false
+        } else {
+            return true
+        }
+    }
 }
+
