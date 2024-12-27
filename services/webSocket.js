@@ -1,6 +1,5 @@
 import {WebSocketServer} from "ws";
 import {ALGO_MESSAGES} from "../controllers/AlgorithmState.js";
-import {AuthDb} from "./authDb.js";
 
 let users = [];
 
@@ -95,7 +94,7 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb) {
                     console.log(`users`, users);
                     users = users.filter(user => user.username !== localMessage.message.username)
 
-                    console.log(`users`, users);
+                    console.log(`users`, users); 
                     break;
                 case 'register':
                     console.log(`localMessage`, localMessage);

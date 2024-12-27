@@ -1,28 +1,35 @@
-import socket from "./socketProvider.js";
+import getSocket from "./socketProvider.js";
 
 document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
 
+    const registerLink = document.getElementById('register-link');
+    const loginLink = document.getElementById('login-link');
+
+    console.log(registerLink);
+    console.log(loginLink);
+
+    function showRegister() {
+        console.log('click');
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('register').style.display = 'block';
+    }
+
+    function showLogin() {
+        console.log('click');
+        document.getElementById('register').style.display = 'none';
+        document.getElementById('login').style.display = 'block';
+    }
+
     loginForm.addEventListener('submit', handleLoginForm);
     registerForm.addEventListener('submit', handleRegisterForm);
 
-    const registerLink = document.getElementById('register-link');
     registerLink.addEventListener('click', showRegister);
-
-    const loginLink = document.getElementById('login-link');
     loginLink.addEventListener('click', showLogin);
 });
 
-function showRegister() {
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('register').style.display = 'block';
-}
-
-function showLogin() {
-    document.getElementById('register').style.display = 'none';
-    document.getElementById('login').style.display = 'block';
-}
+const socket = getSocket();
 
 function handleRegisterForm(event) {
     event.preventDefault();
@@ -45,9 +52,7 @@ function handleRegisterForm(event) {
         type: 'register',
         data
     }
-    ws.send(JSON.stringify(dataToSend));
-
-
+    handleSendForRegAndLog(dataToSend)
 }
 
 function handleLoginForm(event) {
@@ -62,17 +67,16 @@ function handleLoginForm(event) {
         type: 'login',
         data
     }
-
-    ws.send(JSON.stringify(dataToSend));
+    handleSendForRegAndLog(dataToSend)
 }
 
-const ws = socket;
+function handleSendForRegAndLog(dataToSend) {
+    socket.send(JSON.stringify(dataToSend));
+}
 
-ws.onopen = function (event) {
-};
-ws.onmessage = function (event) {
+socket.onmessage = function (event) { 
     let jsondata = JSON.parse(event.data);
-    console.log(`jsondata`, jsondata)
+console.log(`jsondata`, jsondata)
     switch (jsondata.type) {
         case 'register' :
         case 'login' :
@@ -84,7 +88,7 @@ ws.onmessage = function (event) {
         case 'notification' :
             console.log('notification')
             console.log(jsondata)
-            const outputDiv = document
+           const outputDiv = document
                 .getElementById('output');
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
             break;

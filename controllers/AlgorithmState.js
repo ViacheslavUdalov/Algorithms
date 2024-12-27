@@ -26,7 +26,6 @@ class AlgoResults {
     status;
     isValid;
 }
-
 export class AlgorithmState {
     config;
     db;

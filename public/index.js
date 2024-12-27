@@ -1,8 +1,10 @@
 // Client
 
 import config from "../config.js";
-import socket from "./socketProvider.js";
+import getSocket from "./socketProvider.js";
 
+export const socket = getSocket();
+console.log(socket)
 document.getElementById('writeToDb')
     .addEventListener('click', async () => {
 
@@ -31,7 +33,9 @@ const {sortTypes, arrayTypes} = config;
 const types = ['random', 'sorted', 'reversed'];
 
 socket.onopen = function (event) {
-    console.log('connected from WebSocket server');
+    console.log('index')
+
+    console.log('connected from Websocket server');
     const dataToSend = {
         type: 'connect',
         message: 'Присоединились к серверу'
@@ -73,6 +77,7 @@ socket.onmessage = function (event) {
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
             break;
         case 'connect' :
+            console.log(`connected`, jsondata)
             outputDiv = document
                 .getElementById('output');
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
@@ -101,21 +106,36 @@ socket.onmessage = function (event) {
                 .getElementById('output');
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
             break;
+        case 'register' :
+        case 'login' :
+            console.log(jsondata)
+            localStorage.setItem('token', JSON.stringify(jsondata.message.token))
+            localStorage.setItem('username', JSON.stringify(jsondata.message.userData.username))
+            // window.location.href = '/';
+            break;
+        case 'notification' :
+            console.log('notification')
+            console.log(jsondata)
+            outputDiv = document
+                .getElementById('output');
+            outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
+            break;
         default:
             console.log(jsondata)
             console.log('не выполнен ни один из кейсов');
     }
 };
 
+
 function _getTokenFromLocalStr() {
     return JSON.parse(localStorage.getItem('token'));
 }
 
 socket.onclose = function (event) {
-    console.log('Disconnected from WebSocket server');
+    console.log('Disconnected from Websocket server');
     setLoading(false);
     const Disconnected = document.createElement('div');
-    Disconnected.innerHTML = 'Disconnected from WebSocket server';
+    Disconnected.innerHTML = 'Disconnected from Websocket server';
 
 };
 
@@ -215,7 +235,6 @@ function renderTable() {
                 }
 
                 tableElement.insertAdjacentHTML('beforeend', rowElement);
-                console.log(sortRes)
                 document.getElementById(`${sortRes.sortType}_${sortRes.arraySize}_button`)
                     .addEventListener('click', async () => {
                         await updateRow(sortRes.sortType, sortRes.arraySize);
