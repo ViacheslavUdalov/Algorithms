@@ -10,17 +10,19 @@ import {startWebSocket} from "./services/webSocket.js";
 import {DBService} from "./services/DBService.js";
 import {JobService} from "./services/jobService.js";
 import {AuthDb} from "./services/authDb.js";
+import UserManager from "./services/userManager.js";
 
 const app = express();
 const port = 4000;
 await connectDB();
+const userManager = new UserManager();
 const dbService = new DBService(config);
 const algoState = new AlgorithmState(Algorithm, config);
 const jobRunner = new JobService(config);
 const AuthService = new AuthDb(config);
 await algoState.init();
 
-startWebSocket(algoState, dbService, jobRunner, AuthService);
+startWebSocket(algoState, dbService, jobRunner, AuthService, userManager);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

@@ -26,6 +26,7 @@ class AlgoResults {
     status;
     isValid;
 }
+
 export class AlgorithmState {
     config;
     db;
@@ -47,7 +48,7 @@ export class AlgorithmState {
 
     async updateOneAlgo(arraySize, sortType, arrayType, result) {
         console.log('updateOneAlgo')
-    
+
         console.log(result)
         const oldAlgo = this.algosData.find(nextAlgo => {
             return nextAlgo.arraySize === arraySize && nextAlgo.sortType === sortType;
@@ -70,7 +71,7 @@ export class AlgorithmState {
         algoStates.push(...this._getMissingAlgos(algoStates));
         this._getExtraAlgos(algoStates);
         this.algosData = algoStates;
-        this.updateEmitter.emit('allUpdated', this.algosData);
+        this.updateEmitter.emit('allUpdated', 'Мы это сделали босс!');
     }
 
     updateAlgos(algos) {
@@ -100,6 +101,11 @@ export class AlgorithmState {
                     const newAlgo = Object.assign(new AlgoResults(), {
                         sortType: sortType,
                         arraySize: arraySize,
+                        times: {
+                            random: null,
+                            sorted: null,
+                            reversed: null,
+                        },
                         status: ALGO_STATUSES.MISSING,
                         isValid: true,
                     });
@@ -110,16 +116,16 @@ export class AlgorithmState {
         console.log(`missingAlgos`, missingAlgos)
         return missingAlgos;
     }
-
+ 
     _getExtraAlgos(algos) {
         const extraAlgos = [];
         algos.forEach(algo => {
                 const isExtra = !this.config.arrayTypes.includes(algo.arraySize) ||
                     !this.config.sortTypes.includes(algo.sortType);
                 if (isExtra) {
-                    extraAlgos.push(algo); 
+                    extraAlgos.push(algo);
                 }
-            } 
+            }
         )
         console.log(`extra`, extraAlgos)
         this.updateEmitter.emit(ALGO_MESSAGES.extra, extraAlgos);

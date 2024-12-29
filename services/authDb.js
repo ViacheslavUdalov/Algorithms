@@ -28,20 +28,36 @@ export class AuthDb {
             },
             'udalovich115',
             {
-                expiresIn: '30d'
+                expiresIn: '2m'
             });
-        const {passwordHash, ...userData} = user._doc;
+        const {password, ...userData} = user._doc;
         return {
             userData,
             token
         }
     }
 
+    async getUser(token) {
+        console.log(token);
+        if(!token) {
+            return 
+        }
+        const decoded = jwt.verify(token, 'udalovich115');
+        const user = await User.findById(decoded._id);
+        const {password, ...userReturn} = user._doc;
+        console.log(`userReturn`, userReturn)
+        if (user) {
+            return userReturn
+        } else {
+            return 'NOOOOO User!!!!!'
+        }
+    }
+
     async login(data) {
         const user = await User.findOne({email: data.email});
         if (!user) {
-            return 'не зареган чел'
-        }
+            return false
+        } 
 
         const isValidPass = await bcript.compare(data.password, user._doc.password);
         if (!isValidPass) {
@@ -54,16 +70,17 @@ export class AuthDb {
             },
             'udalovich115',
             {
-                expiresIn: '30d'
+                expiresIn: '2m'
             });
-        const {passwordHash, ...userData} = user._doc;
+        const {password, ...userData} = user._doc;
         return {
             userData,
             token
         }
     }
+
     checkRoleIsAdmin(token) {
-console.log(`token`, token)
+        console.log(`token`, token)
         const decoded = jwt.verify(token, 'udalovich115');
         if (decoded.role !== 'admin') {
             return false

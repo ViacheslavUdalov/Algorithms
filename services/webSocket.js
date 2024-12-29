@@ -1,12 +1,13 @@
 import {WebSocketServer} from "ws";
 import {ALGO_MESSAGES} from "../controllers/AlgorithmState.js";
-
-let users = [];
-
-export function startWebSocket(algoState, dbService, JobService, AuthDb) {
+import UserManager from "./userManager.js";
+let counter = 0;
+export function startWebSocket(algoState, dbService, JobService, AuthDb, userManager) {
     const wss = new WebSocketServer({port: 8080});
 
+
     wss.on('connection', function connection(ws) {
+        ws.name = 'slava' + counter++;
         console.log('Client connected');
 
         algoState.updateEmitter.on(ALGO_MESSAGES.oneUpdated, (algo, arrayType) => {
@@ -18,10 +19,10 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb) {
             }));
         });
 
-        algoState.updateEmitter.on(ALGO_MESSAGES.allUpdated, (algos) => {
+        algoState.updateEmitter.on(ALGO_MESSAGES.allUpdated, (message) => {
             ws.send(JSON.stringify({
                 type: 'allUpdated',
-                message: 'Всё сделано босс!',
+                message: message,
             }));
         });
 
@@ -71,47 +72,58 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb) {
                             await dbService.deleteDb();
                             await dbService.saveAllToDb(algoState);
                         } else {
-                            ws.send(JSON.stringify({type: 'Komaru return', message: 'Вы не админ'}));
+                            ws.send(JSON.stringify({type: 'writeToDb', message: 'Вы не админ'}));
                         }
                     } else {
-                        ws.send(JSON.stringify({type: 'Komaru return', message: 'Вы не залогинины'}));
+                        ws.send(JSON.stringify({type: 'writeToDb', message: 'Вы не залогинины'}));
 
-                    }
-                    
+                    } 
+
                     break;
                 case 'updateRow':
                     console.log('updateRow')
                     res = await JobService.executeFuncForString(algoState, localMessage.sortType, localMessage.arraySize);
                     break;
                 case 'updateCell':
-                    console.log(`localMessage`, localMessage)
                     await JobService.executeFuncForCell(algoState, localMessage.arraySize, localMessage.sortType, localMessage.arrayType);
                     break;
-                case 'Komaru return':
-                    ws.send(JSON.stringify({type: 'Komaru return', message: localMessage.message}));
+                case 'token':
+                   const user = await AuthDb.getUser(localMessage.message);
+                    if (!user) {
+                        return;
+                    }
+                   const updatedUser = userManager.findUserByUsername(user.username);
+                    if (!updatedUser) {
+                        userManager.addUser({username: user.username, email: user.email, ws});
+                        ws.send(JSON.stringify({type: 'token', message: JSON.stringify(user)}));
+                        return;
+                    }
+                    updatedUser.ws = ws;
+                    ws.send(JSON.stringify({type: 'token', message: JSON.stringify(user)}));
                     break;
                 case 'logout':
-                    console.log(`users`, users);
-                    users = users.filter(user => user.username !== localMessage.message.username)
+                    console.log(`localMessage`, localMessage)
+                    userManager.removeUser(localMessage.message.username)
 
-                    console.log(`users`, users); 
                     break;
                 case 'register':
                     console.log(`localMessage`, localMessage);
                     const registerData = await AuthDb.register(localMessage.data);
-                    const existingUser = users.find(user => user.username === localMessage.data.username)
+                    const existingUser = userManager.findUserByUsername(localMessage.data.username)
+                    console.log(`existingUser`, existingUser);
                     if (!existingUser) {
-                        users.push({username: localMessage.data.username, email: localMessage.data.email, ws})
+                        userManager.addUser({username: localMessage.data.username, email: localMessage.data.email, ws})
                         console.log(`user ${localMessage.data} - ${ws} workaet`)
                     } else {
-                        existingUser.ws = ws;
-                        console.log(`user ${localMessage.data} - ${ws} pereworkal`)
+                        ws.send(JSON.stringify({type: 'register', message: 'Почта уже существует'}));
+                        return 'Почта уже существует'
                     }
+
                     const notification = {
                         type: 'notification',
                         message: `${localMessage.data.username} ${localMessage.data.type === 'register' ? 'зарегистрировался' : 'вошёл в систему'}!`,
                     };
-                    users.forEach((user) => {
+                    userManager.users.forEach((user) => {
                         if (user.ws.readyState === ws.OPEN) {
                             user.ws.send(JSON.stringify(notification));
                         }
@@ -119,12 +131,20 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb) {
                     ws.send(JSON.stringify({type: 'register', message: registerData}));
                     break;
                 case 'login':
-                    console.log(`localMessage`, localMessage);
-                    const loginData = await AuthDb.login(localMessage.data)
-                    const existingLoginUser = users.find(user => user.email === localMessage.data.email)
+                    const loginData = await AuthDb.login(localMessage.data);
+                    if (loginData === false) {
+                        const notificationLog = {
+                            type: 'notification',
+                            message: `чел не зареган`,
+                        };
+                        ws.send(JSON.stringify(notificationLog));
+                        return 
+                    }
+                    console.log(`loginData`, loginData)
+                    const existingLoginUser = userManager.findUserByEmail(localMessage.data.email);
                     if (!existingLoginUser) {
-                        users.push({username: localMessage.data.username, ws})
-                        console.log(localMessage.data)
+                        userManager.addUser({username: loginData.userData.username, email: localMessage.data.email, ws})
+                        console.log(`user ${localMessage} - ${ws} login`)
                     } else {
                         existingLoginUser.ws = ws;
                         console.log(`user ${localMessage.data}`)
@@ -133,12 +153,11 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb) {
                         type: 'notification',
                         message: `${loginData.userData.username} ${localMessage.data.type === 'register' ? 'зарегистрировался' : 'вошёл в систему'}!`,
                     };
-                    users.forEach((user) => {
+                    userManager.users.forEach((user) => {
                         if (user.ws.readyState === ws.OPEN) {
                             user.ws.send(JSON.stringify(notificationLog));
                         }
                     })
-                    console.log(`loginData`, loginData);
                     ws.send(JSON.stringify({type: 'login', message: loginData}));
                     break;
                 default:

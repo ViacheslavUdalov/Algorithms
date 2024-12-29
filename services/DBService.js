@@ -48,11 +48,10 @@ export class DBService {
    async saveAllToDb(algoState, token) {
         algoState.algosData.map(async item => {
             const {_id, ...itemForDb} = item;
-            console.log(`item`, itemForDb)
             const algo = await new Algorithm(itemForDb);
             algo.save();
         });
-        algoState.updateEmitter.emit('writeTodb');
+        algoState.updateEmitter.emit('writeToDb');
     }  
     // async saveCheckedDB(jobService, algoState, dbService) {
     //     const result =  await jobService.executeFuncForAllAlgos(algoState, dbService);

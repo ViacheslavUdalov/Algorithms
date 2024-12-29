@@ -5,6 +5,57 @@ import getSocket from "./socketProvider.js";
 
 export const socket = getSocket();
 console.log(socket)
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    setupAutoLogout()
+    switchButtonsOfLogoutAndLogin()
+});
+
+function switchButtonsOfLogoutAndLogin() {
+    const logoutButton = document.getElementById('logout');
+    const loginButton = document.getElementById('login');
+
+    if (_isLoggedIn()) {
+        logoutButton.style.display = 'block';
+        loginButton.style.display = 'none';
+    } else {
+        logoutButton.style.display = 'none';
+        loginButton.style.display = 'block';
+    }
+}
+
+function setupAutoLogout() {
+    const token = localStorage.getItem('token');
+    if (token) {
+        const username = localStorage.getItem('username');
+        const decodedTokenExp = JSON.parse(atob(token.split('.')[1])).exp * 1000;
+
+        const currTime = Date.now();
+        const timeLeft = decodedTokenExp - currTime;
+        console.log(timeLeft)
+
+        if (timeLeft > 0) {
+            setTimeout(() => {
+                if (socket.readyState === WebSocket.OPEN) {
+                    const logout = {
+                        type: 'logout',
+                        message: username
+                    }
+                    console.log(logout)
+                    socket.send(JSON.stringify(logout));
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('username');
+                    switchButtonsOfLogoutAndLogin();
+                }
+            }, timeLeft)
+        }
+    } else {
+        console.log('Нет токена')
+        return
+    }
+}
+
 document.getElementById('writeToDb')
     .addEventListener('click', async () => {
 
@@ -26,6 +77,7 @@ document.getElementById('logout')
             type: 'logout',
             message: username
         }
+        switchButtonsOfLogoutAndLogin();
         socket.send(JSON.stringify(logout));
     });
 
@@ -35,6 +87,7 @@ const types = ['random', 'sorted', 'reversed'];
 socket.onopen = function (event) {
     console.log('index')
 
+
     console.log('connected from Websocket server');
     const dataToSend = {
         type: 'connect',
@@ -43,11 +96,11 @@ socket.onopen = function (event) {
 
     socket.send(JSON.stringify(dataToSend));
     getAllData();
-    const Komaru = {
-        type: 'Komaru return',
-        message: 'Default: Komaru forever!'
+    const getUser = {
+        type: 'token',
+        message: JSON.parse(localStorage.getItem('token'))
     }
-    socket.send(JSON.stringify(Komaru));
+    socket.send(JSON.stringify(getUser));
 };
 
 socket.onmessage = function (event) {
@@ -71,7 +124,7 @@ socket.onmessage = function (event) {
             console.log('updateCell');
             renderCell(jsondata.message, jsondata.arrayType);
             break;
-        case 'Komaru return' :
+        case 'token' :
             outputDiv = document
                 .getElementById('output');
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
@@ -91,17 +144,26 @@ socket.onmessage = function (event) {
             renderCell(jsondata.message, jsondata.arrayType);
             break;
         case 'allUpdated' :
+            console.log(jsondata)
             outputDiv = document
                 .getElementById('output');
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
             break;
         case 'extra' :
-            outputDiv = document
-                .getElementById('output');
-            outputDiv.innerHTML += `<p>Received <b>"${jsondata.message.arraySize}" - "${jsondata.message.sortType}" - "${jsondata.message._id}"</b> from server.</p>`;
+            console.log(jsondata);
+            if (jsondata.message.length > 0) {
+                outputDiv = document
+                    .getElementById('output');
+                outputDiv.innerHTML += `<p>Received <b>"${jsondata.message.arraySize}" - "${jsondata.message.sortType}" - "${jsondata.message._id}"</b> from server.</p>`;
+            } else {
+                outputDiv = document
+                    .getElementById('output');
+                outputDiv.innerHTML += `<p>Received <b>Нет лишних алгоритмов!</b> from server.</p>`;
+
+            }
             break;
         case 'writeToDb' :
-            console.log('writeToDb')
+            console.log('writeToDb', jsondata.message)
             outputDiv = document
                 .getElementById('output');
             outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
@@ -179,7 +241,6 @@ function renderCell(data, arrayType) {
     setCellLoading(data.sortType, data.arraySize, arrayType, false);
     document.getElementById(`${data.sortType}_${data.arraySize}_${arrayType}_button`)
         .addEventListener('click', async () => {
-            console.log('кликнули')
             await updateCell(data.sortType, data.arraySize, arrayType, data.id)
             //     .then(() => {
             //     renderCell(data, arrayType)
@@ -258,7 +319,6 @@ function restartCell(sortResult, arrayType) {
 
 document.getElementById('restartAll')
     .addEventListener('click', async () => {
-        console.log('кликнули');
         await updateAll();
     });
 
@@ -344,4 +404,8 @@ async function updateAll() {
 async function updateCell(sortType, arraySize, arrayType, id) {
     setCellLoading(sortType, arraySize, arrayType, true);
     await requestSort(sortType, arraySize, "updateCell", arrayType, id);
+}
+
+function _isLoggedIn() {
+    return localStorage.getItem('token') !== null;
 }
