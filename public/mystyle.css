@@ -1,0 +1,62 @@
+.button {
+    background-color: #1b7dfd;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    border: 1px solid black;
+}
+.cell-loading {
+    position: relative;
+    color: transparent;
+}
+
+.cell-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 55px;
+    background-image: url('images/cat.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.label {
+    font-size: large;
+    font-weight: bold;
+    font-family: Arial;
+}
+.option {
+    background-color: #1bfd2e;
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 10px;
+}
+.options {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+.tit {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-family: Arial;
+    font-weight: bolder;
+    text-decoration: none;
+    color: black;
+    background-color: cornflowerblue;
+    padding: 10px;
+    border-radius: 10px;
+}
+.tit:hover {
+    text-decoration: underline;
+    scale: 1.1;
+    transition: scale 0.5s ease-in-out, text-decoration 0.5s ease-in-out;
+}

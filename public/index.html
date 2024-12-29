@@ -1,11 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+    <link rel="stylesheet" href="mystyle.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>4x4 Table Component</title>
     <style>
+        #loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            background-color: black;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -29,28 +43,25 @@
 </head>
 <body>
 
+<button id="logout">Выйти</button>
+<a id='login' href="/register.html">Войти</a>
+<div id="loading">Loading...</div>
+<button id="restartAll" style="background-color: #1b7dfd; width: 100%; padding: 10px">Перезапустить все данные</button>
+<table id="sortingTable"></table>
+<a href="/admin.html">Adminka</a>
 <table>
     <thead>
-    <tr>
-        <td>sort type</td>
-        <td>array length</td>
-        <td>random, ms</td>
-        <td>sorted, ms</td>
-        <td>reversed, ms</td>
-    </tr>
     </thead>
     <tbody id="result-table">
-
     </tbody>
 </table>
-<script src="index.js" ></script>
-<script type="module">
-    import   loadData  from './index.js';
-    window.onload = async  () => {
 
-        await loadData();
+<div id="output"></div>
+<button class="button" id="writeToDb">Записать в бд</button>
+<script type="module" src="index.js"></script>
+<script>
 
-    }
+
 </script>
 </body>
 </html>

@@ -3,7 +3,7 @@ import {helperLog} from "../useTooling.js";
 export async function recreateResultDB(sortType, arraySize, arrayType, time) {
     try {
         // получение данных по типу сортировки и размеру массива
-        const getData = await fetch(`http://localhost:3000/results?sortType=${sortType}&arraySize=${arraySize}`);
+        const getData = await fetch(`http://localhost:3000/result?sortType=${sortType}&arraySize=${arraySize}`);
         if (!getData.ok) {
             throw new Error("Нет данных, нельзя обновить данные, если их нет, вызовите метод create")
         }
@@ -15,7 +15,7 @@ export async function recreateResultDB(sortType, arraySize, arrayType, time) {
         resultItem[0].times[arrayType] = time;
 
         // обновление по айди
-        const response = await fetch(`http://localhost:3000/results/${resultItem[0].id}`, {
+        const response = await fetch(`http://localhost:3000/result/${resultItem[0].id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
