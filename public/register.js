@@ -1,4 +1,5 @@
 import getSocket from "./socketProvider.js";
+const socket = getSocket();
 
 document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('login-form');
@@ -29,8 +30,33 @@ document.addEventListener('DOMContentLoaded', function () {
     loginLink.addEventListener('click', showLogin);
 });
 
-const socket = getSocket();
 
+
+
+
+socket.onmessage = function (event) { 
+    let jsondata = JSON.parse(event.data);
+console.log(`jsondata`, jsondata)
+    switch (jsondata.type) {
+        case 'register' :
+        case 'login' :
+            console.log(jsondata)
+            localStorage.setItem('token', JSON.stringify(jsondata.message.token))
+            localStorage.setItem('username', JSON.stringify(jsondata.message.userData.username))
+            // window.location.href = '/';
+            break;
+        case 'notification' :
+            console.log('notification')
+            console.log(jsondata)
+           const outputDiv = document
+                .getElementById('output');
+            outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
+            break;
+        default:
+            console.log(jsondata)
+            console.log('не выполнен ни один из кейсов');
+    }
+};
 function handleRegisterForm(event) {
     event.preventDefault();
     const email = document.getElementById('reg-email').value;
@@ -73,27 +99,3 @@ function handleLoginForm(event) {
 function handleSendForRegAndLog(dataToSend) {
     socket.send(JSON.stringify(dataToSend));
 }
-
-socket.onmessage = function (event) { 
-    let jsondata = JSON.parse(event.data);
-console.log(`jsondata`, jsondata)
-    switch (jsondata.type) {
-        case 'register' :
-        case 'login' :
-            console.log(jsondata)
-            localStorage.setItem('token', JSON.stringify(jsondata.message.token))
-            localStorage.setItem('username', JSON.stringify(jsondata.message.userData.username))
-            // window.location.href = '/';
-            break;
-        case 'notification' :
-            console.log('notification')
-            console.log(jsondata)
-           const outputDiv = document
-                .getElementById('output');
-            outputDiv.innerHTML += `<p>Received <b>"${jsondata.message}"</b> from server.</p>`;
-            break;
-        default:
-            console.log(jsondata)
-            console.log('не выполнен ни один из кейсов');
-    }
-}; 

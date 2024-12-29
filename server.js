@@ -38,31 +38,6 @@ app.get('/config.js', (req, res) => {
     res.sendFile(path.join(__dirname, 'config.js'));
 });
 
-app.get('/getData', async (req, res) => {
-    try {
-        const data = await Algorithm.find();
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({message: error.message})
-    }
-});
-
-
-app.get('/check', async (req, res) => {
-    let response = await checkBdForData();
-
-    res.status(200).json({message: response})
-});
-
-app.post(`/writeToDb`, async (req, res) => {
-    let {sortType, arraySize} = req.body;
-
-    await recreateDb(sortType || null, Number(arraySize) || null, res);
-
-    res.status(200).json({message: "Komaru One Love"})
-
-})
-
 app.use((err, req, res, next) => {
     if (err) {
         return res.status(err.statusCode || 500).json(err.message);

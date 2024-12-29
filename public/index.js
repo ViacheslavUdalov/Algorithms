@@ -96,6 +96,7 @@ socket.onopen = function (event) {
 
     socket.send(JSON.stringify(dataToSend));
     getAllData();
+    setupAutoLogout();
     const getUser = {
         type: 'token',
         message: JSON.parse(localStorage.getItem('token'))
@@ -121,7 +122,6 @@ socket.onmessage = function (event) {
             renderRow(jsondata.message);
             break;
         case 'updateCell' :
-            console.log('updateCell');
             renderCell(jsondata.message, jsondata.arrayType);
             break;
         case 'token' :

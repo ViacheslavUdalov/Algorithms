@@ -142,6 +142,7 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb, userMan
                     }
                     console.log(`loginData`, loginData)
                     const existingLoginUser = userManager.findUserByEmail(localMessage.data.email);
+                    console.log(existingLoginUser)
                     if (!existingLoginUser) {
                         userManager.addUser({username: loginData.userData.username, email: localMessage.data.email, ws})
                         console.log(`user ${localMessage} - ${ws} login`)

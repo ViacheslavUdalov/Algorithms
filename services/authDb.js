@@ -2,16 +2,16 @@ import bcrypt from "bcrypt";
 import User from "../models/userSchema.js";
 import jwt from "jsonwebtoken";
 import bcript from "bcrypt";
+import config from "../config.js";
 
 export class AuthDb {
+    user;
+
     constructor(config) {
 
     }
 
-    user;
-
     async register(data) {
-        console.log(data)
         const saltPassword = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(data.password, saltPassword)
         const doc = new User({
@@ -26,9 +26,9 @@ export class AuthDb {
                 _id: user._id,
                 role: user.role
             },
-            'udalovich115',
+            config.secretKey,
             {
-                expiresIn: '2m'
+                expiresIn: config.tokenExpired
             });
         const {password, ...userData} = user._doc;
         return {
@@ -38,14 +38,12 @@ export class AuthDb {
     }
 
     async getUser(token) {
-        console.log(token);
-        if(!token) {
-            return 
+        if (!token) {
+            return
         }
-        const decoded = jwt.verify(token, 'udalovich115');
+        const decoded = jwt.verify(token, config.secretKey);
         const user = await User.findById(decoded._id);
         const {password, ...userReturn} = user._doc;
-        console.log(`userReturn`, userReturn)
         if (user) {
             return userReturn
         } else {
@@ -57,20 +55,20 @@ export class AuthDb {
         const user = await User.findOne({email: data.email});
         if (!user) {
             return false
-        } 
+        }
 
         const isValidPass = await bcript.compare(data.password, user._doc.password);
         if (!isValidPass) {
-            return 'а пароль то не верный'
+            return false
         }
 
         const token = jwt.sign({
                 _id: user._id,
                 role: user.role
             },
-            'udalovich115',
+            config.secretKey,
             {
-                expiresIn: '2m'
+               expiresIn: config.tokenExpired
             });
         const {password, ...userData} = user._doc;
         return {
@@ -80,8 +78,7 @@ export class AuthDb {
     }
 
     checkRoleIsAdmin(token) {
-        console.log(`token`, token)
-        const decoded = jwt.verify(token, 'udalovich115');
+        const decoded = jwt.verify(token, config.secretKey);
         if (decoded.role !== 'admin') {
             return false
         } else {
