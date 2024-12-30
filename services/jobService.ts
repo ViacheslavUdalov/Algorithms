@@ -4,26 +4,30 @@ import {insertSort} from "../sorts/insertSort.js";
 import mergeSort from "../sorts/mergeSort.js";
 import quickSort from "../sorts/quickSort.js";
 import {ALGO_STATUSES} from "../controllers/AlgorithmState.js";
-import Algorithm from "../models/AlgorithmSchema.js";
 import config from "../config.js";
+import {JobServiceInterface} from "../interfaces/JobServiceInterface.js";
+import {AlgoStateInterface} from "../interfaces/AlgoState.js";
+import {AlgorithmModel, ArrayType} from "../serverModels/Algorithm.js";
 import {runChild} from "../chlid.js";
+import AlgorithmSchema from "../serverModels/schema/AlgorithmSchema.js";
 
 const ARRAY_SIZES = config.arrayTypes;
 const SORT_TYPES = config.sortTypes;
 const ARRAY_OF_SORT_FUNCTIONS = [bubbleSort, choiceSort, 
     insertSort, mergeSort, quickSort];
 
-export class JobService {
-    constructor(config) {
+export class JobService implements JobServiceInterface{
+    config: any;
+    constructor(config: any) {
         this.config = config;
     }
 
 
-    async executeFuncForString(algoState, sortType, arraySize) { 
+    async executeFuncForString(algoState: AlgoStateInterface, sortType: string, arraySize: number) { 
         const random = await this.executeFuncForCell(algoState, arraySize, sortType, 'random');
         const sorted = await this.executeFuncForCell(algoState, arraySize, sortType, 'sorted');
         const reversed = await this.executeFuncForCell(algoState, arraySize, sortType, 'reversed');
-        const algorithm = {
+        const algorithm: AlgorithmModel = {
             arraySize,
             sortType,
             times: {
@@ -37,35 +41,34 @@ export class JobService {
         return algorithm;
     }
 
-    async executeFuncForCell(algoState, arraySize, sortType, arrayType) {
+    async executeFuncForCell(algoState: AlgoStateInterface, arraySize: number,
+                             sortType: string, arrayType: ArrayType) {
         const result = await runChild(arraySize, sortType, arrayType);
         await algoState.updateOneAlgo(arraySize, sortType, arrayType, result);
         return result;
     }
 
-    async executeFuncForAllAlgos(algoState) {
-        let res = [];
+    async executeFuncForAllAlgos(algoState: AlgoStateInterface) {
+        let res: AlgorithmModel[] = [];
         for (let sortFunc of ARRAY_OF_SORT_FUNCTIONS) {
             for (let arraySize of ARRAY_SIZES) {
-                let interRes = await this.executeFuncForString(algoState, sortFunc.name, arraySize);
+                const interRes: AlgorithmModel = await this.executeFuncForString(algoState, sortFunc.name, arraySize);
                 res.push(interRes);
             }
         }
-        // console.log(res)
         algoState.updateAllAlgos(res);
-        // console.log(`execute`, res);
         return res;
     }
 
     async checkBdForData() {
 
-        let dataForCycle = await Algorithm.find();
-        let missingData = [];
+        let dataForCycle = await AlgorithmSchema.find();
+        let missingData: any = [];
         let duplicates = [];
 
         SORT_TYPES.forEach(sortType => {
             ARRAY_SIZES.forEach(arraySize => {
-                let exist = dataForCycle.some(item =>
+                let exist = dataForCycle.some((item: any) =>
                     item.sortType.toUpperCase() === sortType.toUpperCase() && item.arraySize === arraySize
                 );
                 if (!exist) {

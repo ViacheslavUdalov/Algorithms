@@ -7,7 +7,7 @@ const connectDB =  () => {
             .then(() => {
                 console.log('connected')
             });
-    } catch (error) {
+    } catch (error: any) {
         console.error('MongoDB connection failed:', error.message);
         process.exit(1);
     }

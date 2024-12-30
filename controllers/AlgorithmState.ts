@@ -1,5 +1,8 @@
 import EventEmitter from "node:events";
-import {helperLog} from "../utils/useTooling.js";
+import {Types} from "mongoose";
+import {AlgorithmModel, ArrayType} from "../serverModels/Algorithm.js";
+import {AlgoStateInterface} from "../interfaces/AlgoState.js";
+import {DbServiceInterface} from "../interfaces/DbServiceInterface.js";
 
 export const ALGO_STATUSES = {
     VALID: 'VALID',
@@ -14,26 +17,26 @@ export const ALGO_MESSAGES = {
     extra: 'extra'
 };
 
-class AlgoResults {
-    id;
-    sortType;
-    arraySize;
+class AlgoResults implements AlgorithmModel{
+    _id!: Types.ObjectId;
+    sortType!: string;
+    arraySize!: number;
     times = {
         random: undefined,
         sorted: undefined,
         reversed: undefined
     };
-    status;
-    isValid;
+    status!: string;
+    isValid!: boolean;
 }
 
-export class AlgorithmState {
+export class AlgorithmState implements AlgoStateInterface{
     config;
     db;
-    algosData = [];
+    algosData: AlgorithmModel[] = [];
     updateEmitter = new EventEmitter();
 
-    constructor(db, config) {
+    constructor(db: DbServiceInterface, config: any) {
         this.db = db;
         this.config = config;
     }
@@ -46,7 +49,7 @@ export class AlgorithmState {
         return this.algosData;
     }
 
-    async updateOneAlgo(arraySize, sortType, arrayType, result) {
+    async updateOneAlgo(arraySize: number, sortType: string, arrayType: ArrayType, result: string) {
         console.log('updateOneAlgo')
 
         console.log(result)
@@ -58,14 +61,15 @@ export class AlgorithmState {
             oldAlgo.times[arrayType] = result;
             oldAlgo.isValid = this._getIsAlgoValid(oldAlgo);
             console.log(`oldAlgo`, oldAlgo);
-        } else {
             oldAlgo.isValid = this._getIsAlgoValid(oldAlgo);
-            this.algosData.push(oldAlgo);
+        } else {
+           return false;
+            // this.algosData.push(oldAlgo);
         }
         this.updateEmitter.emit('oneUpdated', oldAlgo, arrayType);
     }
 
-    updateAllAlgos(algos) {
+    updateAllAlgos(algos : AlgorithmModel[]) {
         const algoStates = algos.map(algo => algo);
         this._populateAlgosValidity(algoStates);
         algoStates.push(...this._getMissingAlgos(algoStates));
@@ -73,30 +77,26 @@ export class AlgorithmState {
         this.algosData = algoStates;
         this.updateEmitter.emit('allUpdated', 'Мы это сделали босс!');
     }
-
-    updateAlgos(algos) {
-        algos.forEach(algo => this.updateOneAlgo(algo));
-    }
-
+    
     async _syncAlgoDataWithDB() {
-        const algos = await this.db.find({});
+        const algos = await this.db.find();
         this.updateAllAlgos(algos);
     }
 
-    _populateAlgosValidity(algos) {
+    _populateAlgosValidity(algos : AlgorithmModel[]) {
         algos.forEach((algo, index) => {
             algos[index].isValid = this._getIsAlgoValid(algo);
         });
     }
 
-    _getIsAlgoValid(algo) {
+    _getIsAlgoValid(algo : AlgorithmModel) {
         return this.config.arrayTypes.includes(algo.arraySize) && this.config.sortTypes.includes(algo.sortType);
     }
 
-    _getMissingAlgos(algos) {
-        const missingAlgos = [];
-        this.config.arrayTypes.forEach(arraySize => {
-            this.config.sortTypes.forEach(sortType => {
+    _getMissingAlgos(algos : AlgorithmModel[]) {
+        const missingAlgos : AlgorithmModel[] = [];
+        this.config.arrayTypes.forEach((arraySize: number) => {
+            this.config.sortTypes.forEach((sortType: string) => {
                 if (!algos.find(algo => algo.sortType === sortType && algo.arraySize === arraySize)) {
                     const newAlgo = Object.assign(new AlgoResults(), {
                         sortType: sortType,
@@ -108,6 +108,7 @@ export class AlgorithmState {
                         },
                         status: ALGO_STATUSES.MISSING,
                         isValid: true,
+                        createAt: null
                     });
                     missingAlgos.push(newAlgo);
                 }
@@ -117,8 +118,8 @@ export class AlgorithmState {
         return missingAlgos;
     }
  
-    _getExtraAlgos(algos) {
-        const extraAlgos = [];
+    _getExtraAlgos(algos : AlgorithmModel[]) {
+        const extraAlgos : AlgorithmModel[] = [];
         algos.forEach(algo => {
                 const isExtra = !this.config.arrayTypes.includes(algo.arraySize) ||
                     !this.config.sortTypes.includes(algo.sortType);

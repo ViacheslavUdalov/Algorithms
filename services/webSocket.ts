@@ -1,16 +1,25 @@
-import {WebSocketServer} from "ws";
 import {ALGO_MESSAGES} from "../controllers/AlgorithmState.js";
-import UserManager from "./userManager.js";
+import { WebSocketServer , WebSocket} from 'ws';
+import {UserWithWebSocketData} from "../serverModels/userWithWebSocketData.js";
+import {AlgorithmModel} from "../serverModels/Algorithm.js";
+import {AlgoStateInterface} from "../interfaces/AlgoState.js";
+import {DbServiceInterface} from "../interfaces/DbServiceInterface.js";
+import {JobServiceInterface} from "../interfaces/JobServiceInterface.js";
+import {AuthDbInterface} from "../interfaces/AuthDbInterface.js";
+import {UserManagerInterface} from "../interfaces/userManagerInterface.js";
 let counter = 0;
-export function startWebSocket(algoState, dbService, JobService, AuthDb, userManager) {
+export function startWebSocket(algoState: AlgoStateInterface, 
+                               dbService: DbServiceInterface, 
+                               JobService: JobServiceInterface,
+                               AuthDb: AuthDbInterface, 
+                               userManager: UserManagerInterface) {
     const wss = new WebSocketServer({port: 8080});
 
 
-    wss.on('connection', function connection(ws) {
-        ws.name = 'slava' + counter++;
+    wss.on('connection', (ws: WebSocket) => {
         console.log('Client connected');
 
-        algoState.updateEmitter.on(ALGO_MESSAGES.oneUpdated, (algo, arrayType) => {
+        algoState.updateEmitter.on(ALGO_MESSAGES.oneUpdated, (algo: AlgorithmModel, arrayType: string) => {
             console.log('ОТправляем данные')
             ws.send(JSON.stringify({
                 type: 'oneUpdated',
@@ -19,14 +28,14 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb, userMan
             }));
         });
 
-        algoState.updateEmitter.on(ALGO_MESSAGES.allUpdated, (message) => {
+        algoState.updateEmitter.on(ALGO_MESSAGES.allUpdated, (message: string) => {
             ws.send(JSON.stringify({
                 type: 'allUpdated',
                 message: message,
             }));
         });
 
-        algoState.updateEmitter.on(ALGO_MESSAGES.extra, (algos) => {
+        algoState.updateEmitter.on(ALGO_MESSAGES.extra, (algos: AlgorithmModel[]) => {
             console.log('ExtraAlgos')
             ws.send(JSON.stringify({
                 type: 'extra',
@@ -41,7 +50,7 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb, userMan
             }));
         });
 
-        ws.on('message', async function incoming(message) {
+        ws.on('message', async function incoming(message: any) {
             if (Buffer.isBuffer(message)) {
                 message = message.toString('utf-8');
             }
@@ -89,12 +98,12 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb, userMan
                     break;
                 case 'token':
                    const user = await AuthDb.getUser(localMessage.message);
-                    if (!user) {
+                    if (!user || typeof user !== 'object') {
                         return;
                     }
                    const updatedUser = userManager.findUserByUsername(user.username);
                     if (!updatedUser) {
-                        userManager.addUser({username: user.username, email: user.email, ws});
+                        userManager.addUser({username: user.username as string, email: user.email, ws});
                         ws.send(JSON.stringify({type: 'token', message: JSON.stringify(user)}));
                         return;
                     }
@@ -123,7 +132,7 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb, userMan
                         type: 'notification',
                         message: `${localMessage.data.username} ${localMessage.data.type === 'register' ? 'зарегистрировался' : 'вошёл в систему'}!`,
                     };
-                    userManager.users.forEach((user) => {
+                    userManager.users.forEach((user: UserWithWebSocketData) => {
                         if (user.ws.readyState === ws.OPEN) {
                             user.ws.send(JSON.stringify(notification));
                         }
@@ -132,7 +141,7 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb, userMan
                     break;
                 case 'login':
                     const loginData = await AuthDb.login(localMessage.data);
-                    if (loginData === false) {
+                    if (loginData === false || typeof loginData !== 'object') {
                         const notificationLog = {
                             type: 'notification',
                             message: `чел не зареган`,
@@ -154,7 +163,7 @@ export function startWebSocket(algoState, dbService, JobService, AuthDb, userMan
                         type: 'notification',
                         message: `${loginData.userData.username} ${localMessage.data.type === 'register' ? 'зарегистрировался' : 'вошёл в систему'}!`,
                     };
-                    userManager.users.forEach((user) => {
+                    userManager.users.forEach((user: UserWithWebSocketData) => {
                         if (user.ws.readyState === ws.OPEN) {
                             user.ws.send(JSON.stringify(notificationLog));
                         }

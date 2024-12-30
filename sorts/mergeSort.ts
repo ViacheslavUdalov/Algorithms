@@ -8,7 +8,7 @@
 // all cases - O(NlogN)
 
 
-function mergeHelper(firstArray, secondArray) {
+function mergeHelper(firstArray: number[], secondArray: number[]) {
     let resultArray = [];
     while (firstArray.length && secondArray.length) {
         if (firstArray[0] < secondArray[0]) {
@@ -22,14 +22,16 @@ function mergeHelper(firstArray, secondArray) {
     return [...resultArray, ...firstArray, ...secondArray];
 }
 
-function mergeSort(array) {
+function mergeSort(array: number[]) {
     if (array.length <= 1) return array;
 
     let mid = Math.floor(array.length / 2);
 
-// slice - делает копию массива от индкса до следующего индекса. Не меняет текущий массив.
-    let leftArray = mergeSort(array.slice(0, mid));
-    let rightArray = mergeSort(array.slice(mid));
+// slice - делает копию массива от индекса до следующего индекса. Не меняет текущий массив.
+    // @ts-ignore
+    let leftArray: number[] = mergeSort(array.slice(0, mid));
+    // @ts-ignore
+    let rightArray: number[] = mergeSort(array.slice(mid));
 
 // мержит два отсортированных массива - когда функция уйдёт в самую глубь рекурсии,
 // начнёт мержить по одному элементу, потом по два итд. И будет выходить из рекурсии

@@ -9,21 +9,21 @@
 // average and base case - O(NlogN)
 
 
-function swap(array, a, b) {
+function swap(array: number[], a: number, b: number) {
     // функция смены двух элементов
     let temp = array[a];
     array[a] = array[b];
     array[b] = temp;
 }
 
-function quickSort(array){
+function quickSort(array: number[]){
     // основная функция сортировки
     const length = array.length;
     quicksort(array, 0, length - 1);
     return array;
 }
 
-function quicksort(array, start, end) {
+function quicksort(array: number[], start: number, end: number) {
     // условие выхода из функции
     if (start >= end) {
         return array;
@@ -39,7 +39,7 @@ function quicksort(array, start, end) {
     return array;
 }
 
-function partition(array, start, end) {
+function partition(array: number[], start: number, end: number) {
     let middleValue = array[Math.floor((start + end) / 2)];
 
     while (start <= end ) {

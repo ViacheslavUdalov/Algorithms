@@ -1,4 +1,6 @@
 {
+  "ext": "ts",
   "verbose": false,
-  "ignore": ["db.json"]
+  "ignore": ["db.json"],
+  "exec": "tsx server.ts"
 }
