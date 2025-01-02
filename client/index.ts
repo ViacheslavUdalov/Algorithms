@@ -3,6 +3,11 @@
 import config from "../config.js";
 import getSocket from "./socketProvider.js";
 
+declare global {
+    interface Window {
+        data: any;
+    }
+}
 export const socket = getSocket();
 console.log(socket)
 
@@ -107,11 +112,11 @@ socket.onopen = function (event) {
 socket.onmessage = function (event) {
     let jsondata = JSON.parse(event.data);
 
-    let outputDiv = '';
+    let outputDiv: HTMLElement | null;
     switch (jsondata.type) {
         case 'getData' :
             window.data = jsondata.message;
-            renderTable(jsondata.message);
+            renderTable();
             setLoading(false);
             break;
         case 'updateAll' :
@@ -409,3 +414,5 @@ async function updateCell(sortType, arraySize, arrayType, id) {
 function _isLoggedIn() {
     return localStorage.getItem('token') !== null;
 }
+
+
