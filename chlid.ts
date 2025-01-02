@@ -5,7 +5,7 @@ const execAsync = promisify(exec);
 
 export function runChild(arraySize: number, sortType: string, arrayType: string) {
     console.log(`runChild`, arraySize, sortType, arrayType);
-    return execAsync(`node ./sorts/${sortType.replace("Sort", "")}.tools.js -t ${arraySize} -a ${arrayType}`)
+    return execAsync(`node ./public/sorts/${sortType.replace("Sort", "")}.tools.js -t ${arraySize} -a ${arrayType}`)
         .then((res) => {
             if (res.stderr) {
                 throw new Error(res.stderr);

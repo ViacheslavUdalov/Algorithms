@@ -13,17 +13,22 @@ import AlgorithmSchema from "../serverModels/schema/AlgorithmSchema.js";
 
 const ARRAY_SIZES = config.arrayTypes;
 const SORT_TYPES = config.sortTypes;
-const ARRAY_OF_SORT_FUNCTIONS = [bubbleSort, choiceSort, 
+const ARRAY_OF_SORT_FUNCTIONS = [bubbleSort, choiceSort,
     insertSort, mergeSort, quickSort];
 
-export class JobService implements JobServiceInterface{
+export class JobService implements JobServiceInterface {
     config: any;
+
     constructor(config: any) {
         this.config = config;
     }
 
 
-    async executeFuncForString(algoState: AlgoStateInterface, sortType: string, arraySize: number) { 
+    async executeFuncForString(
+        algoState: AlgoStateInterface, 
+        sortType: string, 
+        arraySize: number,
+        ) {
         const random = await this.executeFuncForCell(algoState, arraySize, sortType, 'random');
         const sorted = await this.executeFuncForCell(algoState, arraySize, sortType, 'sorted');
         const reversed = await this.executeFuncForCell(algoState, arraySize, sortType, 'reversed');
@@ -41,8 +46,12 @@ export class JobService implements JobServiceInterface{
         return algorithm;
     }
 
-    async executeFuncForCell(algoState: AlgoStateInterface, arraySize: number,
-                             sortType: string, arrayType: ArrayType) {
+    async executeFuncForCell(
+        algoState: AlgoStateInterface,
+        arraySize: number,
+        sortType: string,
+        arrayType: ArrayType,
+    ) {
         const result = await runChild(arraySize, sortType, arrayType);
         await algoState.updateOneAlgo(arraySize, sortType, arrayType, result);
         return result;
@@ -105,6 +114,4 @@ export class JobService implements JobServiceInterface{
                 Object.fromEntries(result))}`;
         }
     }
-
-
 }

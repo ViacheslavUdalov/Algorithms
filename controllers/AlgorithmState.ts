@@ -4,18 +4,18 @@ import {AlgorithmModel, ArrayType} from "../serverModels/Algorithm.js";
 import {AlgoStateInterface} from "../interfaces/AlgoState.js";
 import {DbServiceInterface} from "../interfaces/DbServiceInterface.js";
 
-export const ALGO_STATUSES = {
-    VALID: 'VALID',
-    MISSING: 'MISSING',
-    CALCULATING: 'CALCULATING',
-    INVALID: 'INVALID',
-};
+export enum ALGO_STATUSES {
+    VALID = 'VALID',
+    MISSING = 'MISSING',
+    CALCULATING = 'CALCULATING',
+    INVALID = 'INVALID',
+}
 
-export const ALGO_MESSAGES = {
-    oneUpdated: 'oneUpdated',
-    allUpdated: 'allUpdated',
-    extra: 'extra'
-};
+export enum ALGO_MESSAGES  {
+    oneUpdated = 'oneUpdated',
+    allUpdated = 'allUpdated',
+    extra = 'extra'
+}
 
 class AlgoResults implements AlgorithmModel{
     _id!: Types.ObjectId;
