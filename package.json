@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "start": "tsx server.ts",
+    "start": "nodemon --config nodemon.json",
     "build": "tsc --build",
     "jest": "jest"
   },

@@ -1,15 +1,16 @@
-import bubbleSort from "../sorts/bubbleSort.js";
-import choiceSort from "../sorts/choiceSort.js";
-import {insertSort} from "../sorts/insertSort.js";
-import mergeSort from "../sorts/mergeSort.js";
-import quickSort from "../sorts/quickSort.js";
-import {ALGO_STATUSES} from "../controllers/AlgorithmState.js";
-import config from "../config.js";
+import bubbleSort from "../../public/sorts/bubbleSort.js";
+import choiceSort from "../../public/sorts/choiceSort.js";
+import {insertSort} from "../../public/sorts/insertSort.js";
+import mergeSort from "../../public/sorts/mergeSort.js";
+import config from "../../config.js";
+import quickSort from "../../public/sorts/quickSort.js";
 import {JobServiceInterface} from "../interfaces/JobServiceInterface.js";
 import {AlgoStateInterface} from "../interfaces/AlgoState.js";
 import {AlgorithmModel, ArrayType} from "../serverModels/Algorithm.js";
+import {ALGO_STATUSES} from "../controllers/AlgorithmState.js";
 import {runChild} from "../chlid.js";
-import AlgorithmSchema from "../serverModels/schema/AlgorithmSchema.js";
+import AlgorithmSchema from "../schema/AlgorithmSchema.js";
+
 
 const ARRAY_SIZES = config.arrayTypes;
 const SORT_TYPES = config.sortTypes;

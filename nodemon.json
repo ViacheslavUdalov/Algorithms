@@ -2,5 +2,5 @@
   "ext": "ts",
   "verbose": false,
   "ignore": ["db.json"],
-  "exec": "tsx server.ts"
+  "exec": "tsx backend/server.ts"
 }

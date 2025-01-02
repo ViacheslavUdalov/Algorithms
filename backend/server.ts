@@ -1,7 +1,6 @@
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 import connectDB from "./connectDB.js";
-// import express, {Express} from "express";
 import * as path from "path";
 import UserManager from "./services/userManager.js";
 import {DBService} from "./services/DBService.js";
@@ -10,7 +9,7 @@ import {JobService} from "./services/jobService.js";
 import {AuthDb} from "./services/authDb.js";
 import {startWebSocket} from "./services/webSocket.js";
 import express, {Express} from "express";
-import config from "./config.js";
+import config from "../config.js";
 
 
 const app: Express = express();

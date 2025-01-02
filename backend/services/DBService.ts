@@ -1,17 +1,13 @@
-import bubbleSort from "../sorts/bubbleSort.js";
-import choiceSort from "../sorts/choiceSort.js";
-import {insertSort} from "../sorts/insertSort.js";
-import mergeSort from "../sorts/mergeSort.js";
-import quickSort from "../sorts/quickSort.js";
+
 import {DbServiceInterface} from "../interfaces/DbServiceInterface.js";
-import Algorithm from "../serverModels/schema/AlgorithmSchema.js";
-import config from "../config.js";
+
 import {AlgorithmModel} from "../serverModels/Algorithm.js";
 import {AlgoStateInterface} from "../interfaces/AlgoState.js";
+import config from "../../config.js";
+import Algorithm from "../schema/AlgorithmSchema.js";
 
 const ARRAY_SIZES = config.arrayTypes;
 const SORT_TYPES = config.sortTypes;
-const ARRAY_OF_SORT_FUNCTIONS = [bubbleSort, choiceSort, insertSort, mergeSort, quickSort];
 
 export class DBService implements DbServiceInterface{
     config: any;
