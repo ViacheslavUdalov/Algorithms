@@ -4,10 +4,10 @@ export type AlgorithmModel = {
     _id?: Types.ObjectId;
     sortType: string;
     arraySize: number;
-    times : Times,
-status: string | undefined;
-isValid: boolean | undefined; 
-createdAt?: Date
+    times: Times,
+    status: string | undefined;
+    isValid: boolean | undefined;
+    createdAt?: Date
 }
 
 export type ArrayType = keyof Times

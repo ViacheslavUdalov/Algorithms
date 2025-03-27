@@ -1,0 +1,8 @@
+diff a/tests/authDb.test.ts b/tests/authDb.test.ts	(rejected hunks)
+@@ -1,6 +1,3 @@
+-
+-
+-
+ import {AuthDb} from "../backend/services/authDb";
+ import config from "../config";
+ import restoreAllMocks = jest.restoreAllMocks;

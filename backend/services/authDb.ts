@@ -1,9 +1,10 @@
+
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 import {AuthDbInterface} from "../interfaces/AuthDbInterface.js";
 import {UserModel} from "../serverModels/user.js";
 import {RegisterData} from "../serverModels/registerData.js";
 import {ReturnDataRegister, UserTypeFromDB} from "../serverModels/returnDataRegister.js";
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
 import User from "../schema/userSchema.js";
 
 export class AuthDb implements AuthDbInterface{

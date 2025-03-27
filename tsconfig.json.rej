@@ -1,0 +1,12 @@
+diff a/tsconfig.json b/tsconfig.json	(rejected hunks)
+@@ -3,8 +3,8 @@
+   "exclude": ["node_modules", "./client"],
+   "compilerOptions": {
+     "target": "ES2017",         
+-    "module": "Node16",
+-    "moduleResolution": "Node16",
++    "module": "preserve",
++    "moduleResolution": "bundler",
+     "outDir": "dist",
+      "allowJs": true,             
+     "esModuleInterop": true,           

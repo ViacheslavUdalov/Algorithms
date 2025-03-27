@@ -1,6 +1,7 @@
 {
-  "ext": "ts",
+  "ext": "ts,json",
+  "watch": ["."],
   "verbose": false,
-  "ignore": ["db.json"],
+  "ignore": ["dist"],
   "exec": "tsx backend/server.ts"
 }
