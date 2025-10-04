@@ -1,0 +1,198 @@
+[33mcommit cc54a6f512eb872e3a8777f6f79b2836589f9513[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;33mtag: 0.0.0[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 4fcedd7 fe5389d
+Author: Ivan Marchenko <enlightedmonkey@gmail.com>
+Date:   Tue Dec 3 18:54:26 2024 +0100
+
+    Merge branch 'sortToolings'
+
+[33mcommit fe5389d19a7606dd32eeab9b1942b6893b57a2f4[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Tue Dec 3 17:04:25 2024 +0300
+
+    перенос файлов сортировки из public
+
+[33mcommit f67a228632ada0afd5f15d8a27f70dab4cdc1170[m
+Merge: 080b698 eb14e72
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Tue Dec 3 10:06:14 2024 +0300
+
+    Merge remote-tracking branch 'origin/sortToolings' into sortToolings
+
+[33mcommit 080b6984b622cc9180d6aa26cd68bfe4570dd9d7[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Tue Dec 3 10:05:16 2024 +0300
+
+    тестирование bubble с помощью jest
+
+[33mcommit e78234be74f690717e21068417145535613b3b3b[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Mon Dec 2 22:28:35 2024 +0300
+
+    utils - одна функция для тулинга, функции сортировки с тулингами отдельно в sortsWithTooling.
+
+[33mcommit eb14e72f122369528856ba13d42a5691472836e6[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Mon Dec 2 22:28:35 2024 +0300
+
+    utils - одна функцтя для тулинга, функции сортировки с тулингами отдельно в sortsWithTooling.
+
+[33mcommit 93179eaee42697487a3087bf100dac11240f08cd[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Mon Dec 2 19:02:15 2024 +0300
+
+    добавление в функции работы с бд - вывод в коносоль если есть флаг и нет вывода если флага нет
+
+[33mcommit b3de380692fcd419b5fd870071413276eb67b368[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Mon Dec 2 17:47:46 2024 +0300
+
+    создание одной сортировки и сохранение в бд по значению размера массива и типу сортировки.
+    рефактор recreateSortType.js, в функции создания новой сортировки, проверка на наличии уже в бд сортировки по таким данным.
+    Вывод времени в консоль если есть флаг -v
+
+[33mcommit 4fcedd73238feb5834723a3ad8d13f17e6182fa3[m
+Merge: aae867f fbfb1d8
+Author: Vyacheslav Udalov <122437384+ViacheslavUdalov@users.noreply.github.com>
+Date:   Mon Dec 2 10:12:25 2024 +0300
+
+    Merge pull request #3 from ViacheslavUdalov/dev
+    
+    longest common substring, greatest increasing substring, levinstein.
+
+[33mcommit 875bf4e4ded81d5722d047c956acbe169e19da2b[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Mon Dec 2 10:08:15 2024 +0300
+
+    recreateBdData для bubbleSort, обновляет данные времени по типу массива и записывает в бд.
+    Пример использования
+    node bubbleSort.js -t 1000 -a s -bd recreate
+
+[33mcommit fbfb1d859f86c46827c2955a01aae2322794a3dd[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Sun Dec 1 18:45:03 2024 +0300
+
+    фикс тулингов
+
+[33mcommit 9b18af7326cc10910adf76197077a679a3ad0173[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Sat Nov 30 18:59:31 2024 +0300
+
+    туллинги для всех сортировок
+
+[33mcommit 25a07f7840b56b49bf161f834c14d4437725bfbc[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Sun Nov 24 19:17:54 2024 +0300
+
+    выводятся данные на страничку, все сортировки, сохранены в бд.
+
+[33mcommit d8c285591de3d56b6f3a7cf827e4c38150053904[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Sun Nov 24 10:40:40 2024 +0300
+
+    алгоритм Кнута-Морриса-Пратта
+
+[33mcommit 18182282104697e6deffec65e9f65ce9e9303de5[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Sat Nov 23 09:54:23 2024 +0300
+
+    longest common substring, greatest increasing substring, levinstein.
+
+[33mcommit aae867f217c0441bf3a50f04c0c6a8daf84b4e02[m
+Merge: 40ee71a c0a74f5
+Author: Vyacheslav Udalov <122437384+ViacheslavUdalov@users.noreply.github.com>
+Date:   Sat Nov 23 09:51:45 2024 +0300
+
+    Merge pull request #2 from ViacheslavUdalov/dev
+    
+    Revert "longest common substring, greatest increases substring, levin…
+
+[33mcommit 40ee71a8cc5822a28c4ad53a72e720e8b7ab6010[m[33m ([m[1;32mmain[m[33m)[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Sat Nov 23 09:49:02 2024 +0300
+
+    Revert "longest common substring, greatest increases substring, levinstein."
+    
+    This reverts commit 9719661bae69b59be4b59dce989164fb3e7bf665.
+
+[33mcommit c0a74f5aedbaff96f6eede494a45c734a5f72e8f[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Sat Nov 23 09:48:47 2024 +0300
+
+    Revert "longest common substring, greatest increases substring, levinstein."
+    
+    This reverts commit 9719661bae69b59be4b59dce989164fb3e7bf665.
+
+[33mcommit 9719661bae69b59be4b59dce989164fb3e7bf665[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Sat Nov 23 08:53:57 2024 +0300
+
+    longest common substring, greatest increases substring, levinstein.
+
+[33mcommit 12853afcdc68d68397268f8065c4a07a04110680[m
+Merge: d75113f d88438c
+Author: Vyacheslav Udalov <122437384+ViacheslavUdalov@users.noreply.github.com>
+Date:   Fri Nov 22 09:41:17 2024 +0300
+
+    Merge pull request #1 from ViacheslavUdalov/dev
+    
+    быстрая сортировка Тони Хоара.
+
+[33mcommit d88438ca229a76acd00352a9cb26964883e4d809[m
+Author: ViacheslavUdalov <122437384+ViacheslavUdalov@users.noreply.github.com>
+Date:   Sun Nov 17 21:11:46 2024 +0300
+
+    бинарный поиск, динамическое программирование - достижение точки с определёнными шагами по массиву.
+
+[33mcommit 376806f9be5f01732236fcd39419962467f07dab[m
+Author: ViacheslavUdalov <122437384+ViacheslavUdalov@users.noreply.github.com>
+Date:   Fri Nov 15 21:37:57 2024 +0300
+
+    mergeSort - сортировка слиянием.
+
+[33mcommit ba74bf36717928a3d8802275951c9349f42ce545[m
+Author: ViacheslavUdalov <122437384+ViacheslavUdalov@users.noreply.github.com>
+Date:   Fri Nov 15 20:48:10 2024 +0300
+
+    быстрая сортировка Тони Хоара.
+
+[33mcommit d75113fa02a10468ee890e5eb5edaf80ee9a6df3[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Tue Nov 12 17:40:33 2024 +0300
+
+    не работает клиент, перед отъездом. Komaru one love
+
+[33mcommit a4dfe773b9d1418ecf8eff803ed45a00eb40f3f0[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Mon Nov 11 18:52:02 2024 +0300
+
+    подключен json-server для сохранения значений в бд
+
+[33mcommit 4904ff9ede4f1e07e9549d666d76080f6d09da89[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Mon Nov 11 18:07:51 2024 +0300
+
+    две новые рекурсии, Happy birthday!!
+
+[33mcommit c12441e86304da9a9fa7eff5e1c0e380777390a8[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Mon Nov 11 17:25:56 2024 +0300
+
+    одна функция на три сортировки
+
+[33mcommit 042a5480c4cd656411c87f426073f8fa18d65602[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Mon Nov 11 17:05:46 2024 +0300
+
+    постепенный вывод данных на страницу.
+
+[33mcommit 96f743215d12ef22415fbb2cd3cca602c92bc226[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Mon Nov 11 13:24:19 2024 +0300
+
+    Happy Birthday!!!!!!
+
+[33mcommit ce5b912ed9615da7deb444a7c3dccf807d168515[m
+Author: Vyacheslav Udalov <slava187115@gmail.com>
+Date:   Sun Nov 10 22:06:13 2024 +0300
+
+    first commit
