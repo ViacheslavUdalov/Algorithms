@@ -10,14 +10,14 @@ var numIslands = function (grid) {
     }
     return result;
     function bfs(grid, i, j) {
-        if (j >= 0 && i < grid.length && grid[i][j] === '1') {
+        if (j < 0 || i < 0 || j >= grid[0].length || i >= grid.length || grid[i][j] === '0') {
+            return;
+        }
             grid[i][j] = '0';
             bfs(grid, i + 1, j);
             bfs(grid, i, j + 1);
             bfs(grid, i, j - 1);
-        }
-
-        return;
+            bfs(grid, i - 1, j);
     }
 };
 console.log(numIslands([
